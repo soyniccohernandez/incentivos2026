@@ -14,24 +14,26 @@ return new class extends Migration
         Schema::create('proyectos', function (Blueprint $table) {
             $table->id();
 
-            // Relaciones
+            // Relaciones principales
             $table->foreignId('socio_id')->constrained('socios')->onDelete('cascade');
             $table->foreignId('convocatoria_id')->constrained('convocatorias')->onDelete('cascade');
 
-            // Información básica del proyecto
+            // Información básica
             $table->string('titulo');
-            $table->string('estado_actual')->default('pendiente')
-                ->comment('Estado general del proyecto: pendiente, aprobado, subsanar, rechazado');
-            $table->string('etapa_actual')->nullable()
-                ->comment('Etapa actual dentro de la convocatoria');
+
+            // CAMBIO CLAVE: Ya no son strings, ahora son llaves foráneas
+            // El default(1) asume que el ID 1 en tu tabla 'estados' es "Recibido"
+            $table->foreignId('estado_id')->default(1)->constrained('estados');
+
+            // El default(1) asume que el ID 1 en tu tabla 'etapas' es "Inscripción"
+            $table->foreignId('etapa_id')->default(1)->constrained('etapas');
 
             // Fecha de postulación
-            $table->dateTime('fecha_postulacion')->default(now());
+            $table->dateTime('fecha_postulacion')->useCurrent();
 
-            // Observaciones generales (opcional)
+            // Observaciones del administrador
             $table->text('observacion_general')->nullable();
 
-            // Auditoría
             $table->timestamps();
         });
     }

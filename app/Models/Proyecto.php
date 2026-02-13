@@ -14,8 +14,8 @@ class Proyecto extends Model
         'socio_id',
         'convocatoria_id',
         'titulo',
-        'estado_actual',
-        'etapa_actual',
+        'estado_id',      // CAMBIADO: Antes era estado_actual
+        'etapa_id',       // CAMBIADO: Antes era etapa_actual
         'fecha_postulacion',
         'observacion_general',
     ];
@@ -27,58 +27,38 @@ class Proyecto extends Model
     ];
 
     /**
-     * Un proyecto pertenece a un socio (proponente)
+     * RELACIONES NUEVAS (Las que conectan con tus tablas maestras)
      */
+
+    public function estado(): BelongsTo
+    {
+        // Relación con la tabla 'estados'
+        return $this->belongsTo(Estado::class, 'estado_id');
+    }
+
+    public function etapa(): BelongsTo
+    {
+        // Relación con la tabla 'etapas'
+        return $this->belongsTo(Etapa::class, 'etapa_id');
+    }
+
+    /**
+     * RELACIONES EXISTENTES
+     */
+
     public function socio(): BelongsTo
     {
         return $this->belongsTo(Socio::class);
     }
 
-    /**
-     * Un proyecto pertenece a una convocatoria
-     */
     public function convocatoria(): BelongsTo
     {
         return $this->belongsTo(Convocatoria::class);
     }
 
-    /**
-     * Un proyecto puede tener muchos documentos
-     */
     public function documentos(): HasMany
     {
         return $this->hasMany(Documento::class);
     }
 
-    /**
-     * Un proyecto puede tener muchas observaciones
-     */
-    public function observaciones(): HasMany
-    {
-        return $this->hasMany(Observacion::class);
-    }
-
-    /**
-     * Un proyecto puede tener historial de etapas
-     */
-    public function historialEtapas(): HasMany
-    {
-        return $this->hasMany(HistorialEtapa::class);
-    }
-
-    /**
-     * Director asociado (si no es el proponente)
-     */
-    public function director(): HasMany
-    {
-        return $this->hasMany(Director::class);
-    }
-
-    /**
-     * Aceptaciones legales
-     */
-    public function aceptaciones(): HasMany
-    {
-        return $this->hasMany(Aceptacion::class);
-    }
 }

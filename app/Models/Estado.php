@@ -24,6 +24,7 @@ class Estado extends Model
      */
     public function proyectos(): HasMany
     {
-        return $this->hasMany(Proyecto::class, 'estado_actual', 'nombre');
+        // Relación estándar: un estado tiene muchos proyectos
+        return $this->hasMany(Proyecto::class, 'estado_id');
     }
 }

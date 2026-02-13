@@ -42,6 +42,8 @@ class Socio extends Model
      */
     public function proyectosActivos(): HasMany
     {
-        return $this->hasMany(Proyecto::class)->where('estado_actual', '!=', 'finalizado');
+        return $this->hasMany(Proyecto::class)->whereHas('estado', function ($q) {
+            $q->where('nombre', '!=', 'Seleccionado (Ganador)'); // O el nombre que uses
+        });
     }
 }

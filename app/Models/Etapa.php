@@ -36,7 +36,7 @@ class Etapa extends Model
      */
     public function proyectos(): HasMany
     {
-        return $this->hasMany(Proyecto::class, 'etapa_actual', 'nombre');
+        return $this->hasMany(Proyecto::class, 'etapa_id');
     }
 
     /**

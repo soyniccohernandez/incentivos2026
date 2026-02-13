@@ -49,9 +49,8 @@ class Convocatoria extends Model
      */
     public function proyectosAbiertos(): HasMany
     {
-        return $this->hasMany(Proyecto::class)
-                    ->whereHas('estadoActual', function ($query) {
-                        $query->where('nombre', '!=', 'finalizado');
-                    });
+        return $this->hasMany(Proyecto::class)->whereHas('estado', function ($query) {
+            $query->where('es_final', false);
+        });
     }
 }

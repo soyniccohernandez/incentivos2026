@@ -56,6 +56,38 @@
             {{ $slot }}
         </main>
     </div>
+
+    <script>
+        // Cada 5 minutos envía un pulso al servidor para mantener la sesión viva
+        setInterval(function() {
+            fetch('/keep-alive');
+        }, 300000); // 300,000 ms = 5 minutos
+
+        // Además, si el usuario vuelve a la pestaña después de mucho tiempo, 
+        // refrescamos los tokens de Livewire automáticamente
+        window.addEventListener('focus', () => {
+            fetch('/keep-alive');
+        });
+
+
+        document.addEventListener('livewire:init', () => {
+            Livewire.hook('request', ({
+                fail
+            }) => {
+                fail(({
+                    status,
+                    preventDefault
+                }) => {
+                    if (status === 419) {
+                        preventDefault(); // Bloquea el mensaje feo de Laravel
+                        console.log('Sesión expirada, recargando...');
+                        window.location.reload(); // Recarga la página silenciosamente
+                        return false;
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

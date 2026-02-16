@@ -15,6 +15,7 @@ class Observacion extends Model
         'etapa_id',
         'usuario_revisor_id',
         'mensaje',
+        'archivo_error_path',
         'visible_para_proponente',
     ];
 

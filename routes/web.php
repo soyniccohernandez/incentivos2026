@@ -2,68 +2,48 @@
 
 use Illuminate\Support\Facades\Route;
 
-// 1. Componentes Parte Pública (Sitio)
-use App\Livewire\Sitio\ValidarSocio;
-use App\Livewire\Sitio\InscripcionEtapa1;
+// Namespaces
+use App\Livewire\Sitio\{ValidarSocio, InscripcionEtapa1, InscripcionEtapa2, SubsanarEtapaUno, Inscritos};
+use App\Livewire\Admin\{AdminDashboard, Convocatorias\Index as ConvocatoriasIndex, Convocatorias\Gestionar as ConvocatoriasGestionar, Convocatorias\RevisarProyecto};
 
-// 2. Componentes Administrativos (Módulo Convocatorias)
-use App\Livewire\Admin\AdminDashboard;
-use App\Livewire\Admin\Convocatorias\Index as ConvocatoriasIndex;
-use App\Livewire\Admin\Convocatorias\Gestionar as ConvocatoriasGestionar;
-use App\Livewire\Admin\Convocatorias\RevisarProyecto;
-use App\Livewire\Sitio\Inscritos;
-use App\Livewire\Sitio\InscripcionEtapa2;
-
-// --- RUTAS PÚBLICAS ---
+// --- 1. RUTAS PÚBLICAS ---
 Route::view('/', 'welcome');
-
-// Módulo de Inscripciones para Socios
-Route::prefix('inscripcion')->group(function () {
-    Route::get('/validar', ValidarSocio::class)
-        ->name('validar-socio');
-
-    Route::get('/etapa-1', InscripcionEtapa1::class)
-        ->name('inscripcion.etapa1');
-});
-
 Route::get('/proyectos-inscritos', Inscritos::class)->name('inscritos.publico');
 
+// --- 2. PORTAL DEL SOCIO (Flujo de Inscripción) ---
+Route::prefix('convocatoria')->group(function () {
 
-// --- RUTAS ADMINISTRATIVAS (Protegidas) ---
-Route::middleware(['auth', 'verified'])->group(function () {
+    // Ruta pública para validarse
+    Route::get('/validar/{proyecto?}', ValidarSocio::class)->name('validar-socio');
 
-    // Dashboard Principal (Menú de Cards)
-    Route::get('dashboard', AdminDashboard::class)
-        ->name('dashboard');
+    // Rutas protegidas por tu nuevo portero
+    Route::middleware(['check.socio'])->group(function () {
 
-    // Perfil de Usuario
-    Route::view('profile', 'profile')
-        ->name('profile');
+        Route::get('/registro-etapa-1', InscripcionEtapa1::class)->name('inscripcion.etapa1');
 
-    // Módulo de Gestión de Convocatorias
-    Route::prefix('admin/convocatorias')->group(function () {
+        Route::get('/proyecto/{proyectoId}/documentacion', InscripcionEtapa2::class)->name('inscripcion.etapa2');
 
-        // 1. Listado principal de convocatorias
-        Route::get('/', ConvocatoriasIndex::class)
-            ->name('admin.convocatorias.index');
-
-        // 2. Gestión de proyectos dentro de una convocatoria específica
-        Route::get('/{convocatoria}/gestionar', ConvocatoriasGestionar::class)
-            ->name('convocatoria.gestionar');
-
-        // 3. Revisión detallada de un proyecto individual
-        Route::get('/proyectos/{proyecto}/revisar', RevisarProyecto::class)
-            ->name('proyecto.revisar');
+        Route::get('/proyecto/{proyecto}/subsanar', SubsanarEtapaUno::class)->name('subsanar-etapa-1');
     });
+});
 
-    // Futuros módulos:
-    // Route::prefix('admin/socios')...
-
-    Route::get('/inscripcion/etapa-2/{proyectoId}', InscripcionEtapa2::class)
-        ->name('inscripcion.etapa2')
-        ->middleware(['auth', 'check.socio']); // O el middleware que uses para validar al socio
+Route::get('/keep-alive', function () {
+    return response()->json(['status' => 'alive']);
 });
 
 
+// --- 3. PANEL ADMINISTRATIVO ---
+Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+
+    // Nombres originales para el Admin
+    Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
+    Route::view('/perfil', 'profile')->name('profile');
+
+    Route::prefix('gestion')->group(function () {
+        Route::get('/convocatorias', ConvocatoriasIndex::class)->name('admin.convocatorias.index');
+        Route::get('/convocatoria/{convocatoria}/proyectos', ConvocatoriasGestionar::class)->name('convocatoria.gestionar');
+        Route::get('/proyecto/{proyecto}/revisar', RevisarProyecto::class)->name('proyecto.revisar');
+    });
+});
 
 require __DIR__ . '/auth.php';

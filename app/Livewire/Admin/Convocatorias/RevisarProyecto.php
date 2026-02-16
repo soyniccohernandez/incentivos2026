@@ -13,113 +13,113 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.app')]
 class RevisarProyecto extends Component
 {
-    public $proyecto;
+    public Proyecto $proyecto;
     public $observacionesDocs = [];
     public $comentarioCierre;
 
     public function mount(Proyecto $proyecto)
     {
-        // Carga relacional optimizada
         $this->proyecto = $proyecto->load(['socio', 'documentos.tipoDocumento', 'estado', 'etapa']);
         $this->comentarioCierre = $this->proyecto->observacion_general;
 
-        // Inicializar observaciones de documentos
         foreach ($this->proyecto->documentos as $doc) {
-            $ultimaObs = Observacion::where('documento_id', $doc->id)->latest()->first();
+            // Buscamos la observación actual de esta revisión (etapa actual)
+            $ultimaObs = Observacion::where('documento_id', $doc->id)
+                ->where('etapa_id', $this->proyecto->etapa_id)
+                ->latest()
+                ->first();
+            
             $this->observacionesDocs[$doc->id] = $ultimaObs ? $ultimaObs->mensaje : '';
         }
     }
 
-    /**
-     * Cambia el estado de un documento de forma atómica.
-     * Blindado con DB::transaction para evitar datos huérfanos.
-     */
     public function cambiarEstadoDocumento($documentoId, $nuevoEstado)
     {
         $doc = Documento::findOrFail($documentoId);
+        $mensaje = trim($this->observacionesDocs[$documentoId] ?? '');
 
-        // 1. Si intenta pasar de APROBADO a algo negativo, 
-        // y el campo de texto está vacío, lanzamos el error para que se muestre el textarea
-        if ($nuevoEstado !== 'aprobado' && empty(trim($this->observacionesDocs[$documentoId] ?? ''))) {
+        // Validación: Si no es aprobado, DEBE tener observación
+        if ($nuevoEstado !== 'aprobado' && empty($mensaje)) {
             $this->addError('obs.' . $documentoId, 'Para cambiar a este estado, primero debe escribir un motivo.');
-
-            // Forzamos el cambio de estado visual del documento para que el Blade muestre el textarea
-            // pero NO lo guardamos en DB todavía (por eso no usamos update)
-            $doc->estado = $nuevoEstado;
             return;
         }
 
         try {
-            DB::transaction(function () use ($doc, $nuevoEstado, $documentoId) {
-                // Actualizamos en la base de datos
+            DB::transaction(function () use ($doc, $nuevoEstado, $documentoId, $mensaje) {
+                // 1. Actualizamos el estado del documento
                 $doc->update(['estado' => $nuevoEstado]);
 
                 if ($nuevoEstado === 'aprobado') {
-                    Observacion::where('documento_id', $documentoId)->delete();
+                    // Si aprueba, eliminamos observaciones de esta etapa para limpiar
+                    Observacion::where('documento_id', $documentoId)
+                        ->where('etapa_id', $this->proyecto->etapa_id)
+                        ->delete();
                     $this->observacionesDocs[$documentoId] = '';
                 } else {
+                    // 2. Creamos/Actualizamos observación (Invisible para el socio aún)
                     Observacion::updateOrCreate(
-                        ['proyecto_id' => $this->proyecto->id, 'documento_id' => $documentoId],
                         [
-                            'etapa_id' => $this->proyecto->etapa_id,
+                            'proyecto_id' => $this->proyecto->id, 
+                            'documento_id' => $documentoId,
+                            'etapa_id' => $this->proyecto->etapa_id
+                        ],
+                        [
                             'usuario_revisor_id' => Auth::id(),
-                            'mensaje' => trim($this->observacionesDocs[$documentoId]),
-                            'visible_para_proponente' => true
+                            'mensaje' => $mensaje,
+                            'archivo_error_path' => $doc->ruta_archivo,
+                            'visible_para_proponente' => false // Se activa al finalizar
                         ]
                     );
                 }
-                $this->recalcularEstadoProyecto();
             });
 
             $this->resetErrorBag('obs.' . $documentoId);
             $this->proyecto->refresh();
         } catch (\Exception $e) {
-            $this->addError('obs.' . $documentoId, 'Error: ' . $e->getMessage());
+            $this->addError('obs.' . $documentoId, 'Error al guardar: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Define la lógica de estados basada en la jerarquía de los documentos.
-     */
-    public function recalcularEstadoProyecto()
-    {
-        // Pluck directamente de la base de datos para evitar caché de la colección
-        $estadosDocs = $this->proyecto->documentos()->pluck('estado')->toArray();
-
-        // Jerarquía de estados (IDs según tu volcado SQL)
-        if (in_array('rechazado', $estadosDocs)) {
-            $nuevoId = 8; // Estado: Eliminado
-        } elseif (in_array('subsanar', $estadosDocs)) {
-            $nuevoId = 3; // Estado: Subsanación etapa 1
-        } elseif (in_array('pendiente', $estadosDocs) || empty($estadosDocs)) {
-            $nuevoId = 2; // Estado: En revisión etapa 1
-        } else {
-            // Todos los documentos están aprobados
-            $nuevoId = 4; // Estado: En etapa 2 (Aprobado fase 1)
-        }
-
-        $this->proyecto->update(['estado_id' => $nuevoId]);
-    }
-
-    /**
-     * Finaliza la auditoría guardando el comentario general.
-     */
     public function finalizarRevision()
     {
         $this->validate([
             'comentarioCierre' => 'required|min:5'
-        ], [
-            'comentarioCierre.required' => 'La conclusión final es obligatoria para cerrar la auditoría.',
-            'comentarioCierre.min' => 'La conclusión debe ser más descriptiva (mín. 5 caracteres).'
         ]);
 
-        $this->proyecto->update([
-            'observacion_general' => $this->comentarioCierre
-        ]);
+        try {
+            DB::transaction(function () {
+                $estadosDocs = $this->proyecto->documentos()->pluck('estado')->toArray();
 
-        session()->flash('message', 'Auditoría guardada correctamente.');
+                // 1. Lógica de estados del Proyecto
+                if (in_array('rechazado', $estadosDocs)) {
+                    $nuevoId = 8; // No cumple / Rechazado
+                } elseif (in_array('subsanar', $estadosDocs)) {
+                    $nuevoId = 3; // En Subsanación
+                } elseif (in_array('pendiente', $estadosDocs)) {
+                    $nuevoId = 2; // Pendiente (si el auditor olvidó marcar alguno)
+                } else {
+                    $nuevoId = ($this->proyecto->etapa_id == 1) ? 4 : 6;
+                }
 
-        return redirect()->route('convocatoria.gestionar', $this->proyecto->convocatoria_id);
+                // 2. Hacer visibles todas las observaciones de esta revisión
+                Observacion::where('proyecto_id', $this->proyecto->id)
+                    ->where('etapa_id', $this->proyecto->etapa_id)
+                    ->update(['visible_para_proponente' => true]);
+
+                // 3. Actualizar proyecto
+                $this->proyecto->update([
+                    'estado_id' => $nuevoId,
+                    'observacion_general' => $this->comentarioCierre,
+                    'publicado' => false // Sigue requiriendo la acción de "Publicar" en el índice
+                ]);
+            });
+
+            session()->flash('message', 'Auditoría guardada. Ahora puede publicar los resultados.');
+            return redirect()->route('convocatoria.gestionar', $this->proyecto->convocatoria_id);
+
+        } catch (\Exception $e) {
+            $this->addError('comentarioCierre', 'Error crítico: ' . $e->getMessage());
+        }
     }
 
     public function render()

@@ -15,11 +15,13 @@ class Inscritos extends Component
 
     public $search = '';
 
-    // Filtramos por la convocatoria que esté "activa"
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
-        // Buscamos la convocatoria 'abierta'. 
-        // Si no hay ninguna abierta, buscamos la última que se haya 'cerrada'.
         $convocatoriaMostrable = Convocatoria::where('estado', 'abierta')->first()
             ?? Convocatoria::where('estado', 'cerrada')->latest()->first();
 
@@ -31,14 +33,14 @@ class Inscritos extends Component
                 $query->where('titulo', 'like', '%' . $this->search . '%')
                     ->orWhere('codigo_radicado', 'like', '%' . $this->search . '%');
             })
-            ->with('estado')
+            ->with('estado') 
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
         return view('livewire.sitio.inscritos', [
             'proyectos' => $proyectos,
             'total' => $proyectos->total(),
-            'nombreConvocatoria' => $convocatoriaMostrable?->nombre ?? 'Sin convocatoria'
+            'nombreConvocatoria' => $convocatoriaMostrable?->nombre ?? 'Sin convocatoria activa'
         ]);
     }
 }

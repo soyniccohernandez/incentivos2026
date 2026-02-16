@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use Carbon\Carbon;
 
 class InitialSetupSeeder extends Seeder
 {
@@ -55,13 +56,40 @@ class InitialSetupSeeder extends Seeder
             ]
         );
 
-        // 4. Etapas
+        $ahora = Carbon::now();
+
+        // 4. Etapas con fechas dinámicas
         $etapas = [
-            ['id' => 1, 'convocatoria_id' => 1, 'nombre' => 'Etapa 1: Inscripción', 'orden' => 1, 'es_subsanable' => 1],
-            ['id' => 2, 'convocatoria_id' => 1, 'nombre' => 'Etapa 2: Requisitos Técnicos', 'orden' => 2, 'es_subsanable' => 0],
-            ['id' => 3, 'convocatoria_id' => 1, 'nombre' => 'Etapa 3: Evaluación de Jurados', 'orden' => 3, 'es_subsanable' => 0],
+            [
+                'id' => 1,
+                'convocatoria_id' => 1,
+                'nombre' => 'Etapa 1: Inscripción',
+                'orden' => 1,
+                'es_subsanable' => 1,
+                'fecha_inicio' => $ahora->copy()->subDays(5), // Empezó hace 5 días
+                'fecha_fin' => $ahora->copy()->addDays(10),   // Termina en 10 días (ESTA QUEDARÍA ACTIVA)
+            ],
+            [
+                'id' => 2,
+                'convocatoria_id' => 1,
+                'nombre' => 'Etapa 2: Requisitos Técnicos',
+                'orden' => 2,
+                'es_subsanable' => 0,
+                'fecha_inicio' => $ahora->copy()->addDays(11), // Empieza en 11 días
+                'fecha_fin' => $ahora->copy()->addDays(20),
+            ],
+            [
+                'id' => 3,
+                'convocatoria_id' => 1,
+                'nombre' => 'Etapa 3: Evaluación de Jurados',
+                'orden' => 3,
+                'es_subsanable' => 0,
+                'fecha_inicio' => $ahora->copy()->addDays(21),
+                'fecha_fin' => $ahora->copy()->addDays(30),
+            ],
         ];
-        DB::table('etapas')->upsert($etapas, ['id'], ['nombre', 'orden', 'es_subsanable']);
+
+        DB::table('etapas')->upsert($etapas, ['id'], ['nombre', 'orden', 'es_subsanable', 'fecha_inicio', 'fecha_fin']);
 
         // 5. Tipos de Documento
         $documentos = [

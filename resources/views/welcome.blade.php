@@ -23,17 +23,20 @@
     @if (session()->has('success'))
     <div id="success-modal" x-data="{ show: true }"
         x-show="show"
-        class="fixed inset-0 z-[3000] flex items-center justify-center p-4"
-        style="display: flex;"> {{-- Forzamos visibilidad inicial --}}
+        class="fixed inset-0 z-[3000] flex items-center justify-center p-4">
 
-        {{-- Overlay / Fondo --}}
+        {{-- Overlay --}}
         <div class="fixed inset-0 bg-black/95 backdrop-blur-sm" @click="show = false; document.getElementById('success-modal').style.display='none'"></div>
 
         {{-- Contenedor del Modal --}}
-        <div class="relative bg-[{{ '#111' }}] border-2 border-[#ff6600] max-w-2xl w-full shadow-[0_0_50px_rgba(255,102,0,0.3)] z-[3001]"
-            x-show="show">
+        <div class="relative bg-[#111] border-2 border-[#ff6600] max-w-2xl w-full shadow-[0_0_50px_rgba(255,102,0,0.3)] z-[3001]"
+            x-show="show"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-90"
+            x-transition:enter-end="opacity-100 scale-100">
 
             <div class="p-8 md:p-12 text-center relative">
+                {{-- Icono Check --}}
                 <div class="mx-auto w-20 h-20 bg-[#ff6600] flex items-center justify-center rounded-full mb-8">
                     <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
@@ -44,21 +47,28 @@
                     ¡INSCRIPCIÓN <span class="text-[#ff6600]">EXITOSA!</span>
                 </h2>
 
-                <p class="text-gray-300 text-lg mb-10 italic">
+                <p class="text-gray-300 text-lg mb-6 italic">
                     {{ session('success') }}
                 </p>
 
+                {{-- CAJA DE RADICADO DESTACADA --}}
+                <div class="bg-[#0a0a0a] border border-[#222] p-6 mb-10 inline-block w-full max-w-sm">
+                    <span class="text-gray-500 text-[10px] uppercase tracking-[3px] block mb-2 font-bold">Número de Radicado Oficial</span>
+                    <span class="text-[#ff6600] font-bebas text-5xl tracking-[4px] block">
+                        {{ session('radicado') }}
+                    </span>
+                </div>
+
                 <div class="flex flex-col items-center gap-4">
-                    {{-- BOTÓN PRINCIPAL CON CIERRE DOBLE (Alpine + JS Puro) --}}
                     <button onclick="document.getElementById('success-modal').style.display='none'"
                         @click="show = false"
-                        class="bg-[#ff6600] text-white font-bebas text-2xl px-12 py-4 hover:bg-white hover:text-black transition-all duration-300 tracking-widest">
+                        class="w-full md:w-auto bg-[#ff6600] text-white font-bebas text-2xl px-12 py-4 hover:bg-white hover:text-black transition-all duration-300 tracking-widest">
                         ENTENDIDO Y FINALIZAR
                     </button>
 
                     <button onclick="document.getElementById('success-modal').style.display='none'"
                         @click="show = false"
-                        class="text-gray-500 hover:text-white text-[10px] uppercase font-bold tracking-[3px] cursor-pointer">
+                        class="text-gray-500 hover:text-white text-[10px] uppercase font-bold tracking-[3px] cursor-pointer mt-4">
                         [ CERRAR VENTANA ]
                     </button>
                 </div>
@@ -84,7 +94,7 @@
             <li><a href="#pasos" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">INSCRIPCIÓN</a></li>
             <li><a href="{{ route('inscritos.publico') }}" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">VER INSCRITOS</a></li>
             <li class="md:ml-[15px]">
-                <a href="./estado-inscripcion.html" class="bg-brand-orange text-white !px-5 !py-2.5 rounded-[5px] font-bold no-underline transition-all duration-300 border border-transparent text-sm hover:bg-transparent hover:border-brand-orange hover:text-brand-orange hover:shadow-[0_0_10px_rgba(232,82,27,0.4)]">
+                <a href="{{ route('validar-socio') }}" class="bg-brand-orange text-white !px-5 !py-2.5 rounded-[5px] font-bold no-underline transition-all duration-300 border border-transparent text-sm hover:bg-transparent hover:border-brand-orange hover:text-brand-orange hover:shadow-[0_0_10px_rgba(232,82,27,0.4)]">
                     CONSULTAR ESTADO DE INSCRIPCIÓN
                 </a>
             </li>

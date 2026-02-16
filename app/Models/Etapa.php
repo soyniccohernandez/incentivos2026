@@ -13,12 +13,16 @@ class Etapa extends Model
     protected $fillable = [
         'convocatoria_id',
         'nombre',
+        'fecha_inicio',
+        'fecha_fin',
         'orden',
         'es_subsanable',
     ];
 
     protected $casts = [
         'es_subsanable' => 'boolean',
+        'fecha_inicio' => 'datetime',
+        'fecha_fin' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -45,5 +49,14 @@ class Etapa extends Model
     public function tiposDocumentos(): HasMany
     {
         return $this->hasMany(TipoDocumento::class);
+    }
+    
+    /**
+     * Helper para saber si la etapa está activa hoy
+     */
+    public function estaActiva(): bool
+    {
+        $hoy = now();
+        return $hoy->between($this->fecha_inicio, $this->fecha_fin);
     }
 }

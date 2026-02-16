@@ -15,10 +15,17 @@ return new class extends Migration
             $table->id();
 
             // Relación con convocatoria
-            $table->foreignId('convocatoria_id')->constrained('convocatorias')->onDelete('cascade');
+            $table->foreignId('convocatoria_id')
+                ->constrained('convocatorias')
+                ->onDelete('cascade');
 
             // Información de la etapa
             $table->string('nombre')->comment('Nombre de la etapa, ej: Recepción de documentos');
+            
+            // Fechas de control (La Buena Práctica)
+            $table->dateTime('fecha_inicio')->nullable()->comment('Fecha y hora de inicio de la etapa');
+            $table->dateTime('fecha_fin')->nullable()->comment('Fecha y hora de finalización de la etapa');
+            
             $table->unsignedTinyInteger('orden')->comment('Orden secuencial de la etapa');
             $table->boolean('es_subsanable')->default(false)
                 ->comment('Indica si la etapa permite subsanación');

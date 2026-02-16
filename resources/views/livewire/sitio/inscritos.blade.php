@@ -1,9 +1,7 @@
 <div class="bg-black min-h-screen text-white font-montserrat antialiased" wire:poll.5s>
-    {{-- 1. NAVEGACIÓN (Copiada de tu Home para consistencia) --}}
+    {{-- 1. NAVEGACIÓN --}}
     <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-5 md:px-12 bg-black/95 border-b border-[#1a1a1a]">
         <a href="/" class="font-bebas text-3xl text-[#ff6600] tracking-[2px] no-underline">ACTORES S.C.G.</a>
-
-        {{-- Enlace de regreso rápido --}}
         <ul class="flex items-center gap-8 list-none m-0 p-0">
             <li>
                 <a href="/" class="no-underline text-white font-bebas text-xl tracking-[1.5px] opacity-80 hover:text-[#ff6600] hover:opacity-100 transition-all">
@@ -16,7 +14,6 @@
     {{-- 2. CONTENIDO PRINCIPAL --}}
     <div class="max-w-[1100px] mx-auto pt-40 pb-24 px-6">
 
-        {{-- Encabezado con más aire y elegancia --}}
         <div class="relative mb-16">
             <span class="text-[#ff6600] tracking-[8px] text-[10px] font-bold uppercase mb-4 block">Transparencia Institucional</span>
             <h2 class="font-bebas text-[4rem] md:text-[6rem] leading-[0.9] mb-4 tracking-wider">
@@ -28,7 +25,7 @@
             </p>
         </div>
 
-        {{-- Panel de Control: Buscador y Contador --}}
+        {{-- Panel de Control --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 items-end">
             <div class="md:col-span-2">
                 <label class="text-[10px] uppercase tracking-[3px] text-gray-500 font-bold mb-3 block">Filtrar por nombre o radicado</label>
@@ -50,7 +47,7 @@
             </div>
         </div>
 
-        {{-- Tabla Rediseñada para Legibilidad --}}
+        {{-- Tabla de Proyectos --}}
         <div class="overflow-hidden border border-[#1a1a1a] bg-[#050505] shadow-2xl">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -73,55 +70,48 @@
                                 {{ $proyecto->titulo }}
                             </div>
                             <div class="flex items-center gap-3 mt-2">
-                                <span class="text-[9px] text-gray-500 uppercase tracking-widest">Postulado el: {{ $proyecto->created_at->format('d M, Y') }}</span>
+                                <span class="text-[9px] text-gray-500 uppercase tracking-widest">
+                                    Postulado el: {{ $proyecto->created_at->format('d M, Y') }}
+                                </span>
                             </div>
                         </td>
                         <td class="p-6 text-center">
-                            @php
-                            $ID_EN_ETAPA_2 = 4;
-                            $ID_REVISION_ETAPA_2 = 5;
-                            $ID_ELIMINADO = 8;
-                            @endphp
-
                             <div class="flex items-center justify-center gap-3">
-                                {{-- CASO 1: ACCIÓN REQUERIDA (ETAPA 2) --}}
-                                @if($proyecto->estado_id == $ID_EN_ETAPA_2)
-                                <div class="flex items-center bg-[#111] border border-[#ff6600]/30 p-1 rounded-sm">
-                                    {{-- Badge de Estado --}}
-                                    <span class="px-4 py-2 text-[10px] font-black uppercase tracking-[2px] text-gray-400 border-r border-[#222]">
+
+                                {{-- USAMOS LA LÓGICA CENTRALIZADA DEL MODELO --}}
+
+                                @if(!$proyecto->publicado && !$proyecto->estado->es_de_accion)
+                                {{-- CASO: EL MURO (Revisión privada) --}}
+                                <div class="flex items-center gap-3 bg-[#0a0a0a] border border-[#222] px-4 py-2 rounded-full">
+                                    <div class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></div>
+                                    <span class="text-[10px] font-bold uppercase tracking-[2px] text-gray-400">
+                                        En Revisión
+                                    </span>
+                                    <span class="text-[9px] text-gray-600 border-l border-[#222] pl-3 uppercase italic">Trámite Interno</span>
+                                </div>
+
+                                @elseif($proyecto->estado->es_de_accion)
+                                {{-- CASO: ACCIÓN REQUERIDA (Subsanación o Etapa 2) --}}
+                                <div class="flex items-center bg-[#111] border border-[#ff6600]/30 p-1 rounded-sm shadow-[0_0_15px_rgba(255,102,0,0.1)]">
+                                    <span class="px-4 py-2 text-[10px] font-black uppercase tracking-[2px] {{ $proyecto->estado_id == 3 ? 'text-amber-500' : 'text-[#ff6600]' }} border-r border-[#222]">
                                         {{ $proyecto->estado->nombre }}
                                     </span>
-
-                                    {{-- Botón de Acción --}}
-                                    <a href="{{ route('validar-socio', ['proyecto' => $proyecto->id]) }}"
-                                        class="flex items-center gap-2 px-5 py-2 bg-[#ff6600] text-white font-bebas text-lg tracking-wider hover:bg-white hover:text-black transition-all no-underline group">
-                                        <span class="relative flex h-2 w-2">
-                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-                                        </span>
-                                        DILIGENCIAR FORMULARIO
-                                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    <a href="{{ route('validar-socio', $proyecto->id) }}"
+                                        class="flex items-center gap-2 px-5 py-2 bg-[#ff6600] text-white font-bebas text-lg tracking-wider hover:bg-white hover:text-black transition-all no-underline">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
+                                        INGRESAR AHORA
                                     </a>
                                 </div>
 
-                                {{-- CASO 2: EN REVISIÓN (HORIZONTAL Y ELEGANTE) --}}
-                                @elseif($proyecto->estado_id == $ID_REVISION_ETAPA_2)
-                                <div class="flex items-center gap-3 bg-[#0a0a0a] border border-[#222] px-4 py-2 rounded-full">
-                                    <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-                                    <span class="text-[10px] font-bold uppercase tracking-[2px] text-gray-400">
-                                        {{ $proyecto->estado->nombre }}
-                                    </span>
-                                    <span class="text-[9px] text-gray-600 border-l border-[#222] pl-3 uppercase">Recibido</span>
-                                </div>
-
-                                {{-- CASO 3: ESTADOS FINALES O BLOQUEADOS --}}
                                 @else
-                                <span class="px-6 py-2 border {{ $proyecto->estado_id == $ID_ELIMINADO ? 'border-red-900/50 text-red-600 bg-red-900/10' : 'border-[#222] text-gray-500 bg-[#0a0a0a]' }} text-[10px] font-black uppercase tracking-[2px]">
-                                    {{ $proyecto->estado->nombre ?? 'S/N' }}
+                                {{-- CASO: ESTADO PÚBLICO (Ya pasó el muro o es estado final) --}}
+                                <span class="px-6 py-2 border {{ $proyecto->estado->es_final ? 'border-emerald-500/50 text-emerald-500 bg-emerald-500/5' : 'border-[#222] text-gray-400 bg-[#0a0a0a]' }} text-[10px] font-black uppercase tracking-[2px]">
+                                    {{ $proyecto->estado->nombre }}
                                 </span>
                                 @endif
+
                             </div>
                         </td>
                     </tr>
@@ -141,13 +131,12 @@
             </table>
         </div>
 
-        {{-- Paginación Estilizada --}}
         <div class="mt-12">
             {{ $proyectos->links() }}
         </div>
     </div>
 
-    {{-- 3. FOOTER (Copiado de tu Home para consistencia) --}}
+    {{-- 3. FOOTER --}}
     <footer class="bg-[#050505] text-[#888] py-20 border-t border-[#1a1a1a] text-[0.9rem]">
         <div class="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-[50px] px-6">
             <div>

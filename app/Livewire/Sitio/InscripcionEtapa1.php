@@ -7,7 +7,8 @@ use App\Models\Socio;
 use App\Models\Convocatoria;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str; // Importante para limpiar nombres
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
@@ -17,7 +18,12 @@ class InscripcionEtapa1 extends Component
 {
     use WithFileUploads;
 
+    // Propiedades del Socio y Perfil
     public Socio $socio;
+    public $foto_url;
+    public $iniciales;
+
+    // Datos del Proyecto
     public $titulo;
     public $autoria = 'si';
     public $guionArchivo;
@@ -29,13 +35,14 @@ class InscripcionEtapa1 extends Component
     public $directorCelular;
     public $directorCorreo;
 
-    // Documentos Director
+    // Documentos (Estas deben existir para evitar el error PropertyNotFound)
     public $docDirectorExperiencia;
     public $docDirectorCompromiso;
     public $docDirectorEvidencia1;
     public $docDirectorEvidencia2;
     public $formatoFirmado;
 
+    // Checkboxes
     public $aceptaTerminos = false;
     public $aceptaDatos = false;
 
@@ -45,6 +52,22 @@ class InscripcionEtapa1 extends Component
             return redirect()->route('validar-socio');
         }
         $this->socio = Socio::findOrFail(session('socio_id'));
+
+        // Carga de Foto y Iniciales (Igual que Etapa 2)
+        $this->foto_url = $this->obtenerUrlFoto($this->socio->identificacion);
+        
+        $parts = explode(' ', mb_strtoupper($this->socio->nombre));
+        $this->iniciales = (count($parts) >= 2) 
+            ? mb_substr($parts[0], 0, 1) . mb_substr($parts[1], 0, 1) 
+            : mb_substr($parts[0], 0, 1);
+    }
+
+    private function obtenerUrlFoto($cedula) 
+    { 
+        $directory = 'socios/'; 
+        $files = Storage::disk('public')->files($directory); 
+        $foto = collect($files)->first(fn($p) => str_starts_with(basename($p), $cedula . '.')); 
+        return $foto ? asset('storage/' . $foto) . '?v=' . time() : null; 
     }
 
     public function getNombreLimpioProperty()
@@ -86,7 +109,7 @@ class InscripcionEtapa1 extends Component
         try {
             DB::beginTransaction();
 
-            // 1. Crear el proyecto primero para tener el ID y Radicado
+            // 1. Crear el proyecto
             $proyecto = $this->socio->proyectos()->create([
                 'convocatoria_id' => $convocatoria->id,
                 'titulo' => mb_strtoupper($this->titulo),
@@ -103,8 +126,7 @@ class InscripcionEtapa1 extends Component
                 'correo' => $this->directorPropio === 'si' ? mb_strtolower($this->socio->correo) : mb_strtolower($this->directorCorreo),
             ]);
 
-            // 3. Subida de archivos con IDs CORREGIDOS y NOMBRES LARGOS
-            // Mapeo exacto según tu tabla de Etapa 1:
+            // 3. Subida de archivos
             $this->subirArchivo($proyecto, $this->guionArchivo, 1, 'AUTORIZACION_GUION');
             $this->subirArchivo($proyecto, $this->docDirectorExperiencia, 2, 'EXPERIENCIA_DIRECTOR');
             $this->subirArchivo($proyecto, $this->docDirectorCompromiso, 3, 'COMPROMISO_DIRECTOR');
@@ -122,8 +144,11 @@ class InscripcionEtapa1 extends Component
 
             $radicadoFinal = $proyecto->codigo_radicado;
             session()->forget('socio_id');
-            return redirect('/')->with('success', "Proyecto registrado. Radicado: <strong>$radicadoFinal</strong>");
 
+            return redirect('/')->with([
+                'success' => 'Su propuesta ha sido registrada correctamente en nuestro sistema.',
+                'radicado' => $radicadoFinal
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Error Inscripción E1: " . $e->getMessage());
@@ -135,16 +160,12 @@ class InscripcionEtapa1 extends Component
     {
         if ($archivo && $archivo->isValid()) {
             try {
-                // Preparar partes del nombre
                 $orden = str_pad($tipoId, 2, '0', STR_PAD_LEFT);
                 $tituloSlug = Str::slug($this->titulo, '_');
                 $socioId = $this->socio->identificacion;
                 $radicado = Str::slug($proyecto->codigo_radicado, '_');
-                
-                // Nombre final: E1_01_AUTORIZACION_GUION_EL_ULTIMO_ACTO_SOCIO_79445332_RAD_20260042.pdf
-                $nombreFinal = "E1_{$orden}_{$prefijoNombre}_{$tituloSlug}_SOCIO_{$socioId}_RAD_{$radicado}.pdf";
 
-                // Guardar en disco con el nombre personalizado
+                $nombreFinal = "E1_{$orden}_{$prefijoNombre}_{$tituloSlug}_SOCIO_{$socioId}_RAD_{$radicado}.pdf";
                 $path = $archivo->storeAs('documentos/' . now()->year, $nombreFinal, 'public');
 
                 $proyecto->documentos()->create([

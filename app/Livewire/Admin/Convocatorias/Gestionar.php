@@ -4,9 +4,12 @@ namespace App\Livewire\Admin\Convocatorias;
 
 use App\Models\Convocatoria;
 use App\Models\Proyecto;
-use App\Models\Estado; // <--- Nombre correcto del modelo
+use App\Models\Estado;
+use App\Models\Observacion;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Carbon\Carbon;
 
 class Gestionar extends Component
 {
@@ -21,17 +24,12 @@ class Gestionar extends Component
         $this->convocatoria = $convocatoria;
     }
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-    public function updatingEstadoSelected()
-    {
-        $this->resetPage();
-    }
+    public function updatingSearch() { $this->resetPage(); }
+    public function updatingEstadoSelected() { $this->resetPage(); }
 
     public function render()
     {
+        // 1. Consulta de proyectos con búsqueda y filtro de estado
         $proyectos = Proyecto::where('convocatoria_id', $this->convocatoria->id)
             ->with(['socio', 'estado'])
             ->where(function ($query) {
@@ -39,42 +37,55 @@ class Gestionar extends Component
                     ->orWhere('codigo_radicado', 'like', '%' . $this->search . '%');
             })
             ->when($this->estadoSelected, function ($query) {
-                // Asegúrate que en la tabla 'proyectos' la columna sea 'estado_id'
                 $query->where('estado_id', $this->estadoSelected);
             })
             ->paginate(10);
 
-        // Traemos los estados con el conteo de proyectos de ESTA convocatoria
-        $estados = Estado::orderBy('nombre', 'asc')
+        // 2. Conteo de estados para el filtro superior
+        $estados = Estado::orderBy('id', 'asc')
             ->withCount(['proyectos' => function ($query) {
                 $query->where('convocatoria_id', $this->convocatoria->id);
             }])
             ->get();
 
+        // 3. Lógica de Etapa Actual basada en fechas (Buena Práctica)
+        $hoy = Carbon::now();
+        $etapaActual = $this->convocatoria->etapas()
+            ->where('fecha_inicio', '<=', $hoy)
+            ->where('fecha_fin', '>=', $hoy)
+            ->first();
+
         return view('livewire.admin.convocatorias.gestionar', [
             'proyectos' => $proyectos,
-            'estados' => $estados
+            'estados' => $estados,
+            'nombreEtapaActual' => $etapaActual ? $etapaActual->nombre : 'Sin etapa activa'
         ]);
     }
 
     public function publicarResultados()
     {
-        // 1. Identificamos qué proyectos deben publicarse: 
-        // Los que están en la convocatoria y NO están publicados aún.
-        $proyectosAPublicar = Proyecto::where('convocatoria_id', $this->convocatoria->id)
-            ->where('publicado', false);
+        DB::transaction(function () {
+            $query = Proyecto::where('convocatoria_id', $this->convocatoria->id)
+                ->where('publicado', false);
 
-        if ($proyectosAPublicar->count() === 0) {
-            $this->dispatch('notify', 'No hay resultados nuevos pendientes por publicar.');
-            return;
-        }
+            if ($this->estadoSelected) {
+                $query->where('estado_id', $this->estadoSelected);
+            }
 
-        // 2. Publicamos
-        $proyectosAPublicar->update(['publicado' => true]);
+            $proyectosAPublicar = $query->get();
 
-        $this->dispatch('notify', '¡Resultados publicados oficialmente!');
+            if ($proyectosAPublicar->isEmpty()) return;
 
-        // Forzamos el refresco del conteo para el botón en la vista
+            foreach ($proyectosAPublicar as $proyecto) {
+                $proyecto->update(['publicado' => true]);
+                
+                // Liberar observaciones para que el proponente las vea
+                Observacion::where('proyecto_id', $proyecto->id)
+                    ->update(['visible_para_proponente' => true]);
+            }
+        });
+
+        $this->dispatch('notify', 'Resultados publicados exitosamente.');
         $this->convocatoria->refresh();
     }
 }

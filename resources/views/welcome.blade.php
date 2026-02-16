@@ -82,7 +82,7 @@
             <li><a href="#convocatoria" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">REQUISITOS</a></li>
             <li><a href="#cronograma" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">CRONOGRAMA</a></li>
             <li><a href="#pasos" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">INSCRIPCIÓN</a></li>
-            <li><a href="./inscritos.html" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">VER INSCRITOS</a></li>
+            <li><a href="{{ route('inscritos.publico') }}" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">VER INSCRITOS</a></li>
             <li class="md:ml-[15px]">
                 <a href="./estado-inscripcion.html" class="bg-brand-orange text-white !px-5 !py-2.5 rounded-[5px] font-bold no-underline transition-all duration-300 border border-transparent text-sm hover:bg-transparent hover:border-brand-orange hover:text-brand-orange hover:shadow-[0_0_10px_rgba(232,82,27,0.4)]">
                     CONSULTAR ESTADO DE INSCRIPCIÓN
@@ -216,7 +216,7 @@
             <div class="bg-[#111] p-[50px] text-center border border-brand-orange mt-10">
                 <h3 class="font-bebas text-[2rem] mb-5 uppercase">¿LISTO PARA ENVIAR TU PROPUESTA?</h3>
                 <p class="text-[#BBBBBB] mb-[30px]">Asegúrate de tener todos los anexos listos antes de proceder al correo de inscripción.</p>
-                <a href="/validar-socio" class="inline-block bg-brand-orange text-white px-[45px] py-[18px] no-underline font-bebas text-[1.6rem] transition-all duration-300 hover:bg-[#ff6a33] hover:-translate-y-[3px]">
+                <a href="{{ route('validar-socio') }}" class="inline-block bg-brand-orange text-white px-[45px] py-[18px] no-underline font-bebas text-[1.6rem] transition-all duration-300 hover:bg-[#ff6a33] hover:-translate-y-[3px]">
                     INICIAR INSCRIPCIÓN AHORA
                 </a>
             </div>

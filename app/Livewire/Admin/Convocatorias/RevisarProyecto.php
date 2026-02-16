@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\Admin\Convocatorias;
 
 use App\Models\Proyecto;
 use App\Models\Documento;
@@ -124,6 +124,6 @@ class RevisarProyecto extends Component
 
     public function render()
     {
-        return view('livewire.admin.revisar-proyecto');
+        return view('livewire.admin.convocatorias.revisar-proyecto');
     }
 }

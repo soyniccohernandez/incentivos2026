@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('proyectos', function (Blueprint $table) {
             $table->id();
+            $table->string('codigo_radicado')->unique()->comment('Número oficial de seguimiento del proyecto');
 
             // Relaciones principales
             $table->foreignId('socio_id')->constrained('socios')->onDelete('cascade');
@@ -21,17 +22,19 @@ return new class extends Migration
             // Información básica
             $table->string('titulo');
 
-            // CAMBIO CLAVE: Ya no son strings, ahora son llaves foráneas
-            // El default(1) asume que el ID 1 en tu tabla 'estados' es "Recibido"
+            // Estados y Etapas
             $table->foreignId('estado_id')->default(1)->constrained('estados');
 
-            // El default(1) asume que el ID 1 en tu tabla 'etapas' es "Inscripción"
+            // --- AÑADE ESTA LÍNEA AQUÍ ---
+            $table->boolean('publicado')->default(false)->comment('Define si el estado es visible al público');
+            // ----------------------------
+
             $table->foreignId('etapa_id')->default(1)->constrained('etapas');
 
             // Fecha de postulación
             $table->dateTime('fecha_postulacion')->useCurrent();
 
-            // Observaciones del administrador
+            // Observaciones
             $table->text('observacion_general')->nullable();
 
             $table->timestamps();

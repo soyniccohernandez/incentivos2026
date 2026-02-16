@@ -14,21 +14,22 @@ return new class extends Migration
         Schema::create('socios', function (Blueprint $table) {
             $table->id();
 
-            // Identificación
+            // Identificación (Sigue siendo única para evitar duplicados de persona)
             $table->string('identificacion')->unique()->comment('Documento de identidad del socio');
 
             // Información personal
             $table->string('nombre');
-            $table->string('genero', 20)->nullable()->comment('Género del socio');
-            $table->date('fecha_nacimiento')->nullable()->comment('Fecha de nacimiento');
+            $table->string('genero', 20)->nullable();
+            $table->string('tipo_socio', 50)->nullable(); // Pleno, Adherente, etc.
+            $table->date('fecha_nacimiento')->nullable();
 
-            // Relación con la sociedad
-            $table->string('tipo_socio', 50)->nullable()->comment('Tipo de socio según estatutos');
-            $table->string('estado', 30)->default('activo')->comment('Estado del socio: activo, suspendido, inactivo');
-
-            // Contacto
+            // Ubicación y Contacto
+            $table->string('direccion')->nullable();
             $table->string('telefono', 20)->nullable();
-            $table->string('correo')->unique()->comment('Correo electrónico principal');
+            $table->string('correo')->nullable(); // Se quitó el ->unique()
+
+            // Estado centralizado para validaciones (moroso, bloqueado_cargo, etc.)
+            $table->string('estado', 30)->default('activo');
 
             // Auditoría
             $table->timestamps();

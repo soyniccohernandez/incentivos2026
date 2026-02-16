@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\Carbon;
 
 class Socio extends Model
 {
-    // Tabla asociada (opcional si el nombre coincide con el modelo)
     protected $table = 'socios';
 
-    // Campos asignables en masa
     protected $fillable = [
         'identificacion',
         'nombre',
@@ -22,12 +21,36 @@ class Socio extends Model
         'correo',
     ];
 
-    // Casting de fechas
+    /**
+     * Casting de atributos.
+     * Centralizamos todos los casts en un solo array.
+     */
     protected $casts = [
         'fecha_nacimiento' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors (Atributos calculados)
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Obtener la edad actual del socio.
+     * Uso: $socio->edad
+     */
+    public function getEdadAttribute(): int
+    {
+        return $this->fecha_nacimiento ? $this->fecha_nacimiento->age : 0;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relaciones
+    |--------------------------------------------------------------------------
+    */
 
     /**
      * Un socio puede tener muchos proyectos.
@@ -38,12 +61,12 @@ class Socio extends Model
     }
 
     /**
-     * Obtener proyectos activos por estado
+     * Obtener proyectos que no han finalizado el proceso (no son ganadores aún).
      */
-    public function proyectosActivos(): HasMany
+    public function proyectosEnProceso(): HasMany
     {
         return $this->hasMany(Proyecto::class)->whereHas('estado', function ($q) {
-            $q->where('nombre', '!=', 'Seleccionado (Ganador)'); // O el nombre que uses
+            $q->where('nombre', '!=', 'Seleccionado (Ganador)'); 
         });
     }
 }

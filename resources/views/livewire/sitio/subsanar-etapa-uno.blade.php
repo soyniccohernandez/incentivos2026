@@ -3,8 +3,8 @@
     <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-5 md:px-12 bg-black/95 border-b border-brand-border backdrop-blur-sm">
         <div class="flex items-center gap-8">
             <a href="/" class="font-bebas text-3xl text-brand-orange tracking-[2px] no-underline"> ACTORES S.C.G. </a>
-            <span class="font-bebas text-xl text-gray-500 hidden md:block uppercase tracking-widest border-l border-brand-border pl-8"> 
-                Módulo de <span class="text-brand-orange">Subsanación</span> 
+            <span class="font-bebas text-xl text-gray-500 hidden md:block uppercase tracking-widest border-l border-brand-border pl-8">
+                Módulo de <span class="text-brand-orange">Subsanación</span>
             </span>
         </div>
 
@@ -20,7 +20,7 @@
 
     <main class="bg-black min-h-screen pt-32 pb-24 px-6 text-left">
         <div class="max-w-[1100px] mx-auto text-left">
-            
+
             {{-- HEADER: ESTILO ETAPA 2 --}}
             <header class="mb-12 border-l-4 border-brand-orange pl-6 text-left">
                 <div class="text-brand-orange font-bold text-sm uppercase tracking-[3px] mb-2"> Acción Requerida: Subsanación de Documentos </div>
@@ -33,75 +33,92 @@
 
             {{-- GRID DE DOCUMENTOS --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                @foreach($proyecto->documentos as $doc)
-                    @php $esSubsanable = $doc->estado === 'subsanar'; @endphp
-                    
-                    <div class="bg-brand-surface border {{ $esSubsanable ? 'border-brand-orange/40 shadow-[0_15px_40px_rgba(255,77,0,0.05)]' : 'border-brand-border opacity-50' }} p-8 md:p-10 relative group transition-all duration-500">
-                        
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="text-left">
-                                <h3 class="font-bebas text-3xl tracking-wider text-white uppercase mb-2">
-                                    {{ $doc->tipoDocumento->nombre }}
-                                </h3>
-                                <div class="inline-flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full {{ $esSubsanable ? 'bg-brand-orange animate-pulse' : 'bg-green-500' }}"></span>
-                                    <span class="text-[10px] font-black uppercase tracking-widest {{ $esSubsanable ? 'text-brand-orange' : 'text-green-500' }}">
-                                        {{ $esSubsanable ? 'Pendiente por corregir' : 'Aprobado / Validado' }}
-                                    </span>
-                                </div>
+                @php
+                // Agrupamos por tipo y tomamos solo el registro más reciente (la última versión)
+                $documentosPorTipo = $proyecto->documentos->groupBy('tipo_documento_id');
+                @endphp
+
+                @foreach($documentosPorTipo as $tipoId => $versiones)
+                @php
+                $doc = $versiones->sortByDesc('version')->first(); // La versión más nueva
+
+                $necesitaSubsanar = $doc->estado === 'subsanar';
+                $estaEnEspera = $doc->estado === 'pendiente';
+                $estaAprobado = $doc->estado === 'aprobado';
+                @endphp
+
+                <div class="bg-brand-surface border transition-all duration-500 p-8 md:p-10
+            {{ $necesitaSubsanar ? 'border-brand-orange/40' : '' }}
+            {{ $estaEnEspera ? 'border-blue-500/30 bg-blue-500/5' : '' }}
+            {{ $estaAprobado ? 'border-green-500/20 opacity-60' : '' }}">
+
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="text-left">
+                            <h3 class="font-bebas text-3xl tracking-wider text-white uppercase mb-2">
+                                {{ $doc->tipoDocumento->nombre }}
+                            </h3>
+
+                            {{-- INDICADOR DE ESTADO DINÁMICO --}}
+                            <div class="inline-flex items-center gap-2">
+                                @if($necesitaSubsanar)
+                                <span class="w-2 h-2 rounded-full bg-brand-orange animate-pulse"></span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-brand-orange">Requiere Corrección</span>
+                                @elseif($estaEnEspera)
+                                <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-blue-400">Enviado - A espera de revisión</span>
+                                @elseif($estaAprobado)
+                                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-green-500">Documento Validado</span>
+                                @endif
                             </div>
-                        </div>
-
-                        {{-- OBSERVACIONES (ESTILO TÉCNICO) --}}
-                        @if($esSubsanable && isset($observaciones[$doc->id]))
-                            <div class="bg-black/50 border border-brand-border/50 p-6 mb-8 text-left">
-                                <span class="text-[9px] font-black uppercase text-brand-orange tracking-[3px] block mb-3 opacity-80">Observación de la Revisión:</span>
-                                <p class="text-gray-300 text-sm italic leading-relaxed font-medium">
-                                    "{{ $observaciones[$doc->id] }}"
-                                </p>
-                            </div>
-                        @endif
-
-                        {{-- ACCIONES DE CARGA --}}
-                        <div class="mt-auto">
-                            @if($esSubsanable)
-                                <div x-data="{ isUploading: false, progress: 0 }" 
-                                     x-on:livewire-upload-start="isUploading = true" 
-                                     x-on:livewire-upload-finish="isUploading = false"
-                                     x-on:livewire-upload-progress="progress = $event.detail.progress">
-                                    
-                                    <div class="space-y-4">
-                                        <div class="relative group/input">
-                                            <input type="file" wire:model.live="archivosNuevos.{{ $doc->id }}" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                                            <div class="bg-black border border-brand-border px-4 py-4 text-[10px] text-gray-400 font-black uppercase tracking-widest flex items-center justify-between group-hover/input:bg-gray-900 transition-colors">
-                                                <span>{{ isset($archivosNuevos[$doc->id]) ? '✓ Documento Seleccionado' : 'Seleccionar Nuevo PDF' }}</span>
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                            </div>
-                                        </div>
-
-                                        <div x-show="isUploading" class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
-                                            <div class="bg-brand-orange h-full transition-all duration-300" :style="'width: ' + progress + '%'"></div>
-                                        </div>
-
-                                        @if(isset($archivosNuevos[$doc->id]))
-                                            <button wire:click="guardarSubsanacion({{ $doc->id }})" class="w-full bg-brand-orange text-black font-bebas text-2xl py-3 hover:bg-white transition-all shadow-lg active:scale-95">
-                                                ACTUALIZAR DOCUMENTO
-                                            </button>
-                                        @endif
-                                    </div>
-                                </div>
-                            @else
-                                <div class="flex items-center justify-between border-t border-white/5 pt-6 mt-4">
-                                    <div class="flex items-center gap-3 px-4 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
-                                        <span class="text-green-500 text-[9px] font-black uppercase tracking-widest">Listo para Inscripción</span>
-                                    </div>
-                                    <a href="{{ asset('storage/'.$doc->ruta_archivo) }}" target="_blank" class="text-[10px] text-gray-500 font-bold uppercase tracking-widest hover:text-white transition-colors no-underline">
-                                        Ver Anterior
-                                    </a>
-                                </div>
-                            @endif
                         </div>
                     </div>
+
+                    {{-- Área de carga: Solo aparece si el estado es 'subsanar' --}}
+                    <div class="mt-8">
+                        @if($necesitaSubsanar)
+                        {{-- Bloque de observación del auditor --}}
+                        @if(isset($observaciones[$doc->id]))
+                        <div class="bg-black/40 border-l-2 border-brand-orange p-4 mb-6">
+                            <p class="text-gray-400 text-xs italic">"{{ $observaciones[$doc->id] }}"</p>
+                        </div>
+                        @endif
+
+                        <div x-data="{ isUploading: false, progress: 0 }"
+                            x-on:livewire-upload-start="isUploading = true"
+                            x-on:livewire-upload-finish="isUploading = false">
+
+                            <div class="space-y-4">
+                                <div class="relative group">
+                                    <input type="file" wire:model.live="archivosNuevos.{{ $doc->id }}" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                    <div class="bg-black border border-brand-border px-4 py-4 text-[10px] text-gray-400 font-black uppercase tracking-widest flex items-center justify-between group-hover:bg-gray-900 transition-colors">
+                                        <span>{{ isset($archivosNuevos[$doc->id]) ? '✓ Archivo Cargado' : 'Seleccionar Nuevo PDF' }}</span>
+                                        <svg class="w-4 h-4 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                @if(isset($archivosNuevos[$doc->id]))
+                                <button wire:click="guardarSubsanacion({{ $doc->id }})" class="w-full bg-brand-orange text-black font-bebas text-2xl py-3 hover:bg-white transition-all shadow-xl">
+                                    ENVIAR PARA NUEVA REVISIÓN
+                                </button>
+                                @endif
+                            </div>
+                        </div>
+
+                        @elseif($estaEnEspera)
+                        {{-- Muestra que ya se envió y oculta el botón de carga --}}
+                        <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded text-center">
+                            <p class="text-blue-400 text-[10px] font-black uppercase tracking-widest mb-2">Trámite en curso</p>
+                            <a href="{{ asset('storage/'.$doc->ruta_archivo) }}" target="_blank" class="text-white text-[9px] font-bold uppercase underline hover:text-blue-300">
+                                Ver documento enviado (Versión {{ $doc->version }})
+                            </a>
+                        </div>
+
+                        @endif
+                    </div>
+                </div>
                 @endforeach
             </div>
 

@@ -15,20 +15,20 @@ class SubsanarEtapaUno extends Component
     use WithFileUploads;
 
     public $proyecto;
-    public $archivosNuevos = []; 
+    public $archivosNuevos = [];
     public $observaciones = [];
 
     public function mount(Proyecto $proyecto)
     {
-        // SEGURIDAD: Verificar que el socio_id en sesión coincida
         if (session('socio_id') != $proyecto->socio_id) {
             return redirect()->route('inscritos.publico')->with('error', 'Acceso denegado.');
         }
 
         $this->proyecto = $proyecto->load(['documentos.tipoDocumento', 'estado', 'socio']);
-        
-        // Solo permitir si el proyecto está en estado 3 (Subsanación)
-        if ($this->proyecto->estado_id != 3) {
+
+        // AJUSTE: Solo permitir si el proyecto está en estado 2 (En Subsanación)
+        // Según tu nuevo Seeder, el 2 es donde el socio tiene el permiso de editar.
+        if ($this->proyecto->estado_id != 2) {
             return redirect()->route('inscritos.publico');
         }
 
@@ -47,30 +47,33 @@ class SubsanarEtapaUno extends Component
             "archivosNuevos.$documentoId" => 'required|mimes:pdf|max:15360',
         ]);
 
-        $doc = Documento::findOrFail($documentoId);
+        $docAnterior = Documento::findOrFail($documentoId);
         $ruta = $this->archivosNuevos[$documentoId]->store('proyectos/subsanaciones', 'public');
 
-        $doc->update([
+        // La nueva versión nace como 'pendiente' (el auditor la verá azul en su panel)
+        Documento::create([
+            'proyecto_id' => $docAnterior->proyecto_id,
+            'tipo_documento_id' => $docAnterior->tipo_documento_id,
             'ruta_archivo' => $ruta,
-            'estado' => 'pendiente', // Cambia a pendiente para que desaparezca la alerta de corregir
-            'version' => $doc->version + 1
+            'estado' => 'pendiente',
+            'version' => $docAnterior->version + 1,
+            'fecha_carga' => now(),
         ]);
 
-        unset($this->observaciones[$documentoId]);
+        // Marcamos el anterior como corregido para que el auditor sepa que ya no es el actual
+        $docAnterior->update(['estado' => 'corregido']);
+
         unset($this->archivosNuevos[$documentoId]);
-        
         $this->proyecto->refresh();
     }
 
     public function finalizar()
     {
-        // Cambiar el proyecto completo a estado 2 (En Revisión Etapa 1)
-        $this->proyecto->update(['estado_id' => 2]);
-        
-        // Limpiamos sesión del socio si lo deseas, o lo dejamos para la etapa 2
-        // session()->forget('socio_id'); 
+        // AJUSTE CLAVE: Cambiar el proyecto a estado 3 (En revisión de subsanación)
+        // Esto le quita el permiso de edición al socio y le avisa al auditor.
+        $this->proyecto->update(['estado_id' => 3]);
 
-        return redirect()->route('inscritos.publico')->with('message', 'Subsanación enviada exitosamente.');
+        return redirect()->route('inscritos.publico')->with('message', 'Subsanación enviada exitosamente. El equipo técnico revisará tus cambios.');
     }
 
     public function render()

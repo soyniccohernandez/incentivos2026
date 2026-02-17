@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Documento extends Model
 {
@@ -23,19 +24,26 @@ class Documento extends Model
         'fecha_carga' => 'datetime',
     ];
 
-    /**
-     * Relación con el proyecto al que pertenece este documento
-     */
     public function proyecto(): BelongsTo
     {
         return $this->belongsTo(Proyecto::class);
     }
 
-    /**
-     * Relación con el tipo de documento
-     */
     public function tipoDocumento(): BelongsTo
     {
         return $this->belongsTo(TipoDocumento::class, 'tipo_documento_id');
+    }
+
+    public function observaciones(): HasMany
+    {
+        return $this->hasMany(Observacion::class, 'documento_id');
+    }
+
+    /**
+     * Mejor práctica: Acceso seguro a la última observación de este documento
+     */
+    public function getUltimaObservacion()
+    {
+        return $this->observaciones()->latest()->first();
     }
 }

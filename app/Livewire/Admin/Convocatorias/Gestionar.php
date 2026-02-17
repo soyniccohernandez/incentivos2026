@@ -18,6 +18,7 @@ class Gestionar extends Component
     public $convocatoria;
     public $search = '';
     public $estadoSelected = '';
+    
 
     public function mount(Convocatoria $convocatoria)
     {

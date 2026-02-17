@@ -43,6 +43,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
         Route::get('/convocatorias', ConvocatoriasIndex::class)->name('admin.convocatorias.index');
         Route::get('/convocatoria/{convocatoria}/proyectos', ConvocatoriasGestionar::class)->name('convocatoria.gestionar');
         Route::get('/proyecto/{proyecto}/revisar', RevisarProyecto::class)->name('proyecto.revisar');
+
+        // Metemos la configuración aquí dentro
+        Route::get('/convocatoria/{id}/config', \App\Livewire\Admin\ConvocatoriaConfig::class)
+            ->name('admin.convocatorias.config');
     });
 });
 

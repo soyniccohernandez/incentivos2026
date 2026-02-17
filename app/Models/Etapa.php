@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\Carbon;
 
 class Etapa extends Model
 {
@@ -50,13 +51,33 @@ class Etapa extends Model
     {
         return $this->hasMany(TipoDocumento::class);
     }
-    
+
     /**
      * Helper para saber si la etapa está activa hoy
      */
-    public function estaActiva(): bool
+    public function estaActiva()
     {
-        $hoy = now();
-        return $hoy->between($this->fecha_inicio, $this->fecha_fin);
+        // Forzamos a Carbon a usar la hora actual real del sistema configurado
+        $ahora = Carbon::now();
+
+        // Verificamos si 'ahora' es mayor o igual al inicio Y menor o igual al fin
+        return $ahora->greaterThanOrEqualTo($this->fecha_inicio) &&
+            $ahora->lessThanOrEqualTo($this->fecha_fin);
+    }
+
+    /**
+     * Indica si la etapa aún no ha comenzado
+     */
+    public function esFutura(): bool
+    {
+        return now()->lt($this->fecha_inicio);
+    }
+
+    /**
+     * Indica si el plazo de la etapa ya venció
+     */
+    public function haVencido(): bool
+    {
+        return now()->gt($this->fecha_fin);
     }
 }

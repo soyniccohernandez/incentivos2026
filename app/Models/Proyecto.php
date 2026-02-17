@@ -29,6 +29,7 @@ class Proyecto extends Model
         'socio_id',
         'convocatoria_id',
         'titulo',
+        'guion_propio', // <--- AGREGA ESTA LÍNEA
         'estado_id',
         'publicado',
         'etapa_id',
@@ -38,6 +39,7 @@ class Proyecto extends Model
 
     protected $casts = [
         'publicado' => 'boolean',
+        'guion_propio' => 'boolean', // <--- TAMBIÉN AGREGA ESTA LÍNEA
         'fecha_postulacion' => 'datetime',
     ];
 

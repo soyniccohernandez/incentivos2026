@@ -27,19 +27,26 @@ class InitialSetupSeeder extends Seeder
             ]
         );
 
-        // 2. Estados
+        // 2. Estados corregidos y simplificados
         $estados = [
-            ['id' => 1, 'nombre' => 'Inscrito', 'descripcion' => 'Recién registrado', 'es_final' => 0],
-            ['id' => 2, 'nombre' => 'En revisión etapa 1 (Inscripción)', 'descripcion' => 'Validando docs básicos', 'es_final' => 0],
-            ['id' => 3, 'nombre' => 'Subsanación etapa 1 (Inscripción)', 'descripcion' => 'Debe corregir documentos', 'es_final' => 0],
-            ['id' => 4, 'nombre' => 'En etapa 2', 'descripcion' => 'Aprobado para fase técnica', 'es_final' => 0],
-            ['id' => 5, 'nombre' => 'Revisión etapa 2', 'descripcion' => 'Validando fase técnica', 'es_final' => 0],
-            ['id' => 6, 'nombre' => 'Avanza etapa 3 (Revisión jurados)', 'descripcion' => 'En manos de jurados', 'es_final' => 0],
-            ['id' => 7, 'nombre' => 'Revisión etapa 3', 'descripcion' => 'Jurados calificando', 'es_final' => 0],
-            ['id' => 8, 'nombre' => 'Eliminado', 'descripcion' => 'No continúa en el proceso', 'es_final' => 1],
-            ['id' => 9, 'nombre' => 'No seleccionado', 'descripcion' => 'Finalizó pero no ganó', 'es_final' => 1],
-            ['id' => 10, 'nombre' => 'Seleccionado (Ganador)', 'descripcion' => 'Proyecto ganador', 'es_final' => 1],
+            // --- ETAPA 1: INSCRIPCIÓN ---
+            ['id' => 1, 'nombre' => 'Inscrito / En Revisión', 'descripcion' => 'Socio completó registro. Auditor debe validar docs.', 'es_final' => 0],
+            ['id' => 2, 'nombre' => 'En Subsanación', 'descripcion' => 'Socio tiene documentos rechazados y debe corregir.', 'es_final' => 0],
+            ['id' => 3, 'nombre' => 'En revisión de subsanación', 'descripcion' => 'Socio envió correcciones. Auditor debe re-evaluar.', 'es_final' => 0],
+
+            // --- ETAPA 2: REQUISITOS TÉCNICOS ---
+            ['id' => 4, 'nombre' => 'En Etapa 2', 'descripcion' => 'Docs Etapa 1 OK. Socio habilitado para formulario técnico.', 'es_final' => 0],
+            ['id' => 5, 'nombre' => 'Etapa 2 - En Revisión', 'descripcion' => 'Socio envió formulario técnico. Auditor calificando.', 'es_final' => 0],
+
+            // --- ETAPA 3: JURADOS ---
+            ['id' => 6, 'nombre' => 'Etapa 3 - Revisión Jurados', 'descripcion' => 'Proyecto en evaluación por expertos externos.', 'es_final' => 0],
+
+            // --- ESTADOS FINALES ---
+            ['id' => 7, 'nombre' => 'Seleccionado (Ganador)', 'descripcion' => 'Proyecto premiado por la convocatoria.', 'es_final' => 1],
+            ['id' => 8, 'nombre' => 'No continúa', 'descripcion' => 'No superó los filtros técnicos o de documentos.', 'es_final' => 1],
+            ['id' => 9, 'nombre' => 'Eliminado', 'descripcion' => 'Retirado o descalificado por el administrador.', 'es_final' => 1],
         ];
+
         DB::table('estados')->upsert($estados, ['id'], ['nombre', 'descripcion', 'es_final']);
 
         // 3. Convocatoria Base

@@ -21,13 +21,13 @@ return new class extends Migration
 
             // Información básica
             $table->string('titulo');
+            $table->boolean('guion_propio')->default(true)->comment('Indica si el autor es el mismo proponente');
 
             // Estados y Etapas
             $table->foreignId('estado_id')->default(1)->constrained('estados');
 
-            // --- AÑADE ESTA LÍNEA AQUÍ ---
+            // Visibilidad
             $table->boolean('publicado')->default(false)->comment('Define si el estado es visible al público');
-            // ----------------------------
 
             $table->foreignId('etapa_id')->default(1)->constrained('etapas');
 

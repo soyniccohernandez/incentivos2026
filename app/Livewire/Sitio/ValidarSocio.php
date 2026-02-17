@@ -13,105 +13,110 @@ use Carbon\Carbon;
 class ValidarSocio extends Component
 {
     public $identificacion = '';
-    public $proyectoId = null; 
 
     protected $rules = [
         'identificacion' => 'required|numeric',
     ];
-
-    public function mount($proyecto = null)
-    {
-        // Captura el ID si el socio viene de un botón en la tabla de inscritos
-        $this->proyectoId = $proyecto;
-    }
 
     public function validar()
     {
         $this->resetErrorBag();
         $this->validate();
 
-        // 1. Buscamos al socio
+        // 1. ¿Existe el socio?
         $socio = Socio::where('identificacion', $this->identificacion)->first();
 
         if (!$socio) {
-            $this->addError('identificacion', 'Socio no encontrado en nuestra base de datos.');
+            $this->addError('identificacion', 'La identificación ingresada no se encuentra registrada como socio de ACTORES S.C.G.');
             return;
         }
 
-        // 2. SEGURIDAD: Si intentó entrar a un proyecto específico desde la vista pública
-        if ($this->proyectoId) {
-            $proyectoSeleccionado = Proyecto::find($this->proyectoId);
-            if ($proyectoSeleccionado && $proyectoSeleccionado->socio_id !== $socio->id) {
-                $this->addError('identificacion', 'Esta identificación no corresponde al proponente de este proyecto.');
-                return;
-            }
-        }
-
-        // 3. Validaciones de Inhabilidad (Edad, Morosidad, etc.)
+        // 2. ¿Puede participar? (Edad, Estado, etc.)
         $inhabilidad = $this->verificarInhabilidadesSocio($socio);
         if ($inhabilidad !== "OK") {
             $this->addError('identificacion', $inhabilidad);
             return;
         }
 
-        // 4. Obtener Convocatoria actual
-        $convocatoria = Convocatoria::where('estado', 'abierta')->first() 
-                        ?? Convocatoria::where('estado', 'cerrada')->latest()->first();
+        // 3. Buscar Convocatoria
+        $convocatoria = Convocatoria::where('estado', 'abierta')->first()
+            ?? Convocatoria::where('estado', 'cerrada')->latest()->first();
 
         if (!$convocatoria) {
-            $this->addError('identificacion', 'No se encontró una convocatoria activa.');
+            $this->addError('identificacion', 'No existe una convocatoria activa en este momento.');
             return;
         }
 
-        // 5. BLOQUEO Y REDIRECCIÓN: Verificar si ya tiene un proyecto registrado
+        // --- CARGA DE ETAPAS PARA CONTROL DEL ADMIN ---
+        // Orden 1: Inscripción y Subsanación de documentos
+        $etapaDocs = $convocatoria->etapas()->where('orden', 1)->first();
+        // Orden 2: Formulario Técnico (Etapa 2)
+        $etapaTecnica = $convocatoria->etapas()->where('orden', 2)->first();
+
+        // Guardamos al socio en sesión
+        session(['socio_id' => $socio->id]);
+
+        // 4. GESTOR DE TRÁFICO
         $proyecto = Proyecto::where('socio_id', $socio->id)
             ->where('convocatoria_id', $convocatoria->id)
             ->first();
 
         if ($proyecto) {
-            session(['socio_id' => $socio->id]);
-
-            // Mapeo lógico según tu tabla de estados
             switch ($proyecto->estado_id) {
-                case 1: // Inscrito (Ya completó el formulario inicial)
-                case 2: // En revisión etapa 1
-                    $this->addError('identificacion', "Usted ya cuenta con un proyecto inscrito: '{$proyecto->titulo}' (Radicado: {$proyecto->codigo_radicado}). No se permite realizar más de una inscripción.");
-                    return;
 
-                case 3: // Subsanación etapa 1
+                case 2: // "En Subsanación"
+                    // El Admin controla esto con la vigencia de la Etapa 1
+                    if (!$etapaDocs || !$etapaDocs->estaActiva()) {
+                        $msj = ($etapaDocs && $etapaDocs->haVencido())
+                            ? "El plazo para subsanar venció el " . $etapaDocs->fecha_fin->format('d/m/Y H:i')
+                            : "El módulo de subsanación no está habilitado.";
+                        $this->addError('identificacion', $msj);
+                        return;
+                    }
                     return redirect()->route('subsanar-etapa-1', $proyecto->id);
 
-                case 4: // En etapa 2 (Aprobado fase técnica)
+                case 4: // "En etapa 2"
+                    // El Admin controla esto con la vigencia de la Etapa 2
+                    if (!$etapaTecnica || !$etapaTecnica->estaActiva()) {
+                        $msj = ($etapaTecnica && $etapaTecnica->haVencido())
+                            ? "El plazo para la Etapa Técnica venció el " . $etapaTecnica->fecha_fin->format('d/m/Y H:i')
+                            : "La Etapa Técnica aún no ha iniciado.";
+                        $this->addError('identificacion', $msj);
+                        return;
+                    }
                     return redirect()->route('inscripcion.etapa2', $proyecto->id);
 
-                case 5: // Revisión etapa 2
-                case 6: // Avanza etapa 3
-                case 7: // Revisión etapa 3
-                    $this->addError('identificacion', "Su proyecto ya se encuentra en fase de evaluación técnica o jurados. Estado actual: {$proyecto->estado->nombre}.");
+                case 1: // Inscrito
+                case 3: // En revisión de subsanación
+                case 5: // Etapa 2 - En Revisión
+                    $this->addError('identificacion', "Usted ya tiene un proyecto radicado: '{$proyecto->titulo}'. Actualmente se encuentra en: {$proyecto->estado->nombre}. Por favor, espere la validación del equipo técnico.");
                     return;
 
-                case 8: // Eliminado
-                case 9: // No seleccionado
-                case 10: // Seleccionado (Ganador)
-                    $this->addError('identificacion', "El proceso para su postulación ha finalizado. Resultado: {$proyecto->estado->nombre}.");
+                case 8: // No continúa
+                case 9: // Eliminado
+                    $this->addError('identificacion', "El proceso para el proyecto '{$proyecto->titulo}' ha finalizado. Estado: {$proyecto->estado->nombre}.");
                     return;
 
                 default:
-                    $this->addError('identificacion', "Ya tiene un registro activo para esta convocatoria.");
+                    $this->addError('identificacion', "Su proceso se encuentra en estado: {$proyecto->estado->nombre}. No requiere acciones adicionales por ahora.");
                     return;
             }
         }
 
-        // 6. FLUJO NUEVO: Si llega aquí es porque NO tiene ningún proyecto creado
-        if ($convocatoria->estado === 'abierta') {
-            session([
-                'socio_id' => $socio->id,
-                'convocatoria_id' => $convocatoria->id,
-            ]);
-            return redirect()->route('inscripcion.etapa1');
+        // 5. SI NO TIENE PROYECTO: Intentar nueva inscripción
+        // Validamos que la Etapa 1 esté activa según el calendario del Admin
+        if (!$etapaDocs || !$etapaDocs->estaActiva()) {
+            $msj = ($etapaDocs && $etapaDocs->haVencido())
+                ? "El periodo de inscripciones cerró el " . $etapaDocs->fecha_fin->format('d/m/Y')
+                : "Las inscripciones aún no han iniciado o están deshabilitadas.";
+
+            $this->addError('identificacion', $msj);
+            return;
         }
 
-        $this->addError('identificacion', 'La convocatoria actual está cerrada para nuevas inscripciones.');
+        // Si la etapa está activa, procedemos (independientemente de si la convocatoria dice 'abierta')
+        session(['convocatoria_id' => $convocatoria->id]);
+        return redirect()->route('inscripcion.etapa1');
     }
 
     private function verificarInhabilidadesSocio(Socio $socio)
@@ -127,7 +132,7 @@ class ValidarSocio extends Component
                 'bloqueado_cargo' => "Inhabilidad: Los miembros de órganos de administración no pueden participar.",
                 'retirado'        => "El socio se encuentra en estado de retiro.",
             ];
-            return $mensajes[$socio->estado] ?? "Su estado de socio ($socio->estado) no le permite participar.";
+            return $mensajes[$socio->estado] ?? "Su estado de socio ($socio->estado) no le permite participar en esta convocatoria.";
         }
 
         return "OK";

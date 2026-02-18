@@ -92,10 +92,10 @@ class ValidarSocio extends Component
                     $this->addError('identificacion', "Usted ya tiene un proyecto radicado: '{$proyecto->titulo}'. Actualmente se encuentra en: {$proyecto->estado->nombre}. Por favor, espere la validación del equipo técnico.");
                     return;
 
-                case 8: // No continúa
-                case 9: // Eliminado
-                    $this->addError('identificacion', "El proceso para el proyecto '{$proyecto->titulo}' ha finalizado. Estado: {$proyecto->estado->nombre}.");
-                    return;
+                case 8: // No continúa / Eliminado
+                case 9: // No seleccionado
+                    // En lugar de addError, lo enviamos a ver sus razones
+                    return redirect()->route('proyecto.retroalimentacion', $proyecto->id);
 
                 default:
                     $this->addError('identificacion', "Su proceso se encuentra en estado: {$proyecto->estado->nombre}. No requiere acciones adicionales por ahora.");

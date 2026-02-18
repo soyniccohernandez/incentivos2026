@@ -19,7 +19,7 @@
                 PROYECTOS <span class="text-[#ff6600]">INSCRITOS</span>
             </h2>
             <div class="w-24 h-1 bg-[#ff6600] mb-6"></div>
-            
+
             {{-- BARRA DE ETAPAS (Sincronizada con Horas) --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 bg-[#0a0a0a] border border-[#1a1a1a] p-6">
                 @if($convocatoriaActual)
@@ -35,9 +35,7 @@
                             <div>
                                 <p class="text-[10px] uppercase tracking-tighter font-bold {{ $activa ? 'text-[#ff6600]' : 'text-gray-500' }}">
                                     {{ $etapa->nombre }}
-                                    @if($activa) 
-                                        <span class="ml-2 animate-pulse text-[8px] bg-[#ff6600] text-black px-1 rounded">EN VIVO</span> 
-                                    @endif
+                                    @if($activa) <span class="ml-2 animate-pulse text-[8px] bg-[#ff6600] text-black px-1 rounded">EN VIVO</span> @endif
                                 </p>
                                 <p class="text-[10px] font-mono {{ $activa ? 'text-gray-200' : 'text-gray-600' }}">
                                     {{ $etapa->fecha_inicio->format('d M, h:i A') }} — {{ $etapa->fecha_fin->format('d M, h:i A') }}
@@ -91,48 +89,58 @@
                             </td>
                             <td class="p-6 text-center">
                                 <div class="flex items-center justify-center">
-                                    @php
-                                        // Cacheamos las etapas para esta fila para evitar consultas repetitivas
-                                        $e1 = $proyecto->convocatoria->etapas->where('orden', 1)->first();
-                                        $e2 = $proyecto->convocatoria->etapas->where('orden', 2)->first();
-                                    @endphp
-
-                                    {{-- 1. SUBSANACIÓN --}}
-                                    @if($proyecto->estado_id == 2)
-                                        @if($e1 && $e1->estaActiva())
-                                            <a href="{{ route('validar-socio') }}" class="flex items-center gap-3 px-6 py-3 bg-amber-500 text-black font-bebas text-xl tracking-wider hover:bg-white transition-all no-underline shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-                                                CORREGIR AHORA
-                                            </a>
-                                        @else
-                                            <div class="flex flex-col items-center">
-                                                <span class="text-[10px] text-amber-500/50 border border-amber-500/20 px-4 py-2 uppercase font-bold italic">Plazo vencido</span>
-                                                <span class="text-[8px] text-gray-600 mt-1 uppercase">Cerró: {{ $e1?->fecha_fin->format('d/m h:i A') }}</span>
-                                            </div>
-                                        @endif
-
-                                    {{-- 2. ETAPA 2 --}}
-                                    @elseif($proyecto->estado_id == 4)
-                                        @if($e2 && $e2->estaActiva())
-                                            <a href="{{ route('validar-socio') }}" class="flex items-center gap-2 px-6 py-3 bg-[#ff6600] text-white font-bebas text-xl tracking-wider hover:bg-white hover:text-black transition-all no-underline shadow-[0_0_20px_rgba(255,102,0,0.3)]">
-                                                COMPLETAR ETAPA 2
-                                            </a>
-                                        @else
-                                            <div class="flex flex-col items-center text-[#ff6600]/40">
-                                                <span class="text-[10px] border border-[#ff6600]/20 px-4 py-2 uppercase font-bold italic">
-                                                    {{ now() < ($e2?->fecha_inicio ?? now()) ? 'Próximamente' : 'Etapa cerrada' }}
-                                                </span>
-                                                <span class="text-[8px] mt-1 uppercase">{{ $e2?->fecha_inicio->format('d M, h:i A') }}</span>
-                                            </div>
-                                        @endif
-
-                                    {{-- 3. OTROS ESTADOS --}}
-                                    @else
+                                    
+                                    {{-- LÓGICA DE SILENCIO ADMINISTRATIVO: Si no está publicado, estado genérico --}}
+                                    @if(!$proyecto->publicado)
                                         <div class="flex items-center gap-3 bg-[#0a0a0a] border border-[#222] px-4 py-2 rounded-full">
-                                            <div class="w-2 h-2 rounded-full {{ $proyecto->publicado ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-indigo-500 animate-pulse' }}"></div>
+                                            <div class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></div>
                                             <span class="text-[10px] font-bold uppercase tracking-[2px] text-gray-400">
-                                                {{ $proyecto->estado->nombre }}
+                                                Inscrito / En Revisión
                                             </span>
                                         </div>
+                                    @else
+                                        {{-- El administrador activó la publicación: se liberan estados y botones --}}
+                                        @php
+                                            $e1 = $proyecto->convocatoria->etapas->where('orden', 1)->first();
+                                            $e2 = $proyecto->convocatoria->etapas->where('orden', 2)->first();
+                                        @endphp
+
+                                        {{-- 1. SUBSANACIÓN (Estado 2) --}}
+                                        @if($proyecto->estado_id == 2)
+                                            @if($e1 && $e1->estaActiva())
+                                                <a href="{{ route('validar-socio') }}" class="flex items-center gap-3 px-6 py-3 bg-amber-500 text-black font-bebas text-xl tracking-wider hover:bg-white transition-all no-underline shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                                                    CORREGIR AHORA
+                                                </a>
+                                            @else
+                                                <div class="flex flex-col items-center">
+                                                    <span class="text-[10px] text-amber-500/50 border border-amber-500/20 px-4 py-2 uppercase font-bold italic">Plazo vencido</span>
+                                                    <span class="text-[8px] text-gray-600 mt-1 uppercase">Cerró: {{ $e1?->fecha_fin->format('d/m h:i A') }}</span>
+                                                </div>
+                                            @endif
+
+                                        {{-- 2. ETAPA 2 (Estado 4) --}}
+                                        @elseif($proyecto->estado_id == 4)
+                                            @if($e2 && $e2->estaActiva())
+                                                <a href="{{ route('validar-socio') }}" class="flex items-center gap-2 px-6 py-3 bg-[#ff6600] text-white font-bebas text-xl tracking-wider hover:bg-white hover:text-black transition-all no-underline shadow-[0_0_20px_rgba(255,102,0,0.3)]">
+                                                    COMPLETAR ETAPA 2
+                                                </a>
+                                            @else
+                                                <div class="flex flex-col items-center text-[#ff6600]/40">
+                                                    <span class="text-[10px] border border-[#ff6600]/20 px-4 py-2 uppercase font-bold italic">
+                                                        {{ now() < ($e2?->fecha_inicio ?? now()) ? 'Próximamente' : 'Etapa cerrada' }}
+                                                    </span>
+                                                </div>
+                                            @endif
+
+                                        {{-- 3. OTROS ESTADOS (Finales o informativos publicados) --}}
+                                        @else
+                                            <div class="flex items-center gap-3 bg-[#0a0a0a] border border-[#222] px-4 py-2 rounded-full">
+                                                <div class="w-2 h-2 rounded-full {{ in_array($proyecto->estado_id, [7]) ? 'bg-emerald-500' : 'bg-gray-600' }}"></div>
+                                                <span class="text-[10px] font-bold uppercase tracking-[2px] text-gray-400">
+                                                    {{ $proyecto->estado->nombre }}
+                                                </span>
+                                            </div>
+                                        @endif
                                     @endif
                                 </div>
                             </td>

@@ -1,193 +1,135 @@
-<?php 
+<?php
 
-namespace App\Livewire\Sitio; 
+namespace App\Livewire\Sitio;
 
-use App\Models\Proyecto; 
-use App\Models\Socio; 
-use App\Models\Convocatoria; 
-use Illuminate\Support\Facades\DB; 
-use Illuminate\Support\Facades\Log; 
-use Illuminate\Support\Facades\Storage; 
-use Illuminate\Support\Str; 
-use Livewire\Component; 
-use Livewire\WithFileUploads; 
-use Livewire\Attributes\Layout; 
+use App\Models\Proyecto;
+use App\Models\Socio;
+use App\Models\Convocatoria;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\Attributes\Layout;
 
-#[Layout('layouts.guest')] 
-class InscripcionEtapa1 extends Component 
-{ 
-    use WithFileUploads; 
+#[Layout('layouts.guest')]
+class InscripcionEtapa1 extends Component
+{
+    use WithFileUploads;
 
-    // Propiedades del Socio 
-    public Socio $socio; 
-    public $foto_url; 
-    public $iniciales; 
+    public Socio $socio;
+    public $foto_url, $iniciales;
 
-    // Datos del Proyecto 
-    public $titulo; 
-    public $autoria = 'si'; // 'si' o 'no' 
-    public $guionArchivo; 
+    // Campos Formulario
+    public $titulo;
+    public $autoria = 'si';
+    public $guionArchivo;
+    public $directorPropio = 'si';
+    public $directorIdentificacion, $directorNombre, $directorCelular, $directorCorreo;
 
-    // Datos Director 
-    public $directorPropio = 'si'; 
-    public $directorIdentificacion; 
-    public $directorNombre; 
-    public $directorCelular; 
-    public $directorCorreo; 
+    // Documentos
+    public $docDirectorCompromiso, $docDirectorExperiencia, $docDirectorEvidencia1, $docDirectorEvidencia2, $formatoFirmado;
+    public $aceptaTerminos = false, $aceptaDatos = false;
 
-    // Documentos 
-    public $docDirectorExperiencia; 
-    public $docDirectorCompromiso; 
-    public $docDirectorEvidencia1; 
-    public $docDirectorEvidencia2; 
-    public $formatoFirmado; 
+    public function rules()
+    {
+        return [
+            'titulo' => 'required|string|min:5',
+            'docDirectorCompromiso' => 'required|file|mimes:pdf|max:12288',
+            'docDirectorExperiencia' => 'required|file|mimes:pdf|max:12288',
+            'docDirectorEvidencia1' => 'required|file|mimes:pdf|max:12288',
+            'docDirectorEvidencia2' => 'required|file|mimes:pdf|max:12288',
+            'formatoFirmado' => 'required|file|mimes:pdf|max:12288',
+            'aceptaTerminos' => 'accepted',
+            'aceptaDatos' => 'accepted',
+            'guionArchivo' => 'required_if:autoria,no',
+        ];
+    }
 
-    // Checkboxes 
-    public $aceptaTerminos = false; 
-    public $aceptaDatos = false; 
+    public function mount()
+    {
+        if (!session()->has('socio_id')) return redirect()->route('validar-socio');
 
-    public function mount() 
-    { 
-        if (!session()->has('socio_id')) { 
-            return redirect()->route('validar-socio'); 
-        } 
-        $this->socio = Socio::findOrFail(session('socio_id')); 
-        
-        $this->foto_url = $this->obtenerUrlFoto($this->socio->identificacion); 
-        $parts = explode(' ', mb_strtoupper($this->socio->nombre)); 
-        $this->iniciales = (count($parts) >= 2) ? mb_substr($parts[0], 0, 1) . mb_substr($parts[1], 0, 1) : mb_substr($parts[0], 0, 1); 
-    } 
+        $this->socio = Socio::findOrFail(session('socio_id'));
 
-    public function updatedAutoria($value) 
-    { 
-        if ($value === 'si') { 
-            $this->guionArchivo = null; 
-        } 
-    } 
+        // Iniciales seguras
+        $parts = explode(' ', trim($this->socio->nombre));
+        $this->iniciales = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
 
-    private function obtenerUrlFoto($cedula) 
-    { 
-        $directory = 'socios/'; 
-        $files = Storage::disk('public')->files($directory); 
-        $foto = collect($files)->first(fn($p) => str_starts_with(basename($p), $cedula . '.')); 
-        return $foto ? asset('storage/' . $foto) . '?v=' . time() : null; 
-    } 
+        // Foto segura
+        $files = Storage::disk('public')->files('socios/');
+        $foto = collect($files)->first(fn($p) => str_contains($p, $this->socio->identificacion));
+        $this->foto_url = $foto ? asset('storage/' . $foto) : null;
+    }
 
-    public function getNombreLimpioProperty() 
-    { 
-        return str_replace(',', '', mb_strtoupper($this->socio->nombre)); 
-    } 
+    public function guardar()
+    {
+        $this->validate();
 
-    protected function reglasValidacion() 
-    { 
-        return [ 
-            'titulo' => 'required|string|max:255', 
-            'autoria' => 'required|in:si,no', 
-            'guionArchivo' => 'required_if:autoria,no|nullable|file|max:10240|mimes:pdf', 
-            'directorPropio' => 'required|in:si,no', 
-            'directorIdentificacion' => 'required_if:directorPropio,no|nullable|string', 
-            'directorNombre' => 'required_if:directorPropio,no|nullable|string', 
-            'directorCelular' => 'required_if:directorPropio,no|nullable|string', 
-            'directorCorreo' => 'required_if:directorPropio,no|nullable|email', 
-            'docDirectorExperiencia' => 'required|file|max:10240|mimes:pdf', 
-            'docDirectorCompromiso' => 'required|file|max:10240|mimes:pdf', 
-            'docDirectorEvidencia1' => 'required|file|max:10240|mimes:pdf', 
-            'docDirectorEvidencia2' => 'required|file|max:10240|mimes:pdf', 
-            'formatoFirmado' => 'required|file|max:10240|mimes:pdf', 
-            'aceptaTerminos' => 'accepted', 
-            'aceptaDatos' => 'accepted', 
-        ]; 
-    } 
+        $convocatoria = Convocatoria::where('estado', 'abierta')->first();
+        if (!$convocatoria) {
+            $this->addError('error', 'No hay convocatoria abierta.');
+            return;
+        }
 
-    public function guardar() 
-    { 
-        $this->validate($this->reglasValidacion()); 
-        $convocatoria = Convocatoria::where('estado', 'abierta')->first(); 
-        
-        if (!$convocatoria) { 
-            session()->flash('error', 'La convocatoria no está disponible.'); 
-            return; 
-        } 
+        try {
+            DB::beginTransaction();
 
-        try { 
-            DB::beginTransaction(); 
+            // 1. Crear Proyecto
+            $proyecto = $this->socio->proyectos()->create([
+                'convocatoria_id' => $convocatoria->id,
+                'titulo' => strtoupper($this->titulo),
+                'guion_propio' => ($this->autoria === 'si') ? 1 : 0,
+                'estado_id' => 1,
+                'etapa_id' => 1,
+                'fecha_postulacion' => now(),
+            ]);
 
-            // 1. Crear el proyecto 
-            $proyecto = $this->socio->proyectos()->create([ 
-                'convocatoria_id' => $convocatoria->id, 
-                'titulo' => mb_strtoupper($this->titulo), 
-                // CAMBIO AQUÍ: Forzamos el entero 1 o 0 
-                'guion_propio' => ($this->autoria === 'si') ? 1 : 0, 
-                'estado_id' => 1, 
-                'etapa_id' => 1, 
-                'fecha_postulacion' => now(), 
-            ]); 
+            // 2. Crear Director
+            $proyecto->director()->create([
+                'es_proponente' => ($this->directorPropio === 'si') ? 1 : 0,
+                'identificacion' => $this->directorPropio === 'si' ? $this->socio->identificacion : $this->directorIdentificacion,
+                'nombre' => $this->directorPropio === 'si' ? strtoupper($this->socio->nombre) : strtoupper($this->directorNombre),
+                'celular' => $this->directorPropio === 'si' ? $this->socio->telefono : $this->directorCelular,
+                'correo' => $this->directorPropio === 'si' ? strtolower($this->socio->correo) : strtolower($this->directorCorreo),
+            ]);
 
-            // 2. Crear Director 
-            $proyecto->director()->create([ 
-                // CAMBIO AQUÍ TAMBIÉN: Para consistencia en es_proponente
-                'es_proponente' => ($this->directorPropio === 'si') ? 1 : 0, 
-                'identificacion' => $this->directorPropio === 'si' ? $this->socio->identificacion : $this->directorIdentificacion, 
-                'nombre' => $this->directorPropio === 'si' ? $this->nombreLimpio : mb_strtoupper($this->directorNombre), 
-                'celular' => $this->directorPropio === 'si' ? $this->socio->telefono : $this->directorCelular, 
-                'correo' => $this->directorPropio === 'si' ? mb_strtolower($this->socio->correo) : mb_strtolower($this->directorCorreo), 
-            ]); 
+            // 3. Subir Archivos (Función reutilizable)
+            $this->upload($proyecto, $this->docDirectorCompromiso, 2, 'COMPROMISO');
+            $this->upload($proyecto, $this->docDirectorExperiencia, 3, 'EXPERIENCIA');
+            $this->upload($proyecto, $this->docDirectorEvidencia1, 4, 'EVIDENCIA1');
+            $this->upload($proyecto, $this->docDirectorEvidencia2, 5, 'EVIDENCIA2');
+            $this->upload($proyecto, $this->formatoFirmado, 6, 'DECLARACIONES');
+            if ($this->autoria === 'no') $this->upload($proyecto, $this->guionArchivo, 1, 'GUION');
 
-            // 3. Subida de archivos 
-            if ($this->autoria === 'no' && $this->guionArchivo) { 
-                $this->subirArchivo($proyecto, $this->guionArchivo, 1, 'AUTORIZACION_GUION'); 
-            } 
+            DB::commit();
+            session()->forget('socio_id');
+            return redirect('/')->with([
+                'success' => 'Tu proceso de inscripción ha finalizado correctamente.',
+                'radicado' => $proyecto->codigo_radicado // Así creas la variable 'radicado' en la sesión
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Error Inscripción: " . $e->getMessage());
+            $this->addError('error', 'Ocurrió un error al procesar el registro.');
+        }
+    }
 
-            $this->subirArchivo($proyecto, $this->docDirectorExperiencia, 2, 'EXPERIENCIA_DIRECTOR'); 
-            $this->subirArchivo($proyecto, $this->docDirectorCompromiso, 3, 'COMPROMISO_DIRECTOR'); 
-            $this->subirArchivo($proyecto, $this->docDirectorEvidencia1, 4, 'EVIDENCIAS_1_DIRECTOR'); 
-            $this->subirArchivo($proyecto, $this->docDirectorEvidencia2, 5, 'EVIDENCIAS_2_DIRECTOR'); 
-            $this->subirArchivo($proyecto, $this->formatoFirmado, 6, 'DECLARACIONES_FINALES'); 
+    private function upload($proyecto, $file, $tipoId, $prefix)
+    {
+        if ($file) {
+            $name = "E1_{$tipoId}_{$prefix}_" . time() . ".pdf";
+            $path = $file->storeAs('documentos/' . now()->year, $name, 'public');
+            $proyecto->documentos()->create([
+                'tipo_documento_id' => $tipoId,
+                'ruta_archivo' => $path,
+                'fecha_carga' => now(),
+            ]);
+        }
+    }
 
-            // 4. Aceptaciones 
-            $proyecto->aceptaciones()->createMany([ 
-                ['tipo' => 'terminos', 'aceptado' => 1, 'fecha_aceptacion' => now(), 'ip' => request()->ip()], 
-                ['tipo' => 'datos_personales', 'aceptado' => 1, 'fecha_aceptacion' => now(), 'ip' => request()->ip()], 
-            ]); 
-
-            DB::commit(); 
-            $radicadoFinal = $proyecto->codigo_radicado; 
-            session()->forget('socio_id'); 
-
-            return redirect('/')->with([ 
-                'success' => 'Su propuesta ha sido registrada correctamente.', 
-                'radicado' => $radicadoFinal 
-            ]); 
-
-        } catch (\Exception $e) { 
-            DB::rollBack(); 
-            Log::error("Error Inscripción E1: " . $e->getMessage()); 
-            session()->flash('error', 'Error al procesar el registro: ' . $e->getMessage()); 
-        } 
-    } 
-
-    private function subirArchivo($proyecto, $archivo, $tipoId, $prefijoNombre) 
-    { 
-        if ($archivo && $archivo->isValid()) { 
-            $orden = str_pad($tipoId, 2, '0', STR_PAD_LEFT); 
-            $tituloSlug = Str::slug($this->titulo, '_'); 
-            $socioId = $this->socio->identificacion; 
-            $radicado = Str::slug($proyecto->codigo_radicado, '_'); 
-            $nombreFinal = "E1_{$orden}_{$prefijoNombre}_{$tituloSlug}_SOCIO_{$socioId}_RAD_{$radicado}.pdf"; 
-            $path = $archivo->storeAs('documentos/' . now()->year, $nombreFinal, 'public'); 
-            
-            $proyecto->documentos()->create([ 
-                'tipo_documento_id' => $tipoId, 
-                'ruta_archivo' => $path, 
-                'estado' => 'pendiente', 
-                'version' => 1, 
-                'fecha_carga' => now(), 
-            ]); 
-        } 
-    } 
-
-    public function render() 
-    { 
-        return view('livewire.sitio.inscripcion-etapa1'); 
-    } 
+    public function render()
+    {
+        return view('livewire.sitio.inscripcion-etapa1');
+    }
 }

@@ -15,8 +15,14 @@ return new class extends Migration
             $table->id();
             // Relación con el proyecto
             $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
+
             // Relación con el socio (actor del elenco)
             $table->foreignId('socio_id')->constrained('socios')->onDelete('cascade');
+
+            // ESTE ES EL CAMPO NUEVO QUE AGREGAMOS
+            $table->string('archivo_autorizacion_path')->nullable()
+                ->comment('Ruta del PDF de autorización firmado por el actor');
+
             $table->timestamps();
 
             // Regla: Un socio no puede estar repetido en el mismo proyecto

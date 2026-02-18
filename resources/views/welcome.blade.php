@@ -93,11 +93,6 @@
             <li><a href="#cronograma" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">CRONOGRAMA</a></li>
             <li><a href="#pasos" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">INSCRIPCIÓN</a></li>
             <li><a href="{{ route('inscritos.publico') }}" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">VER INSCRITOS</a></li>
-            <li class="md:ml-[15px]">
-                <a href="{{ route('validar-socio') }}" class="bg-brand-orange text-white !px-5 !py-2.5 rounded-[5px] font-bold no-underline transition-all duration-300 border border-transparent text-sm hover:bg-transparent hover:border-brand-orange hover:text-brand-orange hover:shadow-[0_0_10px_rgba(232,82,27,0.4)]">
-                    CONSULTAR ESTADO DE INSCRIPCIÓN
-                </a>
-            </li>
         </ul>
     </nav>
 
@@ -128,7 +123,7 @@
 
     {{-- Términos --}}
     <div class="bg-brand-surface py-20 px-6 text-center border-b border-brand-border">
-        <h2 class="font-bebas text-[3.5rem] text-brand-orange mb-[10px] border-none">TÉRMINOS Y CONDICIONES</h2>
+        <h2 class="font-bebas text-[3.5rem] text-brand-orange mb-[10px] border-none">CONDICIONES DE PARTICIPACIÓN</h2>
         <p class="mb-[30px] text-[#BBBBBB]">Es indispensable leer el documento completo antes de iniciar tu postulación.</p>
         <a href="#" class="inline-block bg-transparent text-white px-10 py-[15px] no-underline font-bebas text-[1.4rem] border-2 border-brand-orange transition-all duration-300 hover:bg-brand-orange">
             DESCARGAR PDF COMPLETO

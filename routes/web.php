@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 // Namespaces
 use App\Livewire\Sitio\{ValidarSocio, InscripcionEtapa1, InscripcionEtapa2, SubsanarEtapaUno, Inscritos};
 use App\Livewire\Admin\{AdminDashboard, Convocatorias\Index as ConvocatoriasIndex, Convocatorias\Gestionar as ConvocatoriasGestionar, Convocatorias\RevisarProyecto};
+use App\Livewire\Sitio\RetroalimentacionProyecto;
 
 // --- 1. RUTAS PÚBLICAS ---
 Route::view('/', 'welcome');
@@ -24,6 +25,9 @@ Route::prefix('convocatoria')->group(function () {
         Route::get('/proyecto/{proyectoId}/documentacion', InscripcionEtapa2::class)->name('inscripcion.etapa2');
 
         Route::get('/proyecto/{proyecto}/subsanar', SubsanarEtapaUno::class)->name('subsanar-etapa-1');
+
+        Route::get('/proyecto/{proyecto}/retroalimentacion', RetroalimentacionProyecto::class)
+            ->name('proyecto.retroalimentacion');
     });
 });
 

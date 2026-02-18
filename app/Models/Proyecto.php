@@ -12,24 +12,24 @@ class Proyecto extends Model
 {
     protected $table = 'proyectos';
 
-    // --- CONSTANTES DE ESTADOS (IDs de tu BD) ---
+    // --- CONSTANTES DE ESTADOS ---
     const INSCRITO = 1;
     const EN_REVISION_E1 = 2;
     const SUBSANACION_E1 = 3;
-    const EN_ETAPA_2 = 4;
-    const REVISION_E2 = 5;
-    const AVANZA_E3 = 6;
-    const REVISION_E3 = 7;
-    const ELIMINADO = 8;
-    const NO_SELECCIONADO = 9;
-    const GANADOR = 10;
+    const EN_ETAPA_2 = 4;        // Proponente llenando Formulario Técnico
+    const REVISION_E2 = 5;       // Auditor revisando Formulario Técnico
+    const AVANZA_E3 = 6;         // Pasa a Jurados
+    const REVISION_E3 = 7;       // Calificación de Jurados
+    const ELIMINADO = 8;         // No cumple / Rechazado
+    const NO_SELECCIONADO = 9;   // No ganó pero cumplió
+    const GANADOR = 10;          // Seleccionado para estímulo
 
     protected $fillable = [
         'codigo_radicado',
         'socio_id',
         'convocatoria_id',
         'titulo',
-        'guion_propio', // <--- AGREGA ESTA LÍNEA
+        'guion_propio',
         'estado_id',
         'publicado',
         'etapa_id',
@@ -39,7 +39,7 @@ class Proyecto extends Model
 
     protected $casts = [
         'publicado' => 'boolean',
-        'guion_propio' => 'boolean', // <--- TAMBIÉN AGREGA ESTA LÍNEA
+        'guion_propio' => 'boolean',
         'fecha_postulacion' => 'datetime',
     ];
 
@@ -65,15 +65,12 @@ class Proyecto extends Model
     |--------------------------------------------------------------------------
     | LÓGICA DE MÁSCARA PÚBLICA (Embargo de Información)
     |--------------------------------------------------------------------------
+    | Define qué ve el socio en su panel mientras el administrador trabaja.
     */
 
-    /**
-     * Define qué ve el socio en la tabla pública.
-     * Uso: $proyecto->estado_publico
-     */
     public function getEstadoPublicoAttribute(): array
     {
-        // 1. SI NO ESTÁ PUBLICADO: Muro total de privacidad
+        // 1. SI NO ESTÁ PUBLICADO: Se mantiene el mensaje genérico de revisión
         if (!$this->publicado) {
             return [
                 'nombre' => 'En Revisión',
@@ -83,40 +80,46 @@ class Proyecto extends Model
             ];
         }
 
-        // 2. SI ESTÁ PUBLICADO: Realidad según el estado
+        // 2. SI ESTÁ PUBLICADO: Mostramos la realidad del proceso
         return match ($this->estado_id) {
             self::SUBSANACION_E1 => [
                 'nombre' => 'Subsanación Requerida',
                 'color' => 'amber',
                 'requiere_accion' => true,
-                'mensaje' => 'Debes corregir algunos documentos para continuar.'
+                'mensaje' => 'Debes corregir documentos de la Etapa 1 para continuar.'
             ],
             self::EN_ETAPA_2 => [
                 'nombre' => 'Aprobado - Fase Técnica',
                 'color' => 'emerald',
                 'requiere_accion' => true,
-                'mensaje' => '¡Pasa a Etapa 2! Diligencia el formulario técnico.'
+                'mensaje' => '¡Pasa a Etapa 2! Por favor completa el expediente técnico y elenco.'
+            ],
+            self::REVISION_E2 => [
+                'nombre' => 'Expediente Técnico Enviado',
+                'color' => 'blue',
+                'requiere_accion' => false,
+                'mensaje' => 'Tu documentación técnica está en revisión. (Etapa sin subsanación)'
             ],
             self::AVANZA_E3 => [
                 'nombre' => 'Evaluación de Jurados',
-                'color' => 'blue',
+                'color' => 'purple',
                 'requiere_accion' => false,
-                'mensaje' => 'Tu proyecto está en manos de los jurados calificadores.'
+                'mensaje' => 'Tu proyecto ha pasado a la fase final de calificación por jurados.'
             ],
             self::ELIMINADO => [
                 'nombre' => 'No Continúa',
                 'color' => 'rose',
                 'requiere_accion' => false,
-                'mensaje' => 'El proyecto no superó la fase actual del proceso.'
+                'mensaje' => 'El proyecto no superó la fase de validación técnica o administrativa.'
             ],
             self::GANADOR => [
                 'nombre' => '¡Seleccionado Ganador!',
                 'color' => 'emerald',
                 'requiere_accion' => false,
-                'mensaje' => 'Felicitaciones, proyecto seleccionado.'
+                'mensaje' => 'Felicitaciones, tu proyecto ha sido seleccionado como ganador.'
             ],
             default => [
-                'nombre' => $this->estado->nombre,
+                'nombre' => $this->estado->nombre ?? 'Inscrito',
                 'color' => 'gray',
                 'requiere_accion' => false,
                 'mensaje' => ''
@@ -130,14 +133,21 @@ class Proyecto extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * Relación con el Elenco (Socios agregados al proyecto)
+     * Se cambió 'ruta_archivo_autorizacion' por 'archivo_autorizacion_path' 
+     * para coincidir con la base de datos.
+     */
+    public function socios(): BelongsToMany
+    {
+        return $this->belongsToMany(Socio::class, 'proyecto_socio')
+            ->withPivot('archivo_autorizacion_path')
+            ->withTimestamps();
+    }
+
     public function director(): HasOne
     {
         return $this->hasOne(Director::class);
-    }
-
-    public function aceptaciones(): HasMany
-    {
-        return $this->hasMany(Aceptacion::class);
     }
 
     public function documentos(): HasMany
@@ -162,16 +172,11 @@ class Proyecto extends Model
 
     public function socio(): BelongsTo
     {
-        return $this->belongsTo(Socio::class);
+        return $this->belongsTo(Socio::class, 'socio_id');
     }
 
     public function convocatoria(): BelongsTo
     {
         return $this->belongsTo(Convocatoria::class);
-    }
-
-    public function elenco(): BelongsToMany
-    {
-        return $this->belongsToMany(Socio::class, 'proyecto_socio');
     }
 }

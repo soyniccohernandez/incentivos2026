@@ -30,21 +30,21 @@ class InitialSetupSeeder extends Seeder
         // 2. Estados corregidos y simplificados
         $estados = [
             // --- ETAPA 1: INSCRIPCIÓN ---
-            ['id' => 1, 'nombre' => 'Inscrito / En Revisión', 'descripcion' => 'Socio completó registro. Auditor debe validar docs.', 'es_final' => 0],
-            ['id' => 2, 'nombre' => 'En Subsanación', 'descripcion' => 'Socio tiene documentos rechazados y debe corregir.', 'es_final' => 0],
-            ['id' => 3, 'nombre' => 'En revisión de subsanación', 'descripcion' => 'Socio envió correcciones. Auditor debe re-evaluar.', 'es_final' => 0],
+            ['id' => 1, 'nombre' => 'Inscrito / En Revisión', 'descripcion' => 'Socio completó Etapa 1. Auditor validando.', 'es_final' => 0],
+            ['id' => 2, 'nombre' => 'En Subsanación', 'descripcion' => 'Socio debe corregir documentos de Etapa 1.', 'es_final' => 0],
+            ['id' => 3, 'nombre' => 'En revisión de subsanación', 'descripcion' => 'Socio envió correcciones de Etapa 1.', 'es_final' => 0],
 
             // --- ETAPA 2: REQUISITOS TÉCNICOS ---
-            ['id' => 4, 'nombre' => 'En Etapa 2', 'descripcion' => 'Docs Etapa 1 OK. Socio habilitado para formulario técnico.', 'es_final' => 0],
-            ['id' => 5, 'nombre' => 'Etapa 2 - En Revisión', 'descripcion' => 'Socio envió formulario técnico. Auditor calificando.', 'es_final' => 0],
+            ['id' => 4, 'nombre' => 'En Etapa 2', 'descripcion' => 'Habilitado para subir Formulario Técnico y Elenco.', 'es_final' => 0],
+            ['id' => 5, 'nombre' => 'Etapa 2 - En Revisión', 'descripcion' => 'Formulario técnico enviado. Revisión definitiva (sin subsanación).', 'es_final' => 0],
 
             // --- ETAPA 3: JURADOS ---
-            ['id' => 6, 'nombre' => 'Etapa 3 - Revisión Jurados', 'descripcion' => 'Proyecto en evaluación por expertos externos.', 'es_final' => 0],
+            ['id' => 6, 'nombre' => 'Etapa 3 - Revisión Jurados', 'descripcion' => 'Proyecto en evaluación por jurados.', 'es_final' => 0],
 
             // --- ESTADOS FINALES ---
-            ['id' => 7, 'nombre' => 'Seleccionado (Ganador)', 'descripcion' => 'Proyecto premiado por la convocatoria.', 'es_final' => 1],
-            ['id' => 8, 'nombre' => 'No continúa', 'descripcion' => 'No superó los filtros técnicos o de documentos.', 'es_final' => 1],
-            ['id' => 9, 'nombre' => 'Eliminado', 'descripcion' => 'Retirado o descalificado por el administrador.', 'es_final' => 1],
+            ['id' => 7, 'nombre' => 'Seleccionado (Ganador)', 'descripcion' => 'Proyecto premiado.', 'es_final' => 1],
+            ['id' => 8, 'nombre' => 'Eliminado', 'descripcion' => 'No superó los filtros técnicos o de documentos.', 'es_final' => 1],
+            ['id' => 9, 'nombre' => 'No seleccionado', 'descripcion' => 'Completó el proceso pero no alcanzó el puntaje.', 'es_final' => 1],
         ];
 
         DB::table('estados')->upsert($estados, ['id'], ['nombre', 'descripcion', 'es_final']);
@@ -106,6 +106,8 @@ class InitialSetupSeeder extends Seeder
             ['id' => 4, 'nombre' => 'Certificado y evidencias 1', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
             ['id' => 5, 'nombre' => 'Certificado y evidencias 2', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
             ['id' => 6, 'nombre' => 'Declaraciones y consideraciones', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
+
+            // Documentos Etapa 2 - Los nombres DEBEN coincidir con el controlador
             ['id' => 7, 'nombre' => 'Carta de intención', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
             ['id' => 8, 'nombre' => 'Guion', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
             ['id' => 9, 'nombre' => 'Radicado guion DNDA', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
@@ -119,12 +121,11 @@ class InitialSetupSeeder extends Seeder
                 ['id' => $doc['id']],
                 [
                     'nombre' => $doc['nombre'],
-                    'descripcion' => 'Proyecta una descripción',
+                    'descripcion' => 'Requisito para ' . ($doc['etapa_id'] == 1 ? 'Inscripción' : 'Evaluación Técnica'),
                     'obligatorio' => $doc['obligatorio'],
                     'etapa_id' => $doc['etapa_id'],
                     'permite_subsanacion' => $doc['permite_subsanacion'],
-                    'created_at' => '2026-02-13 17:10:04',
-                    'updated_at' => '2026-02-13 17:10:04',
+                    'updated_at' => now(),
                 ]
             );
         }

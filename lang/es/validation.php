@@ -1,47 +1,102 @@
 <?php
 
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mensajes de Validación Personalizados
+    |--------------------------------------------------------------------------
+    */
+
     'accepted'        => 'El campo :attribute debe ser aceptado.',
     'active_url'      => 'El campo :attribute no es una URL válida.',
     'after'           => 'El campo :attribute debe ser una fecha posterior a :date.',
     'alpha'           => 'El campo :attribute solo puede contener letras.',
-    'attributes'      => [],
+    'alpha_dash'      => 'El campo :attribute solo puede contener letras, números, guiones y guiones bajos.',
+    'alpha_num'       => 'El campo :attribute solo puede contener letras y números.',
+    'array'           => 'El campo :attribute debe ser un conjunto.',
     'before'          => 'El campo :attribute debe ser una fecha anterior a :date.',
     'between'         => [
         'numeric' => 'El campo :attribute debe estar entre :min y :max.',
         'file'    => 'El archivo :attribute debe pesar entre :min y :max kilobytes.',
+        'string'  => 'El campo :attribute debe tener entre :min y :max caracteres.',
+        'array'   => 'El campo :attribute debe tener entre :min y :max elementos.',
     ],
+    'boolean'         => 'El campo :attribute debe ser verdadero o falso.',
     'confirmed'       => 'La confirmación de :attribute no coincide.',
     'date'            => 'El campo :attribute no es una fecha válida.',
+    'date_format'     => 'El campo :attribute no corresponde al formato :format.',
+    'different'       => 'Los campos :attribute y :other deben ser diferentes.',
+    'digits'          => 'El campo :attribute debe tener :digits dígitos.',
+    'digits_between'  => 'El campo :attribute debe tener entre :min y :max dígitos.',
     'email'           => 'El campo :attribute debe ser una dirección de correo válida.',
     'exists'          => 'El campo :attribute seleccionado es inválido.',
     'file'            => 'El campo :attribute debe ser un archivo.',
+    'filled'          => 'El campo :attribute es obligatorio.',
     'image'           => 'El campo :attribute debe ser una imagen.',
+    'in'              => 'El campo :attribute seleccionado es inválido.',
+    'integer'         => 'El campo :attribute debe ser un número entero.',
+    'ip'              => 'El campo :attribute debe ser una dirección IP válida.',
+    'json'            => 'El campo :attribute debe ser una cadena JSON válida.',
     'max'             => [
         'numeric' => 'El campo :attribute no debe ser mayor a :max.',
-        'file'    => 'El archivo :attribute no debe pesar más de :max kilobytes.',
+        'file'    => 'El archivo :attribute supera el límite de 12 MB permitido.', 
         'string'  => 'El campo :attribute no debe tener más de :max caracteres.',
+        'array'   => 'El campo :attribute no debe tener más de :max elementos.',
     ],
-    'mimes'           => 'El campo :attribute debe ser un archivo de tipo: :values.',
+    'mimes'           => 'El campo :attribute debe ser un archivo de tipo: :values (PDF).',
+    'mimetypes'       => 'El campo :attribute debe ser un archivo de tipo: :values.',
+    'min'             => [
+        'numeric' => 'El campo :attribute debe ser al menos :min.',
+        'file'    => 'El archivo :attribute debe pesar al menos :min kilobytes.',
+        'string'  => 'El campo :attribute debe tener al menos :min caracteres.',
+        'array'   => 'El campo :attribute debe tener al menos :min elementos.',
+    ],
+    'not_in'          => 'El campo :attribute seleccionado es inválido.',
     'numeric'         => 'El campo :attribute debe ser un número.',
+    'present'         => 'El campo :attribute debe estar presente.',
+    'regex'           => 'El formato de :attribute es inválido.',
     'required'        => 'El campo :attribute es obligatorio.',
+    'required_if'     => 'El campo :attribute es obligatorio.',
+    'required_unless' => 'El campo :attribute es obligatorio a menos que :other esté en :values.',
+    'required_with'   => 'El campo :attribute es obligatorio cuando :values está presente.',
+    'required_with_all' => 'El campo :attribute es obligatorio cuando :values están presentes.',
+    'required_without' => 'El campo :attribute es obligatorio cuando :values no está presente.',
+    'required_without_all' => 'El campo :attribute es obligatorio cuando ninguno de :values están presentes.',
+    'same'            => 'Los campos :attribute y :other deben coincidir.',
+    'size'            => [
+        'numeric' => 'El campo :attribute debe ser :size.',
+        'file'    => 'El archivo :attribute debe pesar :size kilobytes.',
+        'string'  => 'El campo :attribute debe tener :size caracteres.',
+        'array'   => 'El campo :attribute debe contener :size elementos.',
+    ],
+    'string'          => 'El campo :attribute debe ser una cadena de caracteres.',
+    'timezone'        => 'El campo :attribute debe ser una zona válida.',
     'unique'          => 'El campo :attribute ya ha sido registrado.',
-    'uploaded'        => 'El campo :attribute falló al subir.',
+    'uploaded'        => 'El archivo es demasiado grande para ser procesado por el servidor.',
     'url'             => 'El formato de :attribute es inválido.',
 
-    /* Personalización para nombres de campos */
-    'custom' => [
-        'form.email' => [
-            'required' => 'Necesitamos saber tu correo para dejarte ingresar.',
-        ],
+    /*
+    |--------------------------------------------------------------------------
+    | Personalización de Atributos (Nombres de variables a nombres humanos)
+    |--------------------------------------------------------------------------
+    */
+
+    'attributes' => [
+        'titulo'                 => 'título de la propuesta',
+        'autoria'                => 'autoría del guion',
+        'guionArchivo'           => 'autorización de guion',
+        'directorIdentificacion' => 'identificación del director',
+        'directorNombre'         => 'nombre del director',
+        'directorCelular'        => 'celular del director',
+        'directorCorreo'         => 'correo del director',
+        'docDirectorExperiencia' => 'trayectoria del director',
+        'docDirectorCompromiso'  => 'carta de compromiso',
+        'docDirectorEvidencia1'  => 'evidencia 1',
+        'docDirectorEvidencia2'  => 'evidencia 2',
+        'formatoFirmado'         => 'formato de declaraciones',
+        'aceptaTerminos'         => 'términos y condiciones',
+        'aceptaDatos'            => 'tratamiento de datos personales',
     ],
 
-    /* Reemplaza los nombres de los campos por algo más amigable */
-    'attributes' => [
-        'email' => 'correo electrónico',
-        'password' => 'contraseña',
-        'titulo' => 'título del proyecto',
-        'identificacion' => 'documento de identidad',
-        'guionArchivo' => 'archivo de guion',
-    ],
 ];

@@ -121,13 +121,42 @@
         </div>
     </div>
 
-    {{-- Términos --}}
-    <div class="bg-brand-surface py-20 px-6 text-center border-b border-brand-border">
-        <h2 class="font-bebas text-[3.5rem] text-brand-orange mb-[10px] border-none">CONDICIONES DE PARTICIPACIÓN</h2>
-        <p class="mb-[30px] text-[#BBBBBB]">Es indispensable leer el documento completo antes de iniciar tu postulación.</p>
-        <a href="#" class="inline-block bg-transparent text-white px-10 py-[15px] no-underline font-bebas text-[1.4rem] border-2 border-brand-orange transition-all duration-300 hover:bg-brand-orange">
-            DESCARGAR PDF COMPLETO
-        </a>
+    {{-- Términos y Condiciones - Versión Invertida Impactante --}}
+    <div class="bg-brand-orange py-24 px-6 text-center relative overflow-hidden">
+
+        {{-- Elemento decorativo sutil de fondo (Opcional) --}}
+        <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none flex items-center justify-center">
+            <span class="font-bebas text-[20rem] text-black select-none">2026</span>
+        </div>
+
+        <div class="relative z-10 max-w-4xl mx-auto">
+            {{-- Icono superior para dar contexto --}}
+            <div class="mb-6 inline-flex items-center justify-center w-16 h-16 bg-black rounded-full shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </div>
+
+            <h2 class="font-bebas text-[4rem] md:text-[5rem] text-black mb-4 leading-none tracking-tighter">
+                ¿LISTO PARA POSTULARTE?
+            </h2>
+
+            <p class="mb-10 text-black/80 font-bold uppercase tracking-[2px] text-sm max-w-xl mx-auto leading-relaxed">
+                Es obligatorio descargar y leer los términos de referencia. <br class="hidden md:block">
+                <span class="bg-black text-brand-orange px-2 py-1 italic">El desconocimiento de las bases no exime su cumplimiento.</span>
+            </p>
+
+            <a href="#" class="inline-flex items-center gap-3 bg-black text-white px-12 py-5 no-underline font-bebas text-[1.6rem] tracking-widest transition-all duration-300 hover:bg-white hover:text-black hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transform hover:-translate-y-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                DESCARGAR TÉRMINOS (PDF)
+            </a>
+
+            <div class="mt-8 text-[10px] text-black/60 font-black uppercase tracking-[4px]">
+                Actualizado a Febrero 2026
+            </div>
+        </div>
     </div>
 
     {{-- Contenido Principal --}}
@@ -154,76 +183,394 @@
             </div>
         </section>
 
-        {{-- Cronograma --}}
-        <section id="cronograma" class="mb-[120px] scroll-mt-[100px]">
-            <h2 class="font-bebas text-[3.5rem] text-brand-orange mb-10 border-b border-brand-border inline-block pb-[5px]">CRONOGRAMA 2026</h2>
-            <div class="overflow-x-auto bg-brand-surface p-5 border border-brand-border">
-                <table class="w-full border-collapse min-w-[600px]">
-                    <thead>
-                        <tr class="bg-[#1a1a1a] text-left text-brand-orange font-bebas text-[1.3rem]">
-                            <th class="p-[15px]">ETAPA</th>
-                            <th class="p-[15px]">FECHAS</th>
-                            <th class="p-[15px]">DETALLE</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-[0.95rem]">
-                        <tr>
-                            <td class="p-[15px] border-b border-brand-border"><strong>Inscripciones</strong></td>
-                            <td class="p-[15px] border-b border-brand-border">1 - 13 de abril</td>
-                            <td class="p-[15px] border-b border-brand-border">Diligenciamiento de anexos</td>
-                        </tr>
-                        <tr>
-                            <td class="p-[15px] border-b border-brand-border"><strong>Subsanaciones</strong></td>
-                            <td class="p-[15px] border-b border-brand-border">28 abril - 5 mayo</td>
-                            <td class="p-[15px] border-b border-brand-border">Plazo único correcciones</td>
-                        </tr>
-                        <tr>
-                            <td class="p-[15px] border-b border-brand-border"><strong>Etapa 2</strong></td>
-                            <td class="p-[15px] border-b border-brand-border">16 de mayo</td>
-                            <td class="p-[15px] border-b border-brand-border">Recepción de Guiones (7am - 7pm)</td>
-                        </tr>
-                        <tr>
-                            <td class="p-[15px] border-b border-brand-border"><strong>Jurados</strong></td>
-                            <td class="p-[15px] border-b border-brand-border">30 mayo - 8 junio</td>
-                            <td class="p-[15px] border-b border-brand-border">Evaluación por comité externo</td>
-                        </tr>
-                        <tr class="bg-brand-orange/10">
-                            <td class="p-[15px] border-b border-brand-border"><strong class="text-brand-orange">GANADORES</strong></td>
-                            <td class="p-[15px] border-b border-brand-border"><strong class="text-brand-orange">13 de junio</strong></td>
-                            <td class="p-[15px] border-b border-brand-border">Publicación de seleccionados</td>
-                        </tr>
-                    </tbody>
-                </table>
+        {{-- Cronograma Estilo Timeline Industrial --}}
+        <section id="cronograma" class="mb-[120px] scroll-mt-[100px] px-4">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
+                <div>
+                    <h2 class="font-bebas text-[4rem] text-brand-orange leading-none uppercase">Ruta de Convocatoria</h2>
+                    <p class="text-gray-500 font-bold tracking-[3px] uppercase text-xs mt-2">Hitos y fechas clave 2026</p>
+                </div>
+                <div class="bg-brand-orange/10 border border-brand-orange/30 p-3">
+                    <span class="text-brand-orange font-bebas text-2xl tracking-tighter italic">92 DÍAS DE PRODUCCIÓN FINAL</span>
+                </div>
+            </div>
+
+            <div class="relative">
+                {{-- Línea Central (Solo visible en Desktop) --}}
+                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-[2px] bg-gradient-to-b from-brand-orange via-brand-border to-transparent"></div>
+
+                {{-- Contenedor de Hitos --}}
+                <div class="space-y-12">
+
+                    {{-- HITO 1: PREPARACIÓN --}}
+                    <div class="relative flex flex-col md:flex-row items-center group">
+                        <div class="flex-1 md:text-right md:pr-12 w-full">
+                            <div class="inline-block">
+                                <span class="text-brand-orange font-bebas text-xl tracking-widest uppercase">Fase Inicial</span>
+                                <h3 class="text-white font-bebas text-3xl mt-1">Expectativa y Condiciones</h3>
+                                <p class="text-gray-500 text-sm max-w-[400px] md:ml-auto">Lanzamiento oficial y envío de términos de referencia por correo electrónico.</p>
+                            </div>
+                        </div>
+                        {{-- Punto en la línea --}}
+                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-[#0a0a0a] border-2 border-brand-border rounded-full items-center justify-center z-10 group-hover:border-brand-orange transition-colors">
+                            <div class="w-2 h-2 bg-brand-orange rounded-full"></div>
+                        </div>
+                        <div class="flex-1 md:pl-12 w-full mt-4 md:mt-0">
+                            <div class="bg-brand-surface p-4 border-l-4 border-brand-orange inline-block">
+                                <span class="text-white font-mono font-bold tracking-tighter uppercase">23 Feb — 08 Mar</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- HITO 2: INSCRIPCIONES (HIGHLIGHT) --}}
+                    <div class="relative flex flex-col md:flex-row items-center group">
+                        <div class="flex-1 md:text-right md:pr-12 w-full order-2 md:order-1 mt-4 md:mt-0">
+                            <div class="bg-brand-orange p-6 shadow-[0_0_30px_rgba(255,102,0,0.2)]">
+                                <span class="text-black font-mono font-black text-lg">09 — 23 MARZO</span>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-brand-orange rounded-full items-center justify-center z-10 animate-pulse">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
+                                <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="3" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 md:pl-12 w-full order-1 md:order-2">
+                            <h3 class="text-brand-orange font-bebas text-4xl uppercase leading-none">Inscripciones Abiertas</h3>
+                            <p class="text-gray-300 font-bold text-xs uppercase tracking-widest mt-2 italic">Apertura del portal de carga (Etapa 1)</p>
+                        </div>
+                    </div>
+
+                    {{-- HITO 3: FORMACIÓN Y REVISIÓN --}}
+                    <div class="relative flex flex-col md:flex-row items-center group">
+                        <div class="flex-1 md:text-right md:pr-12 w-full">
+                            <h3 class="text-white font-bebas text-3xl">Taller & Validación</h3>
+                            <p class="text-gray-500 text-sm md:ml-auto">Taller de formación para proponentes y revisión documental detallada de la Etapa 1.</p>
+                        </div>
+                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-[#0a0a0a] border-2 border-brand-border rounded-full items-center justify-center z-10">
+                            <div class="w-2 h-2 bg-gray-600"></div>
+                        </div>
+                        <div class="flex-1 md:pl-12 w-full mt-4 md:mt-0">
+                            <div class="bg-brand-surface p-4 border-l-4 border-gray-600">
+                                <span class="text-white font-mono font-bold uppercase">06 Abr — 14 Abr</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- HITO 4: SUBSANACIONES --}}
+                    <div class="relative flex flex-col md:flex-row items-center group">
+                        <div class="flex-1 md:text-right md:pr-12 w-full order-2 md:order-1 mt-4 md:mt-0">
+                            <div class="bg-[#1a1a1a] p-4 border border-white/10">
+                                <span class="text-brand-orange font-mono font-bold uppercase">15 Abr — 08 Mayo</span>
+                                <p class="text-[10px] text-gray-500 mt-1 uppercase font-bold tracking-widest">Incluye revisión de correcciones</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-[#0a0a0a] border-2 border-brand-border rounded-full items-center justify-center z-10">
+                            <div class="w-2 h-2 bg-white"></div>
+                        </div>
+                        <div class="flex-1 md:pl-12 w-full order-1 md:order-2">
+                            <h3 class="text-white font-bebas text-3xl">Subsanaciones</h3>
+                            <p class="text-gray-500 text-sm italic">Plazo único para que el socio corrija documentos técnicos y legales.</p>
+                        </div>
+                    </div>
+
+                    {{-- HITO 5: ETAPA 2 --}}
+                    <div class="relative flex flex-col md:flex-row items-center group">
+                        <div class="flex-1 md:text-right md:pr-12 w-full">
+                            <h3 class="text-white font-bebas text-3xl uppercase italic">Etapa 2: Guiones</h3>
+                            <p class="text-gray-500 text-sm md:ml-auto uppercase tracking-tighter font-bold">Recepción de documentos técnicos y guionización.</p>
+                        </div>
+                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-white border-2 border-brand-orange rounded-full items-center justify-center z-10 shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                            <div class="w-2 h-2 bg-brand-orange"></div>
+                        </div>
+                        <div class="flex-1 md:pl-12 w-full mt-4 md:mt-0">
+                            <div class="bg-white p-4">
+                                <span class="text-black font-mono font-black uppercase text-xl italic leading-none">11 — 13 Mayo</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- HITO 6: JURADOS --}}
+                    <div class="relative flex flex-col md:flex-row items-center group">
+                        <div class="flex-1 md:text-right md:pr-12 w-full order-2 md:order-1 mt-4 md:mt-0">
+                            <div class="bg-brand-surface p-4 border border-brand-border">
+                                <span class="text-white font-mono font-bold uppercase tracking-widest">04 Jun — 26 Jun</span>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-[#0a0a0a] border-2 border-brand-border rounded-full items-center justify-center z-10 group-hover:border-white transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 md:pl-12 w-full order-1 md:order-2">
+                            <h3 class="text-white font-bebas text-3xl">Evaluación Expertos</h3>
+                            <p class="text-gray-500 text-sm">Cruce con jurados internacionales y selección de obras ganadoras.</p>
+                        </div>
+                    </div>
+
+                    {{-- HITO FINAL: SELECCIONADOS --}}
+                    <div class="relative flex flex-col md:flex-row items-center">
+                        <div class="flex-1 md:text-right md:pr-12 w-full hidden md:block">
+                            <p class="text-brand-orange font-bebas text-2xl animate-pulse tracking-widest uppercase">¡Éxito!</p>
+                        </div>
+                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-14 h-14 bg-brand-orange rounded-full items-center justify-center z-20 ring-8 ring-brand-orange/20 shadow-[0_0_40px_rgba(255,102,0,0.4)]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-black" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 md:pl-12 w-full text-center md:text-left">
+                            <div class="bg-brand-orange inline-block px-8 py-4 transform hover:scale-105 transition-transform cursor-default">
+                                <span class="text-black font-black uppercase text-[10px] tracking-[4px] block mb-1">Anuncio Oficial</span>
+                                <h3 class="text-black font-bebas text-5xl leading-none">30 JUNIO</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </section>
 
-        {{-- Pasos e Inscripción Final --}}
+
+        {{-- Sección de Etapas, Anexos y Ganadores --}}
+        <section id="anexos" class="mb-[120px] scroll-mt-[100px]">
+            <h2 class="font-bebas text-[3.5rem] text-brand-orange mb-10 border-b border-brand-border inline-block pb-[5px]">ETAPAS Y DOCUMENTACIÓN</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                {{-- ETAPA 1: INSCRIPCIÓN (ACTIVA / COLOR) --}}
+                <div class="bg-[#111] border-2 border-brand-orange p-6 flex flex-col h-full shadow-[0_0_20px_rgba(255,102,0,0.1)] relative">
+                    <div class="absolute -top-3 left-6 bg-brand-orange text-white font-bebas px-3 py-1 text-sm tracking-widest">ACTUALMENTE</div>
+                    <div class="mb-6">
+                        <span class="text-brand-orange font-bebas text-xl tracking-[3px]">ETAPA 01</span>
+                        <h3 class="font-bebas text-4xl text-white">INSCRIPCIÓN</h3>
+                        <p class="text-gray-400 text-xs mt-2 uppercase font-bold tracking-tighter italic">Habilitantes Obligatorios</p>
+                    </div>
+
+                    <div class="space-y-3 mb-8 flex-grow">
+                        {{-- Anexo 1 --}}
+                        <a href="#" class="p-3 bg-brand-surface border border-brand-orange/30 flex justify-between items-center group hover:bg-brand-orange transition-all">
+                            <span class="text-[10px] font-bold text-white uppercase">Anexo 1. Manifestación</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand-orange group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" />
+                            </svg>
+                        </a>
+
+                        {{-- Anexo 2 - DESGLOSADO POR ARCHIVOS --}}
+                        <div class="bg-brand-surface border border-brand-orange/30 p-3">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-[10px] font-bold text-white uppercase">Anexo 2. Experiencia</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <a href="#" class="flex items-center justify-between bg-black/40 p-2 border border-white/5 hover:border-brand-orange transition-all group">
+                                    <span class="text-[8px] text-gray-400 uppercase font-bold group-hover:text-white">Formato de Experiencia</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" />
+                                    </svg>
+                                </a>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <a href="#" class="flex flex-col items-center justify-center bg-black/40 py-2 border border-white/5 hover:border-brand-orange transition-all group">
+                                        <span class="text-[7px] text-gray-500 font-black uppercase tracking-tighter">Soporte 1</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-600 group-hover:text-brand-orange mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" />
+                                        </svg>
+                                    </a>
+                                    <a href="#" class="flex flex-col items-center justify-center bg-black/40 py-2 border border-white/5 hover:border-brand-orange transition-all group">
+                                        <span class="text-[7px] text-gray-500 font-black uppercase tracking-tighter">Soporte 2</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-600 group-hover:text-brand-orange mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Anexo 3 - Con Aviso --}}
+                        <div class="relative group">
+                            <a href="#" class="p-3 bg-brand-orange/10 border border-brand-orange flex justify-between items-center group-hover:bg-brand-orange transition-all">
+                                <span class="text-[10px] font-bold text-brand-orange group-hover:text-white uppercase">Anexo 3. Uso Guion</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:text-white text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" />
+                                </svg>
+                            </a>
+                            {{-- Toast/Tooltip --}}
+                            <div class="absolute -top-12 left-0 w-full bg-white text-black p-2 text-[8px] font-bold uppercase leading-tight shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border-l-4 border-brand-orange z-10">
+                                Opcional: Solo si el guion es de autoría de un tercero.
+                            </div>
+                        </div>
+
+                        {{-- Anexo 4 --}}
+                        <a href="#" class="p-3 bg-brand-surface border border-brand-orange/30 flex justify-between items-center group hover:bg-brand-orange transition-all">
+                            <span class="text-[10px] font-bold text-white uppercase">Anexo 4. Declaraciones</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand-orange group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5" />
+                            </svg>
+                        </a>
+                    </div>
+
+                    <a href="#" class="w-full bg-brand-orange text-white font-bebas py-3 text-center tracking-widest hover:bg-white hover:text-black transition-all">
+                        DESCARGAR KIT ETAPA 1
+                    </a>
+                </div>
+
+                {{-- ETAPA 2: DESARROLLO (GRIS) --}}
+                <div class="bg-[#0a0a0a] border border-[#222] p-6 flex flex-col h-full opacity-60 hover:opacity-100 transition-opacity">
+                    <div class="mb-6 text-gray-500">
+                        <span class="font-bebas text-xl tracking-[3px]">ETAPA 02</span>
+                        <h3 class="font-bebas text-4xl uppercase">Desarrollo</h3>
+                        <p class="text-[10px] mt-2 font-bold uppercase italic tracking-tighter">Preparación técnica</p>
+                    </div>
+
+                    <div class="space-y-2 mb-8 flex-grow">
+                        <div class="p-3 border border-[#222] flex justify-between items-center group">
+                            <span class="text-[10px] font-bold text-gray-600 uppercase">Anexo 6. Propuesta</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <div class="p-3 border border-[#222] flex justify-between items-center group">
+                            <span class="text-[10px] font-bold text-gray-600 uppercase">Anexo 7. Presupuesto</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <div class="p-3 border border-[#222] flex justify-between items-center group">
+                            <span class="text-[10px] font-bold text-gray-600 uppercase">Anexo 8. Cronograma</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" />
+                            </svg>
+                        </div>
+                    </div>
+                    <a href="#" class="w-full border border-gray-800 text-gray-600 font-bebas py-2 text-center text-sm tracking-[2px] uppercase transition-all hover:border-gray-600 hover:text-gray-400">
+                        Kit Etapa 2
+                    </a>
+                </div>
+
+                {{-- ETAPA 3: EVALUACIÓN --}}
+                <div class="bg-[#0a0a0a] border border-[#222] p-6 flex flex-col h-full opacity-40">
+                    <div class="mb-6 text-gray-700">
+                        <span class="font-bebas text-xl tracking-[3px]">ETAPA 03</span>
+                        <h3 class="font-bebas text-4xl uppercase">Jurados</h3>
+                        <p class="text-[10px] mt-2 font-bold uppercase tracking-tighter">Evaluación técnica</p>
+                    </div>
+                    <div class="flex-grow flex flex-col items-center justify-center border border-dashed border-gray-900 rounded p-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-900 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <span class="text-[9px] text-gray-800 font-bold uppercase tracking-widest text-center italic">Proceso Interno</span>
+                    </div>
+                </div>
+
+                {{-- ETAPA 4: GANADORES (EXCLUSIVO) --}}
+                <div class="bg-[#050505] border border-dashed border-gray-800 p-6 flex flex-col h-full opacity-60 hover:opacity-100 transition-opacity">
+                    <div class="mb-6 text-gray-600">
+                        <span class="font-bebas text-xl tracking-[3px]">FINAL</span>
+                        <h3 class="font-bebas text-4xl uppercase">Ganadores</h3>
+                        <p class="text-[10px] mt-2 font-bold uppercase italic tracking-tighter text-brand-orange/50">Formalización</p>
+                    </div>
+
+                    <div class="space-y-2 mb-8 flex-grow">
+                        <div class="p-2 border border-[#111] flex justify-between items-center group">
+                            <span class="text-[9px] font-bold text-gray-700 uppercase leading-tight">Anexo 9. Imagen Actores</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <div class="p-2 border border-[#111] flex justify-between items-center group">
+                            <span class="text-[9px] font-bold text-gray-700 uppercase leading-tight">Anexo 10. Uso Obra</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <div class="p-2 border border-[#111] flex justify-between items-center group">
+                            <span class="text-[9px] font-bold text-gray-700 uppercase leading-tight">Anexo 11. Uso Locación</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="text-[8px] text-center text-gray-800 uppercase font-black tracking-[2px] pt-2 border-t border-[#111]">
+                        Solo Ganadores
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {{-- Pasos e Inscripción Final - Versión Plataforma Digital con Logo de Fondo --}}
         <section id="pasos" class="mb-[120px] scroll-mt-[100px]">
-            <div class="relative block mb-5">
-                <h2 class="font-bebas text-[3.5rem] text-brand-orange mb-10 border-b border-brand-border inline-block pb-[5px]">¿CÓMO PARTICIPAR?</h2>
+            {{-- Encabezado --}}
+            <div class="relative block mb-12">
+                <h2 class="font-bebas text-[3.5rem] text-brand-orange mb-2 border-b-4 border-brand-orange inline-block pb-1">¿CÓMO POSTULARSE?</h2>
+                <p class="text-gray-500 font-bold uppercase tracking-[3px] text-xs">Sigue el flujo del sistema digital para participar</p>
             </div>
 
-            <ul class="list-none [counter-reset:step] mb-[50px]">
-                <li class="[counter-increment:step] mb-[25px] pl-[60px] relative text-[1.1rem] before:content-[counter(step)] before:absolute before:left-0 before:top-0 before:w-10 before:h-10 before:bg-brand-orange before:text-white before:rounded-full before:flex before:items-center before:justify-center before:font-bebas before:text-[1.5rem]">
-                    Adjunta en formato <strong>PDF</strong> todos los anexos de la etapa 1 debidamente firmados.
-                </li>
-                <li class="[counter-increment:step] mb-[25px] pl-[60px] relative text-[1.1rem] before:content-[counter(step)] before:absolute before:left-0 before:top-0 before:w-10 before:h-10 before:bg-brand-orange before:text-white before:rounded-full before:flex before:items-center before:justify-center before:font-bebas before:text-[1.5rem]">
-                    Envía los documentos desde tu <strong>correo registrado</strong> en nuestra base de datos.
-                </li>
-                <li class="[counter-increment:step] mb-[25px] pl-[60px] relative text-[1.1rem] before:content-[counter(step)] before:absolute before:left-0 before:top-0 before:w-10 before:h-10 before:bg-brand-orange before:text-white before:rounded-full before:flex before:items-center before:justify-center before:font-bebas before:text-[1.5rem]">
-                    Asunto: <strong>Nombre Proponente + Título de la Obra</strong>.
-                </li>
-                <li class="[counter-increment:step] mb-[25px] pl-[60px] relative text-[1.1rem] before:content-[counter(step)] before:absolute before:left-0 before:top-0 before:w-10 before:h-10 before:bg-brand-orange before:text-white before:rounded-full before:flex before:items-center before:justify-center before:font-bebas before:text-[1.5rem]">
-                    Envía a: <strong class="text-brand-orange">incentivos@actores.org.co</strong>
-                </li>
-            </ul>
+            {{-- Grid de Pasos Digitales --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                {{-- Paso 1 --}}
+                <div class="bg-brand-surface p-6 border-t-4 border-brand-orange group hover:bg-[#1a1a1a] transition-colors">
+                    <span class="font-bebas text-5xl text-brand-orange/30 group-hover:text-brand-orange transition-colors">01</span>
+                    <h4 class="text-white font-bebas text-xl mb-2">RECOLECTA</h4>
+                    <p class="text-gray-400 text-sm">Organiza tus documentos de la <strong class="text-white">Etapa 1</strong> en formatos PDF individuales y debidamente firmados.</p>
+                </div>
 
-            <div class="bg-[#111] p-[50px] text-center border border-brand-orange mt-10">
-                <h3 class="font-bebas text-[2rem] mb-5 uppercase">¿LISTO PARA ENVIAR TU PROPUESTA?</h3>
-                <p class="text-[#BBBBBB] mb-[30px]">Asegúrate de tener todos los anexos listos antes de proceder al correo de inscripción.</p>
-                <a href="{{ route('validar-socio') }}" class="inline-block bg-brand-orange text-white px-[45px] py-[18px] no-underline font-bebas text-[1.6rem] transition-all duration-300 hover:bg-[#ff6a33] hover:-translate-y-[3px]">
-                    INICIAR INSCRIPCIÓN AHORA
-                </a>
+                {{-- Paso 2 --}}
+                <div class="bg-brand-surface p-6 border-t-4 border-brand-orange group hover:bg-[#1a1a1a] transition-colors">
+                    <span class="font-bebas text-5xl text-brand-orange/30 group-hover:text-brand-orange transition-colors">02</span>
+                    <h4 class="text-white font-bebas text-xl mb-2">VALIDA</h4>
+                    <p class="text-gray-400 text-sm">Ingresa a la plataforma usando tu identificación para <strong class="text-white">validar tu calidad de socio</strong> activo.</p>
+                </div>
+
+                {{-- Paso 3 --}}
+                <div class="bg-brand-surface p-6 border-t-4 border-brand-orange group hover:bg-[#1a1a1a] transition-colors">
+                    <span class="font-bebas text-5xl text-brand-orange/30 group-hover:text-brand-orange transition-colors">03</span>
+                    <h4 class="text-white font-bebas text-xl mb-2">CARGA</h4>
+                    <p class="text-gray-400 text-sm">Sube los archivos al formulario digital. El sistema te guiará paso a paso en el proceso de carga.</p>
+                </div>
+
+                {{-- Paso 4 --}}
+                <div class="bg-brand-surface p-6 border-t-4 border-brand-orange group hover:bg-[#1a1a1a] transition-colors">
+                    <span class="font-bebas text-5xl text-brand-orange/30 group-hover:text-brand-orange transition-colors">04</span>
+                    <h4 class="text-white font-bebas text-xl mb-2">CONFIRMA</h4>
+                    <p class="text-gray-400 text-sm">Una vez finalices, recibirás un <strong class="text-brand-orange">comprobante digital</strong> con tu número de radicado oficial.</p>
+                </div>
+            </div>
+
+            {{-- Bloque Final Naranja (Inscripción con Logo de Fondo) --}}
+            <div class="bg-brand-orange p-10 md:p-16 text-center relative overflow-hidden">
+                {{-- Decoración de fondo (Logo S.C.G. muy grande y sutil) --}}
+                <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                    <img src="{{ asset('resources/imagenes/logo.png') }}" alt="" class="w-1/2 invert brightness-0">
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="font-bebas text-[3rem] md:text-[4.5rem] text-black mb-4 leading-none uppercase">PORTAL DE INSCRIPCIÓN VIRTUAL</h3>
+                    <p class="text-black font-bold mb-10 max-w-2xl mx-auto uppercase tracking-tighter text-lg italic leading-tight">
+                        El sistema verificará automáticamente tus datos de socio antes de permitir la carga de documentos.
+                    </p>
+
+                    <a href="{{ route('validar-socio') }}" class="inline-flex items-center gap-6 bg-black text-white px-12 py-6 no-underline font-bebas text-[1.8rem] tracking-[4px] transition-all duration-300 hover:bg-white hover:text-black hover:shadow-2xl transform hover:-translate-y-2 group">
+                        INGRESAR AL SISTEMA
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+
+                    <div class="mt-8 flex flex-wrap justify-center gap-6">
+                        <span class="flex items-center gap-2 text-[10px] text-black font-black uppercase tracking-widest">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2" />
+                            </svg>
+                            Acceso Seguro
+                        </span>
+                        <span class="flex items-center gap-2 text-[10px] text-black font-black uppercase tracking-widest">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" />
+                            </svg>
+                            Carga Directa
+                        </span>
+                    </div>
+                </div>
             </div>
         </section>
     </div>

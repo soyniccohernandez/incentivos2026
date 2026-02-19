@@ -43,7 +43,7 @@ class Inscritos extends Component
                     ->orWhere('codigo_radicado', 'like', '%' . $this->search . '%');
             })
             ->with(['estado'])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->paginate(20);
 
         return view('livewire.sitio.inscritos', [

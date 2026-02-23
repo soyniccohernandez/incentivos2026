@@ -20,14 +20,11 @@
             </h2>
             <div class="w-24 h-1 bg-[#ff6600] mb-6"></div>
 
-            {{-- BARRA DE ETAPAS (Sincronizada con Horas) --}}
+            {{-- BARRA DE ETAPAS --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 bg-[#0a0a0a] border border-[#1a1a1a] p-6">
                 @if($convocatoriaActual)
                     @foreach($convocatoriaActual->etapas->sortBy('orden') as $etapa)
-                        @php
-                            $activa = $etapa->estaActiva();
-                            $futura = now() < $etapa->fecha_inicio;
-                        @endphp
+                        @php $activa = $etapa->estaActiva(); @endphp
                         <div class="flex items-center gap-4 {{ $activa ? 'opacity-100' : 'opacity-30' }}">
                             <div class="w-10 h-10 flex items-center justify-center border {{ $activa ? 'border-[#ff6600] text-[#ff6600] shadow-[0_0_15px_rgba(255,102,0,0.4)]' : 'border-gray-800 text-gray-600' }} font-bebas text-xl">
                                 {{ $etapa->orden }}
@@ -35,7 +32,9 @@
                             <div>
                                 <p class="text-[10px] uppercase tracking-tighter font-bold {{ $activa ? 'text-[#ff6600]' : 'text-gray-500' }}">
                                     {{ $etapa->nombre }}
-                                    @if($activa) <span class="ml-2 animate-pulse text-[8px] bg-[#ff6600] text-black px-1 rounded">EN VIVO</span> @endif
+                                    @if($activa)
+                                        <span class="ml-2 animate-pulse text-[8px] bg-[#ff6600] text-black px-1 rounded">EN VIVO</span>
+                                    @endif
                                 </p>
                                 <p class="text-[10px] font-mono {{ $activa ? 'text-gray-200' : 'text-gray-600' }}">
                                     {{ $etapa->fecha_inicio->format('d M, h:i A') }} — {{ $etapa->fecha_fin->format('d M, h:i A') }}
@@ -52,7 +51,8 @@
             <div class="md:col-span-2">
                 <label class="text-[10px] uppercase tracking-[3px] text-gray-500 font-bold mb-3 block">Filtrar por nombre o radicado</label>
                 <div class="relative">
-                    <input type="text" wire:model.live="search" placeholder="EJ: EL GUION DE MI VIDA..." class="w-full bg-[#0a0a0a] border border-[#222] py-5 px-6 text-white focus:border-[#ff6600] focus:ring-1 focus:ring-[#ff6600] transition-all outline-none font-medium text-sm tracking-widest">
+                    <input type="text" wire:model.live="search" placeholder="EJ: EL GUION DE MI VIDA..." 
+                        class="w-full bg-[#0a0a0a] border border-[#222] py-5 px-6 text-white focus:border-[#ff6600] focus:ring-1 focus:ring-[#ff6600] transition-all outline-none font-medium text-sm tracking-widest">
                 </div>
             </div>
             <div class="bg-[#111] p-6 border-l-2 border-[#ff6600] flex flex-col justify-center shadow-xl">
@@ -89,23 +89,19 @@
                             </td>
                             <td class="p-6 text-center">
                                 <div class="flex items-center justify-center">
-                                    
-                                    {{-- LÓGICA DE SILENCIO ADMINISTRATIVO: Si no está publicado, estado genérico --}}
                                     @if(!$proyecto->publicado)
+                                        {{-- ESTADO EN REVISIÓN --}}
                                         <div class="flex items-center gap-3 bg-[#0a0a0a] border border-[#222] px-4 py-2 rounded-full">
                                             <div class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></div>
-                                            <span class="text-[10px] font-bold uppercase tracking-[2px] text-gray-400">
-                                                Inscrito / En Revisión
-                                            </span>
+                                            <span class="text-[10px] font-bold uppercase tracking-[2px] text-gray-400"> Inscrito / En Revisión </span>
                                         </div>
                                     @else
-                                        {{-- El administrador activó la publicación: se liberan estados y botones --}}
                                         @php
                                             $e1 = $proyecto->convocatoria->etapas->where('orden', 1)->first();
                                             $e2 = $proyecto->convocatoria->etapas->where('orden', 2)->first();
                                         @endphp
 
-                                        {{-- 1. SUBSANACIÓN (Estado 2) --}}
+                                        {{-- ESTADO 2: SUBSANACIÓN --}}
                                         @if($proyecto->estado_id == 2)
                                             @if($e1 && $e1->estaActiva())
                                                 <a href="{{ route('validar-socio') }}" class="flex items-center gap-3 px-6 py-3 bg-amber-500 text-black font-bebas text-xl tracking-wider hover:bg-white transition-all no-underline shadow-[0_0_20px_rgba(245,158,11,0.3)]">
@@ -114,11 +110,10 @@
                                             @else
                                                 <div class="flex flex-col items-center">
                                                     <span class="text-[10px] text-amber-500/50 border border-amber-500/20 px-4 py-2 uppercase font-bold italic">Plazo vencido</span>
-                                                    <span class="text-[8px] text-gray-600 mt-1 uppercase">Cerró: {{ $e1?->fecha_fin->format('d/m h:i A') }}</span>
                                                 </div>
                                             @endif
 
-                                        {{-- 2. ETAPA 2 (Estado 4) --}}
+                                        {{-- ESTADO 4: ETAPA 2 --}}
                                         @elseif($proyecto->estado_id == 4)
                                             @if($e2 && $e2->estaActiva())
                                                 <a href="{{ route('validar-socio') }}" class="flex items-center gap-2 px-6 py-3 bg-[#ff6600] text-white font-bebas text-xl tracking-wider hover:bg-white hover:text-black transition-all no-underline shadow-[0_0_20px_rgba(255,102,0,0.3)]">
@@ -126,18 +121,37 @@
                                                 </a>
                                             @else
                                                 <div class="flex flex-col items-center text-[#ff6600]/40">
-                                                    <span class="text-[10px] border border-[#ff6600]/20 px-4 py-2 uppercase font-bold italic">
-                                                        {{ now() < ($e2?->fecha_inicio ?? now()) ? 'Próximamente' : 'Etapa cerrada' }}
-                                                    </span>
+                                                    <span class="text-[10px] border border-[#ff6600]/20 px-4 py-2 uppercase font-bold italic">Etapa cerrada</span>
                                                 </div>
                                             @endif
 
-                                        {{-- 3. OTROS ESTADOS (Finales o informativos publicados) --}}
+                                        {{-- ESTADO 8 y 9: RECHAZADO / ELIMINADO --}}
+                                        @elseif(in_array($proyecto->estado_id, [8, 9]))
+                                            <a href="{{ route('validar-socio') }}" class="flex items-center gap-2 px-6 py-3 bg-red-600/10 text-red-500 border border-red-600/40 font-bebas text-xl tracking-wider hover:bg-red-600 hover:text-white transition-all no-underline">
+                                                VER MOTIVO RECHAZO
+                                            </a>
+
+                                        {{-- ESTADO 7: SELECCIONADO / GANADOR --}}
+                                        @elseif($proyecto->estado_id == 7)
+                                            <a href="{{ route('validar-socio') }}" 
+                                               class="flex flex-col items-center gap-1 px-6 py-3 bg-emerald-600 text-white hover:bg-emerald-500 transition-all no-underline shadow-[0_0_25px_rgba(16,185,129,0.4)] border border-emerald-400/30 group/btn">
+                                                <div class="flex items-center gap-2">
+                                                    <svg class="w-5 h-5 text-emerald-200 animate-bounce" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                    </svg>
+                                                    <span class="font-bebas text-2xl tracking-wider uppercase">¡PROYECTO GANADOR!</span>
+                                                </div>
+                                                <span class="text-[10px] font-bold uppercase tracking-[2px] text-emerald-100 opacity-80 group-hover/btn:opacity-100">
+                                                    Ver pasos a seguir →
+                                                </span>
+                                            </a>
+
+                                        {{-- OTROS ESTADOS PUBLICADOS --}}
                                         @else
                                             <div class="flex items-center gap-3 bg-[#0a0a0a] border border-[#222] px-4 py-2 rounded-full">
-                                                <div class="w-2 h-2 rounded-full {{ in_array($proyecto->estado_id, [7]) ? 'bg-emerald-500' : 'bg-gray-600' }}"></div>
-                                                <span class="text-[10px] font-bold uppercase tracking-[2px] text-gray-400">
-                                                    {{ $proyecto->estado->nombre }}
+                                                <div class="w-2 h-2 rounded-full bg-gray-600"></div>
+                                                <span class="text-[10px] font-bold uppercase tracking-[2px] text-gray-400"> 
+                                                    {{ $proyecto->estado->nombre }} 
                                                 </span>
                                             </div>
                                         @endif
@@ -149,7 +163,6 @@
                         <tr>
                             <td colspan="3" class="p-20 text-center">
                                 <p class="font-bebas text-3xl text-gray-700 tracking-widest">No se encontraron proyectos</p>
-                                <p class="text-xs text-gray-800 uppercase mt-2">Intenta con otro término de búsqueda</p>
                             </td>
                         </tr>
                     @endforelse
@@ -164,10 +177,12 @@
         @endif
     </div>
 
-    {{-- FOOTER SIMPLE --}}
+    {{-- FOOTER --}}
     <footer class="border-t border-[#1a1a1a] py-12 bg-black">
         <div class="max-w-[1100px] mx-auto px-6 text-center">
-            <p class="text-[10px] tracking-[5px] text-gray-600 uppercase font-bold">© 2026 ACTORES SOCIEDAD COLOMBIANA DE GESTIÓN</p>
+            <p class="text-[10px] tracking-[5px] text-gray-600 uppercase font-bold">
+                © 2026 ACTORES SOCIEDAD COLOMBIANA DE GESTIÓN
+            </p>
         </div>
     </footer>
 </div>

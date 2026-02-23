@@ -2,25 +2,38 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Namespaces
-use App\Livewire\Sitio\{ValidarSocio, InscripcionEtapa1, InscripcionEtapa2, SubsanarEtapaUno, Inscritos};
-use App\Livewire\Admin\{AdminDashboard, Convocatorias\Index as ConvocatoriasIndex, Convocatorias\Gestionar as ConvocatoriasGestionar, Convocatorias\RevisarProyecto};
-use App\Livewire\Sitio\RetroalimentacionProyecto;
+// Namespaces de los componentes
+use App\Livewire\Sitio\{ValidarSocio, InscripcionEtapa1, InscripcionEtapa2, SubsanarEtapaUno, Inscritos, RetroalimentacionProyecto};
+use App\Livewire\Admin\{AdminDashboard, Convocatorias\Index as ConvocatoriasIndex, Convocatorias\Gestionar as ConvocatoriasGestionar, Convocatorias\RevisarProyecto, ConvocatoriaConfig};
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
 // --- 1. RUTAS PÚBLICAS ---
 Route::view('/', 'welcome');
 Route::get('/proyectos-inscritos', Inscritos::class)->name('inscritos.publico');
 
+Route::get('/keep-alive', function () {
+    return response()->json(['status' => 'alive']);
+});
+
 // --- 2. PORTAL DEL SOCIO (Flujo de Inscripción) ---
 Route::prefix('convocatoria')->group(function () {
 
-    // Ruta pública para validarse
+    // RUTA DE ACCESO: Pública para login
     Route::get('/validar/{proyecto?}', ValidarSocio::class)->name('validar-socio');
 
-    // Rutas protegidas por tu nuevo portero
-    Route::middleware(['check.socio'])->group(function () {
-
-        Route::get('/registro-etapa-1', InscripcionEtapa1::class)->name('inscripcion.etapa1');
+    // RUTAS PROTEGIDAS PARA SOCIOS
+    Route::middleware(['auth', 'check.socio'])->group(function () {
+        
+        /**
+         * IMPORTANTE: Nombramos esta ruta como 'dashboard' para que el 
+         * login de socios funcione con el redireccionamiento estándar.
+         */
+        Route::get('/registro-etapa-1', InscripcionEtapa1::class)->name('dashboard');
 
         Route::get('/proyecto/{proyectoId}/documentacion', InscripcionEtapa2::class)->name('inscripcion.etapa2');
 
@@ -31,27 +44,25 @@ Route::prefix('convocatoria')->group(function () {
     });
 });
 
-Route::get('/keep-alive', function () {
-    return response()->json(['status' => 'alive']);
-});
-
-
 // --- 3. PANEL ADMINISTRATIVO ---
+/**
+ * IMPORTANTE: El prefijo es 'admin' y el nombre de la ruta principal 
+ * es 'admin.dashboard' para que coincida con tu lógica de Login.
+ */
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
-    // Nombres originales para el Admin
-    Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
+    // Esta es la ruta a la que llegará el usuario si es 'Administrador'
+    Route::get('/dashboard', AdminDashboard::class)->name('admin.dashboard');
+    
     Route::view('/perfil', 'profile')->name('profile');
 
     Route::prefix('gestion')->group(function () {
         Route::get('/convocatorias', ConvocatoriasIndex::class)->name('admin.convocatorias.index');
         Route::get('/convocatoria/{convocatoria}/proyectos', ConvocatoriasGestionar::class)->name('convocatoria.gestionar');
         Route::get('/proyecto/{proyecto}/revisar', RevisarProyecto::class)->name('proyecto.revisar');
-
-        // Metemos la configuración aquí dentro
-        Route::get('/convocatoria/{id}/config', \App\Livewire\Admin\ConvocatoriaConfig::class)
-            ->name('admin.convocatorias.config');
+        Route::get('/convocatoria/{id}/config', ConvocatoriaConfig::class)->name('admin.convocatorias.config');
     });
 });
 
+// Rutas de autenticación (Breeze/Volt)
 require __DIR__ . '/auth.php';

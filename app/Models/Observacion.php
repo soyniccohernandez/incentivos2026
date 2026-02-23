@@ -49,6 +49,7 @@ class Observacion extends Model
 
     /**
      * Relación con el usuario revisor
+     * AJUSTE: Debe apuntar a User::class tras la unificación.
      */
     public function usuarioRevisor(): BelongsTo
     {

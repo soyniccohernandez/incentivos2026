@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 
@@ -22,10 +21,10 @@ class InscripcionEtapa2 extends Component
     public Proyecto $proyecto;
     public $socio;
 
-    // Variables para archivos técnicos
+    // Archivos técnicos
     public $guionFinal, $radicadoGuion, $propuestaCreativa, $presupuesto, $cronograma;
 
-    // Variable para el elenco
+    // Elenco
     public $elenco = [];
 
     public function mount($proyectoId)
@@ -36,27 +35,37 @@ class InscripcionEtapa2 extends Component
             ->firstOrFail();
 
         $this->socio = $this->proyecto->socio;
+
+        // Inicializar con un espacio vacío en el elenco
         $this->agregarMiembro();
     }
 
+    /**
+     * Valida edad y estado administrativo del socio (Inhabilidades de perfil)
+     */
     private function verificarInhabilidadesSocio(Socio $socio)
     {
+        // 1. Mayoría de edad
         if ($socio->fecha_nacimiento && Carbon::parse($socio->fecha_nacimiento)->diffInYears(now()) < 18) {
             return "Inhabilidad: El participante debe ser mayor de edad.";
         }
 
+        // 2. Estado administrativo
         if ($socio->estado !== 'activo') {
             $mensajes = [
-                'moroso' => "Inhabilidad por mora en obligaciones administrativas.",
-                'sancionado' => "Inhabilidad por sanción ética vigente.",
+                'moroso'          => "Inhabilidad por mora en obligaciones administrativas.",
+                'sancionado'      => "Inhabilidad por sanción ética vigente.",
                 'bloqueado_cargo' => "Inhabilidad: Miembros de administración no participan.",
-                'retirado' => "El socio se encuentra en estado de retiro.",
+                'retirado'        => "El socio se encuentra en estado de retiro.",
             ];
             return $mensajes[$socio->estado] ?? "Estado ($socio->estado) no permitido.";
         }
         return "OK";
     }
 
+    /**
+     * Busca un socio y aplica la validación de exclusividad total según tu DB
+     */
     public function buscarSocio($index)
     {
         if (!isset($this->elenco[$index])) return;
@@ -67,6 +76,7 @@ class InscripcionEtapa2 extends Component
         $this->elenco[$index]['encontrado'] = false;
         $this->elenco[$index]['nombre'] = '';
 
+        // A. Validar duplicados en el mismo formulario
         foreach ($this->elenco as $idx => $m) {
             if ($idx !== $index && $m['cedula'] === $cedula) {
                 $this->elenco[$index]['nombre'] = 'ESTE SOCIO YA ESTÁ EN TU LISTA';
@@ -78,33 +88,54 @@ class InscripcionEtapa2 extends Component
         $socioEncontrado = Socio::where('identificacion', $cedula)->first();
 
         if ($socioEncontrado) {
-            $yaEstaEnOtro = DB::table('proyecto_socio')
-                ->join('proyectos', 'proyectos.id', '=', 'proyecto_socio.proyecto_id')
-                ->where('proyecto_socio.socio_id', $socioEncontrado->id)
-                ->where('proyectos.convocatoria_id', $this->proyecto->convocatoria_id)
-                ->where('proyectos.id', '!=', $this->proyecto->id)
-                ->exists();
-
-            if ($yaEstaEnOtro) {
-                $this->elenco[$index]['nombre'] = 'YA REGISTRADO EN OTRO PROYECTO';
+            // B. Validar Inhabilidades de Perfil
+            $inhabilidadPerfil = $this->verificarInhabilidadesSocio($socioEncontrado);
+            if ($inhabilidadPerfil !== "OK") {
+                $this->elenco[$index]['nombre'] = mb_strtoupper($inhabilidadPerfil);
             } else {
-                $resultado = $this->verificarInhabilidadesSocio($socioEncontrado);
-                if ($resultado !== "OK") {
-                    $this->elenco[$index]['nombre'] = mb_strtoupper($resultado);
+
+                $convId = $this->proyecto->convocatoria_id;
+                $proyIdActual = $this->proyecto->id;
+
+                // 1. ¿Es Proponente de otro proyecto? (Tabla proyectos)
+                $esProponenteOtro = Proyecto::where('convocatoria_id', $convId)
+                    ->where('id', '!=', $proyIdActual)
+                    ->where('socio_id', $socioEncontrado->id)
+                    ->exists();
+
+                // 2. ¿Es Director de otro proyecto? (Tabla directores)
+                $esDirectorOtro = DB::table('directores')
+                    ->join('proyectos', 'proyectos.id', '=', 'directores.proyecto_id')
+                    ->where('proyectos.convocatoria_id', $convId)
+                    ->where('proyectos.id', '!=', $proyIdActual)
+                    ->where('directores.identificacion', $cedula)
+                    ->exists();
+
+                // 3. ¿Ya es Elenco en otro proyecto? (Tabla proyecto_socio)
+                $esElencoOtro = DB::table('proyecto_socio')
+                    ->join('proyectos', 'proyectos.id', '=', 'proyecto_socio.proyecto_id')
+                    ->where('proyectos.convocatoria_id', $convId)
+                    ->where('proyecto_socio.socio_id', $socioEncontrado->id)
+                    ->where('proyectos.id', '!=', $proyIdActual)
+                    ->exists();
+
+                if ($esProponenteOtro || $esDirectorOtro || $esElencoOtro) {
+                    $this->elenco[$index]['nombre'] = 'INHABILITADO: YA PARTICIPA EN OTRO PROYECTO';
                 } else {
+                    // TODO CORRECTO
                     $this->elenco[$index]['nombre'] = $socioEncontrado->nombre;
                     $this->elenco[$index]['socio_id'] = $socioEncontrado->id;
                     $this->elenco[$index]['encontrado'] = true;
                     $this->elenco[$index]['foto_url'] = $this->obtenerUrlFoto($cedula);
-                    
+
                     $parts = explode(' ', mb_strtoupper($socioEncontrado->nombre));
-                    $this->elenco[$index]['iniciales'] = (count($parts) >= 2) 
-                        ? mb_substr($parts[0], 0, 1) . mb_substr($parts[1], 0, 1) 
+                    $this->elenco[$index]['iniciales'] = (count($parts) >= 2)
+                        ? mb_substr($parts[0], 0, 1) . mb_substr($parts[1], 0, 1)
                         : mb_substr($parts[0], 0, 1);
                 }
             }
         } else {
-            $this->elenco[$index]['nombre'] = 'SOCIO NO ENCONTRADO';
+            $this->elenco[$index]['nombre'] = 'LA IDENTIFICACIÓN NO ESTÁ REGISTRADA';
         }
 
         $this->elenco[$index]['buscando'] = false;
@@ -124,11 +155,11 @@ class InscripcionEtapa2 extends Component
             ]);
 
             DB::transaction(function () {
-                // 1. Guardar Elenco
+                // 1. Guardar Elenco (Tabla pivote proyecto_socio)
                 $this->proyecto->socios()->detach();
                 foreach ($this->elenco as $miembro) {
                     if ($miembro['encontrado'] && $miembro['archivo_autorizacion_path']) {
-                        $path = (is_object($miembro['archivo_autorizacion_path'])) 
+                        $path = (is_object($miembro['archivo_autorizacion_path']))
                             ? $miembro['archivo_autorizacion_path']->store("proyectos/{$this->proyecto->id}/elenco", 'public')
                             : $miembro['archivo_autorizacion_path'];
 
@@ -138,7 +169,7 @@ class InscripcionEtapa2 extends Component
                     }
                 }
 
-                // 2. Guardar Documentos Técnicos
+                // 2. Guardar Documentos Técnicos (Tabla documentos)
                 $mapeo = [
                     'Guion' => $this->guionFinal,
                     'Radicado guion DNDA' => $this->radicadoGuion,
@@ -164,19 +195,20 @@ class InscripcionEtapa2 extends Component
                     }
                 }
 
-                // 3. Actualizar estado del proyecto
+                // 3. Actualizar estado y etapa del proyecto
                 $this->proyecto->update([
-                    'estado_id' => Proyecto::REVISION_E2,
+                    'estado_id' => 5, // Etapa 2 - En Revisión según tu tabla estados
                     'etapa_id' => 2,
                     'publicado' => false
                 ]);
             });
 
-            // REDIRECCIÓN A LA RAÍZ CON MENSAJE
-            return redirect('/')->with('message', '¡Inscripción completada! Tu proyecto ha sido enviado a revisión técnica.');
-
+            return redirect('/')->with([
+                'success' => '¡ETAPA 2 COMPLETADA! La documentación técnica y el elenco han sido vinculados correctamente. Tu proyecto ya se encuentra en validación oficial.',
+                'radicado' => $this->proyecto->codigo_radicado
+            ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            throw $e; 
+            throw $e;
         } catch (\Exception $e) {
             session()->flash('error', 'Error: ' . $e->getMessage());
         }
@@ -185,9 +217,14 @@ class InscripcionEtapa2 extends Component
     public function agregarMiembro()
     {
         $this->elenco[] = [
-            'cedula' => '', 'nombre' => '', 'socio_id' => null, 
-            'archivo_autorizacion_path' => null, 'encontrado' => false, 
-            'foto_url' => null, 'iniciales' => '', 'buscando' => false
+            'cedula' => '',
+            'nombre' => '',
+            'socio_id' => null,
+            'archivo_autorizacion_path' => null,
+            'encontrado' => false,
+            'foto_url' => null,
+            'iniciales' => '',
+            'buscando' => false
         ];
     }
 

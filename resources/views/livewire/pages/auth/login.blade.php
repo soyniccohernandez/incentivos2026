@@ -2,6 +2,7 @@
 
 use App\Livewire\Forms\LoginForm;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
@@ -13,13 +14,27 @@ new #[Layout('layouts.guest')] class extends Component
     {
         $this->validate();
 
-        // El método authenticate() de Laravel Breeze ya usa internamente 
-        // $this->remember para crear la sesión persistente.
+        // 1. Intenta autenticar con las credenciales proporcionadas
         $this->form->authenticate();
 
+        // 2. Regenera la sesión por seguridad
         Session::regenerate();
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        // 3. Obtenemos el usuario autenticado (ahora todo está en la tabla users)
+        $user = Auth::user();
+
+        /** * Lógica de redirección por tipo de socio
+         * Usamos trim() para quitar espacios y strtoupper() para comparar siempre en mayúsculas
+         */
+        $rol = trim(strtoupper($user->tipo_socio ?? ''));
+
+        if ($rol === 'ADMINISTRADOR') {
+            // Redirección forzada al panel de administración
+            $this->redirect(route('admin.dashboard', absolute: false), navigate: true);
+        } else {
+            // Redirección estándar para socios
+            $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        }
     }
 }; ?>
 
@@ -49,7 +64,6 @@ new #[Layout('layouts.guest')] class extends Component
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <label class="block text-[10px] uppercase font-bold text-gray-500 tracking-widest">Contraseña</label>
-                        {{-- Link que activa el mensaje de soporte --}}
                         <button type="button" @click="showSupport = !showSupport" 
                            class="text-[9px] uppercase font-bold text-[#ff6600]/60 hover:text-[#ff6600] transition-colors tracking-tighter">
                             ¿Olvidaste tu contraseña?
@@ -59,7 +73,7 @@ new #[Layout('layouts.guest')] class extends Component
                         class="w-full bg-black border border-[#222] px-4 py-3 text-white focus:border-[#ff6600] outline-none transition-all">
                 </div>
 
-                {{-- MENSAJE DE SOPORTE (Se muestra al hacer clic en Olvidaste contraseña) --}}
+                {{-- Mensaje de Soporte --}}
                 <div x-show="showSupport" x-transition 
                     class="bg-[#ff6600]/10 border border-[#ff6600]/30 p-4 text-center">
                     <p class="text-[11px] text-gray-300 uppercase tracking-widest">
@@ -68,10 +82,9 @@ new #[Layout('layouts.guest')] class extends Component
                     </p>
                 </div>
 
-                {{-- Remember Me --}}
+                {{-- Recordarme --}}
                 <div class="flex items-center">
                     <label for="remember" class="flex items-center cursor-pointer">
-                        {{-- Importante: wire:model="form.remember" --}}
                         <input wire:model="form.remember" id="remember" type="checkbox" 
                             class="w-4 h-4 bg-black border-[#222] text-[#ff6600] focus:ring-[#ff6600] focus:ring-offset-black rounded">
                         <span class="ms-2 text-[10px] uppercase font-bold text-gray-500 tracking-widest">Recordarme en este equipo</span>

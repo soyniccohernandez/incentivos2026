@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('codigo_radicado')->unique()->comment('Número oficial de seguimiento del proyecto');
 
-            // Relaciones principales
-            $table->foreignId('socio_id')->constrained('socios')->onDelete('cascade');
+            // --- CAMBIO CLAVE AQUÍ ---
+            // Cambiamos 'socio_id' por 'user_id' y apuntamos a la tabla 'users'
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            
             $table->foreignId('convocatoria_id')->constrained('convocatorias')->onDelete('cascade');
 
             // Información básica

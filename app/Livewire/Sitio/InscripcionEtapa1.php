@@ -3,11 +3,13 @@
 namespace App\Livewire\Sitio;
 
 use App\Models\Proyecto;
-use App\Models\Socio;
+use App\Models\User;
 use App\Models\Convocatoria;
+use App\Livewire\Actions\Logout;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
@@ -17,7 +19,11 @@ class InscripcionEtapa1 extends Component
 {
     use WithFileUploads;
 
-    public Socio $socio;
+    /**
+     * @var User $socio  
+     * Representa al usuario autenticado (que ahora contiene todos los datos de socio)
+     */
+    public User $socio;
     public $foto_url, $iniciales;
 
     // Campos Formulario
@@ -48,18 +54,47 @@ class InscripcionEtapa1 extends Component
 
     public function mount()
     {
-        if (!session()->has('socio_id')) return redirect()->route('validar-socio');
+        if (!Auth::check()) {
+            return redirect()->route('validar-socio');
+        }
 
-        $this->socio = Socio::findOrFail(session('socio_id'));
+        // Asignamos el usuario autenticado (Tabla 'users')
+        $this->socio = Auth::user();
 
-        // Iniciales seguras
-        $parts = explode(' ', trim($this->socio->nombre));
-        $this->iniciales = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+        // 1. Generar iniciales seguras desde el nombre del User
+        $nombreCompuesto = trim($this->socio->name);
+        $parts = explode(' ', $nombreCompuesto);
+        $this->iniciales = strtoupper(
+            substr($parts[0] ?? 'U', 0, 1) .
+            (isset($parts[1]) ? substr($parts[1], 0, 1) : '')
+        );
 
-        // Foto segura
-        $files = Storage::disk('public')->files('socios/');
-        $foto = collect($files)->first(fn($p) => str_contains($p, $this->socio->identificacion));
-        $this->foto_url = $foto ? asset('storage/' . $foto) : null;
+        // 2. Búsqueda de Foto usando el campo 'identificacion' unificado en 'users'
+        if ($this->socio->identificacion) {
+            $directorio = 'socios'; 
+            $archivos = Storage::disk('public')->files($directorio);
+
+            // Buscamos cualquier archivo que contenga el número de identificación en su nombre
+            $fotoEncontrada = collect($archivos)->first(function ($path) {
+                return str_contains(basename($path), (string)$this->socio->identificacion);
+            });
+
+            if ($fotoEncontrada) {
+                $this->foto_url = asset('storage/' . $fotoEncontrada);
+            } else {
+                Log::info("Foto no encontrada en storage/public/socios para ID: " . $this->socio->identificacion);
+                $this->foto_url = null;
+            }
+        }
+    }
+
+    /**
+     * Cerrar sesión del usuario
+     */
+    public function logout(Logout $logout): void
+    {
+        $logout();
+        $this->redirect('/', navigate: true);
     }
 
     public function guardar()
@@ -68,14 +103,14 @@ class InscripcionEtapa1 extends Component
 
         $convocatoria = Convocatoria::where('estado', 'abierta')->first();
         if (!$convocatoria) {
-            $this->addError('error', 'No hay convocatoria abierta.');
+            $this->addError('error', 'No hay convocatoria abierta en este momento.');
             return;
         }
 
         try {
             DB::beginTransaction();
 
-            // 1. Crear Proyecto
+            // Creamos el proyecto amarrado al ID del User
             $proyecto = $this->socio->proyectos()->create([
                 'convocatoria_id' => $convocatoria->id,
                 'titulo' => strtoupper($this->titulo),
@@ -85,36 +120,43 @@ class InscripcionEtapa1 extends Component
                 'fecha_postulacion' => now(),
             ]);
 
-            // 2. Crear Director
+            // Creamos el director tomando datos de la misma tabla 'users' si es directorPropio
             $proyecto->director()->create([
-                'es_proponente' => ($this->directorPropio === 'si') ? 1 : 0,
+                'es_proponente'  => ($this->directorPropio === 'si') ? 1 : 0,
                 'identificacion' => $this->directorPropio === 'si' ? $this->socio->identificacion : $this->directorIdentificacion,
-                'nombre' => $this->directorPropio === 'si' ? strtoupper($this->socio->nombre) : strtoupper($this->directorNombre),
-                'celular' => $this->directorPropio === 'si' ? $this->socio->telefono : $this->directorCelular,
-                'correo' => $this->directorPropio === 'si' ? strtolower($this->socio->correo) : strtolower($this->directorCorreo),
+                'nombre'         => $this->directorPropio === 'si' ? strtoupper($this->socio->name) : strtoupper($this->directorNombre),
+                'celular'        => $this->directorPropio === 'si' ? $this->socio->telefono : $this->directorCelular,
+                'correo'         => $this->directorPropio === 'si' ? strtolower($this->socio->email) : strtolower($this->directorCorreo),
             ]);
 
-            // 3. Subir Archivos (Función reutilizable)
+            // Carga de documentos
             $this->upload($proyecto, $this->docDirectorCompromiso, 2, 'COMPROMISO');
             $this->upload($proyecto, $this->docDirectorExperiencia, 3, 'EXPERIENCIA');
             $this->upload($proyecto, $this->docDirectorEvidencia1, 4, 'EVIDENCIA1');
             $this->upload($proyecto, $this->docDirectorEvidencia2, 5, 'EVIDENCIA2');
             $this->upload($proyecto, $this->formatoFirmado, 6, 'DECLARACIONES');
-            if ($this->autoria === 'no') $this->upload($proyecto, $this->guionArchivo, 1, 'GUION');
+            
+            if ($this->autoria === 'no' && $this->guionArchivo) {
+                $this->upload($proyecto, $this->guionArchivo, 1, 'GUION');
+            }
 
             DB::commit();
-            session()->forget('socio_id');
+
             return redirect('/')->with([
                 'success' => 'Tu proceso de inscripción ha finalizado correctamente.',
-                'radicado' => $proyecto->codigo_radicado // Así creas la variable 'radicado' en la sesión
+                'radicado' => $proyecto->codigo_radicado
             ]);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Error Inscripción: " . $e->getMessage());
-            $this->addError('error', 'Ocurrió un error al procesar el registro.');
+            Log::error("Error Crítico en Inscripción: " . $e->getMessage());
+            $this->addError('error', 'Ocurrió un error al procesar el registro. Por favor intente de nuevo.');
         }
     }
 
+    /**
+     * Manejador de subida de archivos PDF
+     */
     private function upload($proyecto, $file, $tipoId, $prefix)
     {
         if ($file) {
@@ -122,8 +164,8 @@ class InscripcionEtapa1 extends Component
             $path = $file->storeAs('documentos/' . now()->year, $name, 'public');
             $proyecto->documentos()->create([
                 'tipo_documento_id' => $tipoId,
-                'ruta_archivo' => $path,
-                'fecha_carga' => now(),
+                'ruta_archivo'      => $path,
+                'fecha_carga'       => now(),
             ]);
         }
     }

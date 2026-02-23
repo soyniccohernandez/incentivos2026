@@ -1,198 +1,123 @@
 <?php
 
-namespace App\Admin\Convocatorias;
-
 namespace App\Livewire\Admin\Convocatorias;
 
 use App\Models\Proyecto;
+use App\Models\Estado;
 use App\Models\Documento;
-use App\Models\Observacion;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.app')]
 class RevisarProyecto extends Component
 {
+    use WithFileUploads;
+
     public Proyecto $proyecto;
-    public $observacionesDocs = [];
     public $comentarioCierre;
+    public $nuevoEstadoId;
+    public $archivoSustituto = [];
 
     public function mount(Proyecto $proyecto)
     {
         $this->proyecto = $proyecto->load([
-            'etapa',
-            'estado',
-            'director',
-            'documentos.tipoDocumento',
-            'documentos.observaciones',
-            'socios' => function ($query) {
-                $query->withPivot('archivo_autorizacion_path');
-            }
+            'etapa', 
+            'estado', 
+            'director', 
+            'user',      
+            'users',     
+            'documentos.tipoDocumento', 
+        ]);
+        
+        $this->comentarioCierre = $this->proyecto->observacion_general;
+        $this->nuevoEstadoId = $this->proyecto->estado_id;
+    }
+
+    public function subirCorreccionAdmin($tipoDocumentoId)
+    {
+        $this->validate([
+            'archivoSustituto.' . $tipoDocumentoId => 'required|mimes:pdf|max:15360',
         ]);
 
-        $this->comentarioCierre = $this->proyecto->observacion_general;
-        $this->sincronizarObservaciones();
+        // Buscamos el documento actual (el de mayor versión)
+        $documentoAnterior = Documento::where('proyecto_id', $this->proyecto->id)
+            ->where('tipo_documento_id', $tipoDocumentoId)
+            ->orderBy('version', 'desc')
+            ->first();
 
-        if (empty($this->comentarioCierre)) {
-            $this->generarResumenAutomatico();
-        }
+        $nuevaVersionNumero = $documentoAnterior ? ($documentoAnterior->version + 1) : 1;
+
+        // Guardar archivo
+        $ruta = $this->archivoSustituto[$tipoDocumentoId]->store('proyectos/correcciones_admin', 'public');
+
+        // IMPORTANTE: Marcamos TODOS los anteriores como corregidos para que no se dupliquen en la vista
+        Documento::where('proyecto_id', $this->proyecto->id)
+            ->where('tipo_documento_id', $tipoDocumentoId)
+            ->update(['estado' => 'corregido']);
+
+        // Crear la nueva versión aprobada
+        Documento::create([
+            'proyecto_id' => $this->proyecto->id,
+            'tipo_documento_id' => $tipoDocumentoId,
+            'ruta_archivo' => $ruta,
+            'estado' => 'aprobado', 
+            'version' => $nuevaVersionNumero,
+            'fecha_carga' => now(),
+        ]);
+
+        // Limpiar el input y refrescar la relación
+        unset($this->archivoSustituto[$tipoDocumentoId]);
+        
+        // Forzamos la recarga completa de documentos para el render
+        $this->proyecto->load('documentos.tipoDocumento');
+
+        session()->flash('message', 'Documento actualizado a la versión ' . $nuevaVersionNumero);
     }
 
-    public function sincronizarObservaciones()
+    public function guardarBorrador()
     {
-        foreach ($this->proyecto->documentos->groupBy('tipo_documento_id') as $grupo) {
-            $ultimoDoc = $grupo->sortByDesc('id')->first();
-            $obs = $ultimoDoc->observaciones
-                ->where('etapa_id', $this->proyecto->etapa_id)
-                ->first();
-            $this->observacionesDocs[$ultimoDoc->id] = $obs ? $obs->mensaje : ($this->observacionesDocs[$ultimoDoc->id] ?? '');
-        }
+        $this->validate([
+            'comentarioCierre' => 'required|min:10',
+            'nuevoEstadoId' => 'required|exists:estados,id'
+        ]);
+
+        $this->proyecto->update([
+            'estado_id' => $this->nuevoEstadoId,
+            'observacion_general' => $this->comentarioCierre,
+        ]);
+
+        session()->flash('message', 'Borrador guardado correctamente.');
     }
 
-    public function generarResumenAutomatico()
+    public function finalizarRevisionManual()
     {
-        $fallos = [];
-        $conteoPendientes = 0;
-        $documentos = $this->proyecto->documentos;
-        $documentosPorTipo = $documentos->groupBy('tipo_documento_id');
+        $this->validate([
+            'comentarioCierre' => 'required|min:10',
+            'nuevoEstadoId' => 'required|exists:estados,id'
+        ]);
 
-        foreach ($documentosPorTipo as $tipoId => $grupo) {
-            $doc = $grupo->sortByDesc('id')->first();
+        $this->proyecto->update([
+            'estado_id' => $this->nuevoEstadoId,
+            'observacion_general' => $this->comentarioCierre,
+            'publicado' => true // Asumo que al finalizar quieres que sea visible
+        ]);
 
-            if ($doc->tipoDocumento->etapa_id != $this->proyecto->etapa_id) continue;
-
-            $nombreSlug = \Illuminate\Support\Str::slug($doc->tipoDocumento->nombre);
-            $esTipoGuion = str_contains($nombreSlug, 'guion') || str_contains($nombreSlug, 'autorizacion');
-
-            if ($this->proyecto->etapa_id == 1 && $this->proyecto->guion_propio && $esTipoGuion) continue;
-
-            if (empty($doc->estado)) {
-                $conteoPendientes++;
-            } elseif (in_array($doc->estado, ['subsanar', 'rechazado'])) {
-                $msg = $this->observacionesDocs[$doc->id] ?? '';
-                $prefijo = ($doc->estado === 'subsanar') ? '[SUBSANAR]' : '[NO VÁLIDO]';
-                $fallos[] = "• $prefijo " . strtoupper($doc->tipoDocumento->nombre) . ": " . ($msg ?: 'Sin observación.');
-            }
-        }
-
-        if ($conteoPendientes > 0) {
-            $this->comentarioCierre = "";
-            return;
-        }
-
-        if (empty($fallos)) {
-            $this->comentarioCierre = "EL PROYECTO CUMPLE CON TODOS LOS REQUISITOS DE LA " . strtoupper($this->proyecto->etapa->nombre) . " Y AVANZA EN EL PROCESO.";
-        } else {
-            $header = "SE HAN ENCONTRADO HALLAZGOS EN LA " . strtoupper($this->proyecto->etapa->nombre) . ":\n\n";
-            $this->comentarioCierre = $header . implode("\n", $fallos);
-        }
-    }
-
-    public function cambiarEstadoDocumento($documentoId, $nuevoEstado)
-    {
-        $doc = Documento::findOrFail($documentoId);
-        $doc->update(['estado' => $nuevoEstado]);
-
-        if ($nuevoEstado === 'aprobado') {
-            $doc->observaciones()->where('etapa_id', $this->proyecto->etapa_id)->delete();
-            $this->observacionesDocs[$documentoId] = '';
-        }
-
-        $this->proyecto->refresh();
-        $this->generarResumenAutomatico();
-    }
-
-    public function guardarAvanceDocumento($documentoId)
-    {
-        if (empty($this->observacionesDocs[$documentoId])) {
-            $this->addError('observacionesDocs.' . $documentoId, 'Es obligatorio agregar una justificación.');
-            return;
-        }
-
-        $doc = Documento::findOrFail($documentoId);
-        Observacion::updateOrCreate(
-            ['documento_id' => $documentoId, 'etapa_id' => $this->proyecto->etapa_id],
-            [
-                'proyecto_id' => $this->proyecto->id,
-                'usuario_revisor_id' => Auth::id(),
-                'mensaje' => $this->observacionesDocs[$documentoId],
-                'archivo_error_path' => $doc->ruta_archivo,
-                'visible_para_proponente' => false
-            ]
-        );
-
-        $this->proyecto->refresh();
-        $this->generarResumenAutomatico();
-    }
-
-    public function finalizarRevision()
-    {
-        $this->validate(['comentarioCierre' => 'required|min:10']);
-
-        // Filtrar documentos de la etapa actual
-        $documentosEtapa = $this->proyecto->documentos->filter(function ($doc) {
-            return $doc->tipoDocumento->etapa_id == $this->proyecto->etapa_id;
-        });
-
-        foreach ($documentosEtapa as $doc) {
-            $nombreSlug = \Illuminate\Support\Str::slug($doc->tipoDocumento->nombre);
-            $esTipoGuion = str_contains($nombreSlug, 'guion') || str_contains($nombreSlug, 'autorizacion');
-            if ($this->proyecto->etapa_id == 1 && $this->proyecto->guion_propio && $esTipoGuion) continue;
-
-            if (empty($doc->estado)) {
-                $this->addError('comentarioCierre', "Falta calificar: " . $doc->tipoDocumento->nombre);
-                return;
-            }
-        }
-
-        try {
-            DB::transaction(function () use ($documentosEtapa) {
-                $estados = $documentosEtapa->pluck('estado')->toArray();
-
-                if (in_array('rechazado', $estados)) {
-                    // El proyecto muere definitivamente
-                    $nuevoEstadoId = 8; // "No continúa / Eliminado"
-                } elseif (in_array('subsanar', $estados)) {
-                    // Se le devuelve al socio para que corrija (Estado 2)
-                    // Asegúrate que Proyecto::SUBSANACION_E1 sea igual a 2
-                    $nuevoEstadoId = 2;
-                } else {
-                    // Si todo está aprobado...
-                    if ($this->proyecto->etapa_id == 1) {
-                        $nuevoEstadoId = 4; // "En Etapa 2" (Formulario Técnico)
-                        $this->proyecto->etapa_id = 2;
-                    } else {
-                        $nuevoEstadoId = 5; // "Etapa 2 - En Revisión" o el que siga en tu flujo
-                    }
-                }
-
-                $this->proyecto->update([
-                    'estado_id' => $nuevoEstadoId,
-                    'etapa_id' => $this->proyecto->etapa_id,
-                    'observacion_general' => $this->comentarioCierre,
-                    'publicado' => false
-                ]);
-            });
-
-            return redirect()->route('convocatoria.gestionar', $this->proyecto->convocatoria_id)
-                ->with('message', 'Veredicto guardado exitosamente.');
-        } catch (\Exception $e) {
-            $this->addError('comentarioCierre', 'Error: ' . $e->getMessage());
-        }
+        return redirect()->route('convocatoria.gestionar', $this->proyecto->convocatoria_id)
+            ->with('message', 'Revisión técnica finalizada y publicada.');
     }
 
     public function render()
     {
-        // CARGA FORZADA EN RENDER: Esto evita que el pivot se pierda en la rehidratación de Livewire
-        $this->proyecto->load(['socios' => function ($query) {
-            $query->withPivot('archivo_autorizacion_path');
-        }]);
+        // Solo tomamos los documentos que NO están marcados como "corregidos" 
+        // o agrupamos y tomamos solo el de mayor versión por tipo.
+        $documentosPorEtapa = $this->proyecto->documentos
+            ->groupBy(fn($doc) => $doc->tipoDocumento->etapa_id)
+            ->sortKeys();
 
         return view('livewire.admin.convocatorias.revisar-proyecto', [
-            'documentosAgrupados' => $this->proyecto->documentos->groupBy('tipo_documento_id'),
-            'elencoActual' => $this->proyecto->socios
+            'documentosPorEtapa' => $documentosPorEtapa,
+            'estados' => Estado::all()
         ]);
     }
 }

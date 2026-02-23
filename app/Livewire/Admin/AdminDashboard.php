@@ -4,39 +4,47 @@ namespace App\Livewire\Admin;
 
 use App\Models\Convocatoria;
 use App\Models\Proyecto;
-use App\Models\Socio;
-use App\Models\User;
-use App\Models\Estado;
+use App\Models\User; // Solo usamos User
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.app')]
 class AdminDashboard extends Component
 {
     public function render()
     {
-        // 1. Convocatorias Abiertas (Las que reciben registros hoy)
         $convocatoriasAbiertas = Convocatoria::where('estado', 'abierta')
-            ->where('fecha_fin', '>=', now()->format('Y-m-d'))
+            ->where('fecha_fin', '>=', now())
             ->count();
 
-        // 2. Participación Total (Suma de todos los proyectos en todas las convocatorias)
-        // Esto indica el volumen de documentos que el sistema está gestionando.
         $totalParticipantes = Proyecto::count();
 
         return view('livewire.admin.admin-dashboard', [
-            'totalSocios' => Socio::count(),
-            'sociosActivos' => Socio::where('estado', 'activo')->count(),
-            'totalAdmins' => User::count(),
+            // Contamos a todos los que NO son Administradores como socios
+            'totalSocios'   => User::where('tipo_socio', '!=', 'Administrador')->count(),
+
+            // Filtramos específicamente al Administrador
+            'totalAdmins'   => User::where('tipo_socio', 'Administrador')->count(),
+
+            // Socios activos (excluyendo admins)
+            'sociosActivos' => User::where('tipo_socio', '!=', 'Administrador')
+                ->where('estado', 'Activo')
+                ->count(),
 
             'convocatoriasAbiertas' => $convocatoriasAbiertas,
-            'totalParticipantes' => $totalParticipantes,
+            'totalParticipantes'    => $totalParticipantes,
         ]);
     }
+
     public function irASocios()
     {
+        // Esta ruta debe apuntar a la vista donde listes los Users con rol 'socio'
         return $this->redirect(route('admin.socios.index'), navigate: true);
     }
+
     public function irAUsuarios()
     {
+        // Esta ruta suele ser para gestionar administradores u otros roles
         return $this->redirect(route('admin.users.index'), navigate: true);
     }
 }

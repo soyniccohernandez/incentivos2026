@@ -2,140 +2,124 @@
 
 namespace App\Livewire\Sitio;
 
-use App\Models\Socio;
+use App\Models\User;
 use App\Models\Proyecto;
 use App\Models\Convocatoria;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('layouts.guest')]
 class ValidarSocio extends Component
 {
     public $identificacion = '';
+    public $password = '';
+    public $password_confirmation = '';
 
-    protected $rules = [
-        'identificacion' => 'required|numeric',
-    ];
+    public $paso = 'identificar';
+    public $nombreSocio = '';
+
+
+    public function mount()
+    {
+        // Si el usuario ya está logueado, no lo dejes ver el formulario, mándalo a su etapa
+        if (Auth::check()) {
+            return $this->redireccionar();
+        }
+    }
 
     public function validar()
     {
-        $this->resetErrorBag();
-        $this->validate();
-
-        // 1. ¿Existe el socio?
-        $socio = Socio::where('identificacion', $this->identificacion)->first();
-
-        if (!$socio) {
-            $this->addError('identificacion', 'La identificación ingresada no se encuentra registrada como socio de ACTORES S.C.G.');
-            return;
+        if ($this->paso === 'identificar') {
+            $this->validarIdentificacion();
+        } elseif ($this->paso === 'registrar') {
+            $this->crearPassword();
+        } elseif ($this->paso === 'login') {
+            $this->acceder();
         }
-
-        // 2. ¿Puede participar? (Edad, Estado, etc.)
-        $inhabilidad = $this->verificarInhabilidadesSocio($socio);
-        if ($inhabilidad !== "OK") {
-            $this->addError('identificacion', $inhabilidad);
-            return;
-        }
-
-        // 3. Buscar Convocatoria
-        $convocatoria = Convocatoria::where('estado', 'abierta')->first()
-            ?? Convocatoria::where('estado', 'cerrada')->latest()->first();
-
-        if (!$convocatoria) {
-            $this->addError('identificacion', 'No existe una convocatoria activa en este momento.');
-            return;
-        }
-
-        // --- CARGA DE ETAPAS PARA CONTROL DEL ADMIN ---
-        // Orden 1: Inscripción y Subsanación de documentos
-        $etapaDocs = $convocatoria->etapas()->where('orden', 1)->first();
-        // Orden 2: Formulario Técnico (Etapa 2)
-        $etapaTecnica = $convocatoria->etapas()->where('orden', 2)->first();
-
-        // Guardamos al socio en sesión
-        session(['socio_id' => $socio->id]);
-
-        // 4. GESTOR DE TRÁFICO
-        $proyecto = Proyecto::where('socio_id', $socio->id)
-            ->where('convocatoria_id', $convocatoria->id)
-            ->first();
-
-        if ($proyecto) {
-            switch ($proyecto->estado_id) {
-
-                case 2: // "En Subsanación"
-                    // El Admin controla esto con la vigencia de la Etapa 1
-                    if (!$etapaDocs || !$etapaDocs->estaActiva()) {
-                        $msj = ($etapaDocs && $etapaDocs->haVencido())
-                            ? "El plazo para subsanar venció el " . $etapaDocs->fecha_fin->format('d/m/Y H:i')
-                            : "El módulo de subsanación no está habilitado.";
-                        $this->addError('identificacion', $msj);
-                        return;
-                    }
-                    return redirect()->route('subsanar-etapa-1', $proyecto->id);
-
-                case 4: // "En etapa 2"
-                    // El Admin controla esto con la vigencia de la Etapa 2
-                    if (!$etapaTecnica || !$etapaTecnica->estaActiva()) {
-                        $msj = ($etapaTecnica && $etapaTecnica->haVencido())
-                            ? "El plazo para la Etapa Técnica venció el " . $etapaTecnica->fecha_fin->format('d/m/Y H:i')
-                            : "La Etapa Técnica aún no ha iniciado.";
-                        $this->addError('identificacion', $msj);
-                        return;
-                    }
-                    return redirect()->route('inscripcion.etapa2', $proyecto->id);
-
-                case 1: // Inscrito
-                case 3: // En revisión de subsanación
-                case 5: // Etapa 2 - En Revisión
-                    $this->addError('identificacion', "Usted ya tiene un proyecto radicado: '{$proyecto->titulo}'. Actualmente se encuentra en: {$proyecto->estado->nombre}. Por favor, espere la validación del equipo técnico.");
-                    return;
-
-                case 8: // No continúa / Eliminado
-                case 9: // No seleccionado
-                    // En lugar de addError, lo enviamos a ver sus razones
-                    return redirect()->route('proyecto.retroalimentacion', $proyecto->id);
-
-                default:
-                    $this->addError('identificacion', "Su proceso se encuentra en estado: {$proyecto->estado->nombre}. No requiere acciones adicionales por ahora.");
-                    return;
-            }
-        }
-
-        // 5. SI NO TIENE PROYECTO: Intentar nueva inscripción
-        // Validamos que la Etapa 1 esté activa según el calendario del Admin
-        if (!$etapaDocs || !$etapaDocs->estaActiva()) {
-            $msj = ($etapaDocs && $etapaDocs->haVencido())
-                ? "El periodo de inscripciones cerró el " . $etapaDocs->fecha_fin->format('d/m/Y')
-                : "Las inscripciones aún no han iniciado o están deshabilitadas.";
-
-            $this->addError('identificacion', $msj);
-            return;
-        }
-
-        // Si la etapa está activa, procedemos (independientemente de si la convocatoria dice 'abierta')
-        session(['convocatoria_id' => $convocatoria->id]);
-        return redirect()->route('inscripcion.etapa1');
     }
 
-    private function verificarInhabilidadesSocio(Socio $socio)
+    private function validarIdentificacion()
     {
-        if ($socio->fecha_nacimiento && Carbon::parse($socio->fecha_nacimiento)->diffInYears(now()) < 18) {
-            return "Inhabilidad: El participante debe ser mayor de edad.";
+        $this->validate(['identificacion' => 'required|numeric']);
+        $user = User::where('identificacion', $this->identificacion)->first();
+
+        if (!$user) {
+            $this->addError('identificacion', 'La identificación no se encuentra registrada como socio.');
+            return;
         }
 
-        if ($socio->estado !== 'activo') {
-            $mensajes = [
-                'moroso'          => "Inhabilidad por mora en obligaciones administrativas/financieras.",
-                'sancionado'      => "Inhabilidad por sanción ética o disciplinaria vigente.",
-                'bloqueado_cargo' => "Inhabilidad: Los miembros de órganos de administración no pueden participar.",
-                'retirado'        => "El socio se encuentra en estado de retiro.",
-            ];
-            return $mensajes[$socio->estado] ?? "Su estado de socio ($socio->estado) no le permite participar en esta convocatoria.";
+        if (strtolower($user->estado) !== 'activo') {
+            $this->addError('identificacion', "Su estado actual ({$user->estado}) no le permite participar.");
+            return;
         }
 
-        return "OK";
+        $this->nombreSocio = $user->name;
+        $this->paso = empty($user->password) ? 'registrar' : 'login';
+    }
+
+    private function crearPassword()
+    {
+        $this->validate(['password' => 'required|min:6|confirmed']);
+
+        $user = User::where('identificacion', $this->identificacion)->first();
+        $user->update(['password' => Hash::make($this->password)]);
+
+        // --- SOLUCIÓN AL BUCLE ---
+        Auth::login($user, true); // true activa la cookie 'remember'
+        session()->regenerate();
+        session()->save();
+
+        return $this->redireccionar();
+    }
+
+    private function acceder()
+    {
+        $this->validate(['password' => 'required']);
+
+        // --- SOLUCIÓN AL BUCLE ---
+        if (Auth::attempt(['identificacion' => $this->identificacion, 'password' => $this->password], true)) {
+            session()->regenerate();
+            session()->save();
+
+            return $this->redireccionar();
+        }
+
+        $this->addError('password', 'La contraseña ingresada es incorrecta.');
+    }
+
+    private function redireccionar()
+    {
+        session()->save();
+
+        $user = Auth::user();
+
+        // 1. Buscamos la convocatoria abierta
+        $convocatoria = Convocatoria::where('estado', 'abierta')->first();
+
+        // 2. Buscamos si el usuario ya tiene un proyecto en esa convocatoria
+        $proyecto = Proyecto::where('user_id', $user->id)
+            ->when($convocatoria, function ($query) use ($convocatoria) {
+                return $query->where('convocatoria_id', $convocatoria->id);
+            })
+            ->first();
+
+        // 3. LA CLAVE: Si no hay proyecto, mándalo a la Etapa 1 y DETENTE
+        if (!$proyecto) {
+            return redirect()->to('/convocatoria/registro-etapa-1');
+        }
+
+        // 4. Si hay proyecto, decidimos según el estado
+        $ruta = match ((int)$proyecto->estado_id) {
+            Proyecto::SUBSANACION_E1 => "/convocatoria/proyecto/{$proyecto->id}/subsanar",
+            Proyecto::EN_ETAPA_2     => route('inscripcion.etapa2', ['proyectoId' => $proyecto->id]),
+            7, 8, 9                  => "/convocatoria/proyecto/{$proyecto->id}/retroalimentacion",
+            default                  => '/convocatoria/registro-etapa-1', // No uses route() aquí por ahora, usa el path
+        };
+
+        return redirect()->to($ruta);
     }
 
     public function render()

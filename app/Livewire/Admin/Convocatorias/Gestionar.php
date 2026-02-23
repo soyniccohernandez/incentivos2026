@@ -18,7 +18,11 @@ class Gestionar extends Component
     public $convocatoria;
     public $search = '';
     public $estadoSelected = '';
-    
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'estadoSelected' => ['except' => ''],
+    ];
 
     public function mount(Convocatoria $convocatoria)
     {
@@ -30,26 +34,30 @@ class Gestionar extends Component
 
     public function render()
     {
-        // 1. Consulta de proyectos con búsqueda y filtro de estado
+        // 1. Consulta apuntando a la relación 'user' (antes socio)
         $proyectos = Proyecto::where('convocatoria_id', $this->convocatoria->id)
-            ->with(['socio', 'estado'])
+            ->with(['user', 'estado']) // CAMBIO: 'socio' -> 'user'
             ->where(function ($query) {
                 $query->where('titulo', 'like', '%' . $this->search . '%')
-                    ->orWhere('codigo_radicado', 'like', '%' . $this->search . '%');
+                    ->orWhere('codigo_radicado', 'like', '%' . $this->search . '%')
+                    // Búsqueda por nombre del usuario/postulante
+                    ->orWhereHas('user', function($q) {
+                        $q->where('name', 'like', '%' . $this->search . '%')
+                          ->orWhere('identificacion', 'like', '%' . $this->search . '%');
+                    });
             })
             ->when($this->estadoSelected, function ($query) {
                 $query->where('estado_id', $this->estadoSelected);
             })
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // 2. Conteo de estados para el filtro superior
         $estados = Estado::orderBy('id', 'asc')
             ->withCount(['proyectos' => function ($query) {
                 $query->where('convocatoria_id', $this->convocatoria->id);
             }])
             ->get();
 
-        // 3. Lógica de Etapa Actual basada en fechas (Buena Práctica)
         $hoy = Carbon::now();
         $etapaActual = $this->convocatoria->etapas()
             ->where('fecha_inicio', '<=', $hoy)
@@ -59,34 +67,37 @@ class Gestionar extends Component
         return view('livewire.admin.convocatorias.gestionar', [
             'proyectos' => $proyectos,
             'estados' => $estados,
-            'nombreEtapaActual' => $etapaActual ? $etapaActual->nombre : 'Sin etapa activa'
+            'nombreEtapaActual' => $etapaActual ? $etapaActual->nombre : 'SIN ETAPA ACTIVA'
         ]);
     }
 
     public function publicarResultados()
     {
-        DB::transaction(function () {
-            $query = Proyecto::where('convocatoria_id', $this->convocatoria->id)
+        $totalProcesados = DB::transaction(function () {
+            $baseQuery = Proyecto::where('convocatoria_id', $this->convocatoria->id)
                 ->where('publicado', false);
 
             if ($this->estadoSelected) {
-                $query->where('estado_id', $this->estadoSelected);
+                $baseQuery->where('estado_id', $this->estadoSelected);
             }
 
-            $proyectosAPublicar = $query->get();
+            $ids = $baseQuery->pluck('id');
 
-            if ($proyectosAPublicar->isEmpty()) return;
+            if ($ids->isEmpty()) return 0;
 
-            foreach ($proyectosAPublicar as $proyecto) {
-                $proyecto->update(['publicado' => true]);
-                
-                // Liberar observaciones para que el proponente las vea
-                Observacion::where('proyecto_id', $proyecto->id)
-                    ->update(['visible_para_proponente' => true]);
-            }
+            Proyecto::whereIn('id', $ids)->update(['publicado' => true]);
+            Observacion::whereIn('proyecto_id', $ids)->update(['visible_para_proponente' => true]);
+
+            return $ids->count();
         });
 
-        $this->dispatch('notify', 'Resultados publicados exitosamente.');
+        $this->dispatch('notify', [
+            'type' => $totalProcesados > 0 ? 'success' : 'info',
+            'message' => $totalProcesados > 0 
+                ? "Se han publicado $totalProcesados resultados exitosamente." 
+                : "No hay resultados pendientes por publicar."
+        ]);
+
         $this->convocatoria->refresh();
     }
 }

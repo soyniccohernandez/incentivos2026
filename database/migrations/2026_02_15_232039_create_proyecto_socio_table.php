@@ -13,20 +13,21 @@ return new class extends Migration
     {
         Schema::create('proyecto_socio', function (Blueprint $table) {
             $table->id();
+
             // Relación con el proyecto
             $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
 
-            // Relación con el socio (actor del elenco)
-            $table->foreignId('socio_id')->constrained('socios')->onDelete('cascade');
+            // Relación ajustada: ahora apunta a 'users'
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 
-            // ESTE ES EL CAMPO NUEVO QUE AGREGAMOS
+            // Campo para el PDF de autorización
             $table->string('archivo_autorizacion_path')->nullable()
                 ->comment('Ruta del PDF de autorización firmado por el actor');
 
             $table->timestamps();
 
-            // Regla: Un socio no puede estar repetido en el mismo proyecto
-            $table->unique(['proyecto_id', 'socio_id']);
+            // Regla de unicidad ajustada: un usuario no puede repetirse en el mismo proyecto
+            $table->unique(['proyecto_id', 'user_id']);
         });
     }
 

@@ -11,6 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // 1. Definir a dónde enviar a los que NO tienen sesión
+        $middleware->redirectGuestsTo(fn() => route('validar-socio'));
+
+        // 2. Tu alias actual
         $middleware->alias([
             'check.socio' => \App\Http\Middleware\CheckSocio::class,
         ]);

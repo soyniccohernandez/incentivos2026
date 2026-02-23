@@ -13,13 +13,14 @@ class RetroalimentacionProyecto extends Component
 
     public function mount(Proyecto $proyecto)
     {
-        // Seguridad: Verificar que el socio de la sesión sea el dueño del proyecto
+        // 1. Seguridad: Verificar dueño
         if (session('socio_id') != $proyecto->socio_id) {
             return redirect()->route('inscritos.publico');
         }
 
-        // Solo permitir si el estado es 8 (Eliminado) o 9 (No Seleccionado)
-        if (!in_array($proyecto->estado_id, [8, 9])) {
+        // 2. CORRECCIÓN: Ahora incluimos el estado 7 (Ganador) en los permitidos
+        // Permitir: 7 (Seleccionado/Ganador), 8 (Eliminado), 9 (No Seleccionado)
+        if (!in_array($proyecto->estado_id, [7, 8, 9])) {
             return redirect()->route('inscritos.publico');
         }
 

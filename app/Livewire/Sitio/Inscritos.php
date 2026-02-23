@@ -22,12 +22,11 @@ class Inscritos extends Component
 
     public function render()
     {
-        // 1. Buscamos la convocatoria
-        $convocatoriaMostrable = Convocatoria::where('estado', 'abierta')->first()
+        // 1. Buscamos la convocatoria mostrable
+        $convocatoriaMostrable = Convocatoria::where('estado', 'abierta')->first() 
             ?? Convocatoria::where('estado', 'cerrada')->latest()->first();
 
         // 2. Cargamos las etapas explícitamente si existe la convocatoria
-        // Esto asegura que las fechas vengan listas para comparar con horas
         if ($convocatoriaMostrable) {
             $convocatoriaMostrable->load(['etapas' => function ($q) {
                 $q->orderBy('orden', 'asc');
@@ -40,7 +39,7 @@ class Inscritos extends Component
             })
             ->where(function ($query) {
                 $query->where('titulo', 'like', '%' . $this->search . '%')
-                    ->orWhere('codigo_radicado', 'like', '%' . $this->search . '%');
+                      ->orWhere('codigo_radicado', 'like', '%' . $this->search . '%');
             })
             ->with(['estado'])
             ->orderBy('created_at', 'asc')
@@ -51,7 +50,7 @@ class Inscritos extends Component
             'total' => $proyectos->total(),
             'nombreConvocatoria' => $convocatoriaMostrable?->nombre ?? 'Sin convocatoria activa',
             'convocatoriaActual' => $convocatoriaMostrable,
-            'ahora' => now(), // <-- Pasamos la hora exacta del servidor para comparar en la vista
+            'ahora' => now(),
         ]);
     }
 }

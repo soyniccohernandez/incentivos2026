@@ -2,109 +2,72 @@
 
 namespace App\Models;
 
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    /** * Traits incorporados:
+     * HasApiTokens: Para autenticación segura.
+     * HasFactory: Para crear datos de prueba.
+     * Notifiable: Para enviar correos y alertas.
+     */
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * Los atributos que se pueden asignar masivamente.
+     * Atributos asignables (Mass Assignment).
+     * Todos estos campos podrán ser guardados desde el formulario.
      */
     protected $fillable = [
         'name',
         'email',
         'password',
         'identificacion',
-        'genero',
-        'tipo_socio',
-        'fecha_nacimiento',
-        'direccion',
         'telefono',
-        'estado',
+        'tipo_socio',
+        'otp_code',
+        'otp_expires_at',
+        'otp_last_sent_at',
     ];
 
     /**
-     * Atributos ocultos para la serialización.
+     * Atributos ocultos.
+     * No se mostrarán al convertir el modelo a un array o JSON.
      */
     protected $hidden = [
         'password',
         'remember_token',
+        'otp_code',
     ];
 
     /**
-     * Conversión de tipos.
+     * Casting de atributos.
+     * IMPORTANTE: 'datetime' convierte los strings de la BD en objetos Carbon.
+     * Esto soluciona el error: "Call to a member function format() on string"
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'fecha_nacimiento' => 'date',
-        ];
-    }
-
-    // --- ACCESORES (Lógica de negocio traída de Socio) ---
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'otp_expires_at' => 'datetime',
+        'otp_last_sent_at' => 'datetime',
+    ];
 
     /**
-     * Obtener la URL de la foto física en el storage basada en la cédula.
+     * Relación: Un usuario puede tener muchos proyectos.
      */
-    public function getFotoUrlAttribute(): ?string
+    public function proyectos()
     {
-        $directory = 'socios/';
-        
-        if (!Storage::disk('public')->exists($directory)) {
-            return null;
-        }
-
-        $files = Storage::disk('public')->files($directory);
-        
-        $foto = collect($files)->first(fn($p) => str_starts_with(basename($p), $this->identificacion . '.'));
-        
-        return $foto ? asset('storage/' . $foto) . '?v=' . time() : null;
+        return $this->hasMany(Proyecto::class);
     }
 
     /**
-     * Obtener las iniciales del usuario.
+     * Accesor opcional para verificar si es Admin.
      */
-    public function getInicialesAttribute(): string
+    public function isAdmin(): bool
     {
-        $nombres = explode(' ', str_replace(',', '', $this->name));
-        $primera = mb_substr($nombres[0] ?? '', 0, 1);
-        $segunda = mb_substr($nombres[1] ?? '', 0, 1);
-        return mb_strtoupper($primera . $segunda);
-    }
-
-    /**
-     * Atributo dinámico para la edad: $user->edad
-     */
-    public function getEdadAttribute(): int
-    {
-        return $this->fecha_nacimiento ? $this->fecha_nacimiento->age : 0;
-    }
-
-    // --- RELACIONES ---
-
-    /**
-     * Proyectos creados por este usuario (como proponente)
-     */
-    public function proyectos(): HasMany
-    {
-        return $this->hasMany(Proyecto::class, 'user_id');
-    }
-
-    /**
-     * Proyectos donde participa como parte del elenco (tabla pivot)
-     */
-    public function participaciones(): BelongsToMany
-    {
-        return $this->belongsToMany(Proyecto::class, 'proyecto_socio', 'user_id', 'proyecto_id')
-            ->withPivot('archivo_autorizacion_path')
-            ->withTimestamps();
+        return $this->tipo_socio === 'Administrador';
     }
 }

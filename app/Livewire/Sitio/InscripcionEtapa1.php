@@ -6,10 +6,12 @@ use App\Models\Proyecto;
 use App\Models\User;
 use App\Models\Convocatoria;
 use App\Livewire\Actions\Logout;
+use App\Mail\CodigoVerificacionMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
@@ -19,36 +21,51 @@ class InscripcionEtapa1 extends Component
 {
     use WithFileUploads;
 
-    /**
-     * @var User $socio  
-     * Representa al usuario autenticado (que ahora contiene todos los datos de socio)
-     */
     public User $socio;
     public $foto_url, $iniciales;
 
-    // Campos Formulario
+    // --- VARIABLES DE VERIFICACIÓN (PASO 0) ---
+    public $mostrarPasoCero = true;
+    public $otpEnviado = false;
+    public $codigoUsuario;
+    public $intentosFallidos = 0;
+
+    // --- CAMPOS FORMULARIO ---
     public $titulo;
     public $autoria = 'si';
     public $guionArchivo;
     public $directorPropio = 'si';
     public $directorIdentificacion, $directorNombre, $directorCelular, $directorCorreo;
 
-    // Documentos
+    // --- DOCUMENTOS ---
     public $docDirectorCompromiso, $docDirectorExperiencia, $docDirectorEvidencia1, $docDirectorEvidencia2, $formatoFirmado;
     public $aceptaTerminos = false, $aceptaDatos = false;
 
+    /**
+     * REGLAS DE VALIDACIÓN DINÁMICAS
+     */
     public function rules()
     {
         return [
             'titulo' => 'required|string|min:5',
-            'docDirectorCompromiso' => 'required|file|mimes:pdf|max:12288',
-            'docDirectorExperiencia' => 'required|file|mimes:pdf|max:12288',
-            'docDirectorEvidencia1' => 'required|file|mimes:pdf|max:12288',
-            'docDirectorEvidencia2' => 'required|file|mimes:pdf|max:12288',
-            'formatoFirmado' => 'required|file|mimes:pdf|max:12288',
             'aceptaTerminos' => 'accepted',
             'aceptaDatos' => 'accepted',
-            'guionArchivo' => 'required_if:autoria,no',
+            
+            // Validación condicional para Guion (Anexo 3)
+            'guionArchivo' => $this->autoria === 'no' ? 'required|file|mimes:pdf|max:12288' : 'nullable',
+
+            // Validación condicional para Director Externo
+            'directorIdentificacion' => $this->directorPropio === 'no' ? 'required|min:5' : 'nullable',
+            'directorNombre'         => $this->directorPropio === 'no' ? 'required|min:3' : 'nullable',
+            'directorCelular'        => $this->directorPropio === 'no' ? 'required|numeric|digits_between:7,15' : 'nullable',
+            'directorCorreo'         => $this->directorPropio === 'no' ? 'required|email' : 'nullable',
+
+            // Documentos obligatorios del Director
+            'docDirectorCompromiso'  => 'required|file|mimes:pdf|max:12288',
+            'docDirectorExperiencia' => 'required|file|mimes:pdf|max:12288',
+            'docDirectorEvidencia1'  => 'required|file|mimes:pdf|max:12288',
+            'docDirectorEvidencia2'  => 'required|file|mimes:pdf|max:12288',
+            'formatoFirmado'         => 'required|file|mimes:pdf|max:12288',
         ];
     }
 
@@ -58,41 +75,135 @@ class InscripcionEtapa1 extends Component
             return redirect()->route('validar-socio');
         }
 
-        // Asignamos el usuario autenticado (Tabla 'users')
         $this->socio = Auth::user();
 
-        // 1. Generar iniciales seguras desde el nombre del User
-        $nombreCompuesto = trim($this->socio->name);
-        $parts = explode(' ', $nombreCompuesto);
-        $this->iniciales = strtoupper(
-            substr($parts[0] ?? 'U', 0, 1) .
-            (isset($parts[1]) ? substr($parts[1], 0, 1) : '')
-        );
+        // Seguridad: Inscripción activa
+        $convocatoriaActiva = Convocatoria::where('estado', 'abierta')->first();
+        if ($convocatoriaActiva) {
+            $proyectoExistente = Proyecto::where('user_id', $this->socio->id)
+                ->where('convocatoria_id', $convocatoriaActiva->id)
+                ->first();
 
-        // 2. Búsqueda de Foto usando el campo 'identificacion' unificado en 'users'
-        if ($this->socio->identificacion) {
-            $directorio = 'socios'; 
-            $archivos = Storage::disk('public')->files($directorio);
-
-            // Buscamos cualquier archivo que contenga el número de identificación en su nombre
-            $fotoEncontrada = collect($archivos)->first(function ($path) {
-                return str_contains(basename($path), (string)$this->socio->identificacion);
-            });
-
-            if ($fotoEncontrada) {
-                $this->foto_url = asset('storage/' . $fotoEncontrada);
-            } else {
-                Log::info("Foto no encontrada en storage/public/socios para ID: " . $this->socio->identificacion);
-                $this->foto_url = null;
+            if ($proyectoExistente) {
+                return redirect()->to('/')->with('info', 'Usted ya cuenta con una inscripción activa.');
             }
+        }
+
+        // Iniciales Avatar
+        $parts = explode(' ', trim($this->socio->name));
+        $this->iniciales = strtoupper(substr($parts[0] ?? 'U', 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+
+        // Cargar foto
+        if ($this->socio->identificacion) {
+            $archivos = Storage::disk('public')->files('socios');
+            $fotoEncontrada = collect($archivos)->first(fn($path) => str_contains(basename($path), (string)$this->socio->identificacion));
+            if ($fotoEncontrada) $this->foto_url = asset('storage/' . $fotoEncontrada);
+        }
+
+        // OTP Persistencia
+        if ($this->socio->otp_code && $this->socio->otp_expires_at && now()->isBefore($this->socio->otp_expires_at)) {
+            $this->otpEnviado = true;
         }
     }
 
     /**
-     * Cerrar sesión del usuario
+     * HOOKS DE ACTUALIZACIÓN (Reacción inmediata)
      */
-    public function logout(Logout $logout): void
+    public function updated($propertyName)
     {
+        $this->validateOnly($propertyName);
+    }
+
+    public function updatedDirectorPropio($value)
+    {
+        if ($value === 'si') {
+            // Limpiamos datos y errores de los campos de director externo
+            $this->reset(['directorIdentificacion', 'directorNombre', 'directorCelular', 'directorCorreo']);
+            $this->resetErrorBag(['directorIdentificacion', 'directorNombre', 'directorCelular', 'directorCorreo']);
+        }
+    }
+
+    public function updatedAutoria($value)
+    {
+        if ($value === 'si') {
+            $this->reset('guionArchivo');
+            $this->resetErrorBag('guionArchivo');
+        }
+    }
+
+    // --- MÉTODOS DE APOYO (OTP) ---
+    public function maskEmail($email) {
+        if (!$email) return '';
+        $partes = explode("@", $email);
+        $name = $partes[0]; $domain = $partes[1];
+        $nombreMask = substr($name, 0, 2) . str_repeat('*', max(0, strlen($name) - 4)) . substr($name, -2);
+        $domainPartes = explode(".", $domain);
+        $dominioMask = substr($domainPartes[0], 0, 2) . str_repeat('*', 3) . (isset($domainPartes[1]) ? '.' . $domainPartes[1] : '');
+        return $nombreMask . '@' . $dominioMask;
+    }
+
+    public function maskPhone($phone) {
+        if (!$phone) return 'NO REGISTRADO';
+        return substr($phone, 0, 3) . '***' . substr($phone, -3);
+    }
+
+    public function enviarCodigo()
+    {
+        $this->resetErrorBag();
+        if ($this->socio->otp_last_sent_at) {
+            $segundosDiferencia = abs(now()->diffInSeconds($this->socio->otp_last_sent_at));
+            if ($segundosDiferencia < 60) {
+                $restante = 60 - $segundosDiferencia;
+                $this->addError('codigoUsuario', "ESPERA " . ceil($restante) . " SEGUNDOS PARA REINTENTAR.");
+                return;
+            }
+        }
+
+        $nuevoCodigo = (string)rand(100000, 999999);
+        try {
+            $this->socio->update([
+                'otp_code' => $nuevoCodigo,
+                'otp_expires_at' => now()->addMinutes(10),
+                'otp_last_sent_at' => now(),
+            ]);
+            $this->intentosFallidos = 0;
+            $this->otpEnviado = true;
+            $this->codigoUsuario = '';
+            Mail::to($this->socio->email)->send(new CodigoVerificacionMail($nuevoCodigo, $this->socio));
+        } catch (\Exception $e) {
+            Log::error("Error OTP: " . $e->getMessage());
+            $this->otpEnviado = false;
+            $this->addError('codigoUsuario', 'ERROR AL ENVIAR EL CORREO.');
+        }
+    }
+
+    public function validarCodigo()
+    {
+        $this->resetErrorBag();
+        if (!$this->socio->otp_code || !$this->socio->otp_expires_at || now()->isAfter($this->socio->otp_expires_at)) {
+            $this->addError('codigoUsuario', 'CÓDIGO EXPIRADO.');
+            $this->otpEnviado = false;
+            return;
+        }
+
+        if ($this->codigoUsuario !== $this->socio->otp_code) {
+            $this->intentosFallidos++;
+            if ($this->intentosFallidos >= 3) {
+                $this->socio->update(['otp_code' => null, 'otp_expires_at' => null]);
+                $this->otpEnviado = false;
+                $this->addError('codigoUsuario', 'INTENTOS AGOTADOS.');
+            } else {
+                $this->addError('codigoUsuario', "CÓDIGO INCORRECTO.");
+            }
+            return;
+        }
+
+        $this->socio->update(['otp_code' => null, 'otp_expires_at' => null]);
+        $this->mostrarPasoCero = false;
+    }
+
+    // --- ACCIONES FINALES ---
+    public function logout(Logout $logout): void {
         $logout();
         $this->redirect('/', navigate: true);
     }
@@ -103,60 +214,51 @@ class InscripcionEtapa1 extends Component
 
         $convocatoria = Convocatoria::where('estado', 'abierta')->first();
         if (!$convocatoria) {
-            $this->addError('error', 'No hay convocatoria abierta en este momento.');
+            $this->addError('error', 'No hay convocatoria abierta.');
             return;
         }
 
         try {
             DB::beginTransaction();
 
-            // Creamos el proyecto amarrado al ID del User
             $proyecto = $this->socio->proyectos()->create([
-                'convocatoria_id' => $convocatoria->id,
-                'titulo' => strtoupper($this->titulo),
-                'guion_propio' => ($this->autoria === 'si') ? 1 : 0,
-                'estado_id' => 1,
-                'etapa_id' => 1,
+                'convocatoria_id'   => $convocatoria->id,
+                'titulo'            => strtoupper($this->titulo),
+                'guion_propio'      => ($this->autoria === 'si') ? 1 : 0,
+                'estado_id'         => 1,
+                'etapa_id'          => 1,
                 'fecha_postulacion' => now(),
             ]);
 
-            // Creamos el director tomando datos de la misma tabla 'users' si es directorPropio
             $proyecto->director()->create([
-                'es_proponente'  => ($this->directorPropio === 'si') ? 1 : 0,
+                'es_proponente'   => ($this->directorPropio === 'si') ? 1 : 0,
                 'identificacion' => $this->directorPropio === 'si' ? $this->socio->identificacion : $this->directorIdentificacion,
                 'nombre'         => $this->directorPropio === 'si' ? strtoupper($this->socio->name) : strtoupper($this->directorNombre),
                 'celular'        => $this->directorPropio === 'si' ? $this->socio->telefono : $this->directorCelular,
                 'correo'         => $this->directorPropio === 'si' ? strtolower($this->socio->email) : strtolower($this->directorCorreo),
             ]);
 
-            // Carga de documentos
+            // Carga masiva de documentos
             $this->upload($proyecto, $this->docDirectorCompromiso, 2, 'COMPROMISO');
             $this->upload($proyecto, $this->docDirectorExperiencia, 3, 'EXPERIENCIA');
             $this->upload($proyecto, $this->docDirectorEvidencia1, 4, 'EVIDENCIA1');
             $this->upload($proyecto, $this->docDirectorEvidencia2, 5, 'EVIDENCIA2');
             $this->upload($proyecto, $this->formatoFirmado, 6, 'DECLARACIONES');
-            
+
             if ($this->autoria === 'no' && $this->guionArchivo) {
                 $this->upload($proyecto, $this->guionArchivo, 1, 'GUION');
             }
 
             DB::commit();
-
-            return redirect('/')->with([
-                'success' => 'Tu proceso de inscripción ha finalizado correctamente.',
-                'radicado' => $proyecto->codigo_radicado
-            ]);
+            return redirect('/')->with(['success' => 'Inscripción exitosa.', 'radicado' => $proyecto->codigo_radicado]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Error Crítico en Inscripción: " . $e->getMessage());
-            $this->addError('error', 'Ocurrió un error al procesar el registro. Por favor intente de nuevo.');
+            Log::error("Error Inscripción: " . $e->getMessage());
+            $this->addError('error', 'Error al procesar el registro.');
         }
     }
 
-    /**
-     * Manejador de subida de archivos PDF
-     */
     private function upload($proyecto, $file, $tipoId, $prefix)
     {
         if ($file) {

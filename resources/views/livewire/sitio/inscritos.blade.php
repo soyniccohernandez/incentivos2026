@@ -1,188 +1,200 @@
-<div class="bg-black min-h-screen text-white font-montserrat antialiased" wire:poll.10s>
-    {{-- 1. NAVEGACIÓN --}}
-    <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-5 md:px-12 bg-black/95 border-b border-[#1a1a1a]">
-        <a href="/" class="font-bebas text-3xl text-[#ff6600] tracking-[2px] no-underline">ACTORES S.C.G.</a>
+<div class="bg-black min-h-screen text-white font-outfit antialiased selection:bg-[#ff6600] selection:text-white" wire:poll.10s>
+
+    {{-- 1. NAVEGACIÓN (Mantenida según tu solicitud) --}}
+    <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-6 md:px-12 bg-black/95 backdrop-blur-xl border-b border-white/5">
+        <a href="/" class="font-bebas text-4xl text-[#ff6600] tracking-[3px] no-underline">
+            ACTORES <span class="text-white">S.C.G.</span>
+        </a>
         <ul class="flex items-center gap-8 list-none m-0 p-0">
             <li>
-                <a href="/" class="no-underline text-white font-bebas text-xl tracking-[1.5px] opacity-80 hover:text-[#ff6600] hover:opacity-100 transition-all">
-                    ← VOLVER AL INICIO
+                <a href="/" class="no-underline text-gray-400 font-bebas text-xl tracking-[2px] hover:text-[#ff6600] transition-all flex items-center gap-2">
+                    <span class="text-2xl">←</span> VOLVER AL INICIO
                 </a>
             </li>
         </ul>
     </nav>
 
-    {{-- 2. CONTENIDO PRINCIPAL --}}
-    <div class="max-w-[1100px] mx-auto pt-40 pb-24 px-6">
-        <div class="relative mb-10">
-            <span class="text-[#ff6600] tracking-[8px] text-[10px] font-bold uppercase mb-4 block">Transparencia Institucional</span>
-            <h2 class="font-bebas text-[4rem] md:text-[6rem] leading-[0.9] mb-4 tracking-wider">
-                PROYECTOS <span class="text-[#ff6600]">INSCRITOS</span>
-            </h2>
-            <div class="w-24 h-1 bg-[#ff6600] mb-6"></div>
+    <main class="max-w-[1400px] mx-auto pt-48 pb-20 px-8">
 
-            {{-- BARRA DE ETAPAS --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 bg-[#0a0a0a] border border-[#1a1a1a] p-6">
-                @if($convocatoriaActual)
-                    @foreach($convocatoriaActual->etapas->sortBy('orden') as $etapa)
-                        @php $activa = $etapa->estaActiva(); @endphp
-                        <div class="flex items-center gap-4 {{ $activa ? 'opacity-100' : 'opacity-30' }}">
-                            <div class="w-10 h-10 flex items-center justify-center border {{ $activa ? 'border-[#ff6600] text-[#ff6600] shadow-[0_0_15px_rgba(255,102,0,0.4)]' : 'border-gray-800 text-gray-600' }} font-bebas text-xl">
-                                {{ $etapa->orden }}
-                            </div>
-                            <div>
-                                <p class="text-[10px] uppercase tracking-tighter font-bold {{ $activa ? 'text-[#ff6600]' : 'text-gray-500' }}">
-                                    {{ $etapa->nombre }}
-                                    @if($activa)
-                                        <span class="ml-2 animate-pulse text-[8px] bg-[#ff6600] text-black px-1 rounded">EN VIVO</span>
-                                    @endif
-                                </p>
-                                <p class="text-[10px] font-mono {{ $activa ? 'text-gray-200' : 'text-gray-600' }}">
-                                    {{ $etapa->fecha_inicio->format('d M, h:i A') }} — {{ $etapa->fecha_fin->format('d M, h:i A') }}
-                                </p>
-                            </div>
-                        </div>
-                    @endforeach
-                @endif
-            </div>
-        </div>
+        {{-- HERO SECTION: IMPACTO RADICAL --}}
+        <div class="border-l-[12px] border-[#ff6600] pl-8 md:pl-16 mb-24">
+            <span class="text-white/30 tracking-[12px] text-xs font-black uppercase mb-6 block">Plataforma de Transparencia 2026</span>
+            <h1 class="font-bebas text-[11vw] md:text-[9rem] leading-[0.8] mb-12 tracking-tighter">
+                MONITOR <br><span class="text-[#ff6600]">DE PROYECTOS</span>
+            </h1>
 
-        {{-- Panel de Control --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 items-end">
-            <div class="md:col-span-2">
-                <label class="text-[10px] uppercase tracking-[3px] text-gray-500 font-bold mb-3 block">Filtrar por nombre o radicado</label>
-                <div class="relative">
-                    <input type="text" wire:model.live="search" placeholder="EJ: EL GUION DE MI VIDA..." 
-                        class="w-full bg-[#0a0a0a] border border-[#222] py-5 px-6 text-white focus:border-[#ff6600] focus:ring-1 focus:ring-[#ff6600] transition-all outline-none font-medium text-sm tracking-widest">
+            <div class="flex flex-wrap gap-8 items-center">
+                {{-- Botón Principal: Inscripción --}}
+                <a href="{{ route('validar-socio') }}" class="group flex items-center gap-6 no-underline bg-white/5 p-4 pr-10 hover:bg-[#ff6600] transition-all duration-500 rounded-full">
+                    <div class="w-16 h-16 rounded-full bg-[#ff6600] group-hover:bg-white flex items-center justify-center transition-all">
+                        <svg class="w-8 h-8 text-white group-hover:text-[#ff6600]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="block font-bebas text-3xl text-white group-hover:text-black leading-none uppercase">¡Quiero Inscribirme!</span>
+                        <span class="text-white/40 group-hover:text-black/60 text-[10px] uppercase tracking-[3px] font-bold">Inicia tu postulación aquí</span>
+                    </div>
+                </a>
+
+                <div class="h-16 w-[1px] bg-white/10 hidden md:block"></div>
+
+                {{-- Acceso a Estado --}}
+                <a href="{{ route('validar-socio') }}" class="group flex flex-col no-underline border-b-2 border-transparent hover:border-[#ff6600] pb-2 transition-all">
+                    <span class="text-white font-bebas text-3xl tracking-tighter uppercase">Ver mi estado</span>
+                    <span class="text-[#ff6600] text-[10px] uppercase tracking-[3px] font-black">Acceso a postulantes</span>
+                </a>
+
+                <div class="h-16 w-[1px] bg-white/10 hidden md:block"></div>
+
+                {{-- Contador --}}
+                <div class="flex flex-col">
+                    <span class="text-[#ff6600] font-bebas text-6xl leading-none">{{ $total }}</span>
+                    <span class="text-white/40 text-[10px] uppercase tracking-[4px] font-black">Obras Registradas</span>
                 </div>
             </div>
-            <div class="bg-[#111] p-6 border-l-2 border-[#ff6600] flex flex-col justify-center shadow-xl">
-                <span class="text-gray-500 text-[10px] uppercase tracking-[2px] font-bold">Total Recibidos</span>
-                <span class="text-[#ff6600] font-bebas text-5xl leading-none mt-1">{{ $total }}</span>
+        </div>
+
+        {{-- GRID DE CRONOGRAMA: LAS FECHAS SON PROTAGONISTAS --}}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-1 mb-24 bg-white/5 border border-white/5">
+            @if($convocatoriaActual)
+            @foreach($convocatoriaActual->etapas->sortBy('orden') as $etapa)
+            @php $activa = $etapa->estaActiva(); @endphp
+            <div class="p-10 transition-all {{ $activa ? 'bg-[#ff6600] text-black shadow-[0_0_50px_rgba(255,102,0,0.2)]' : 'bg-black opacity-30' }}">
+                <div class="flex justify-between items-start mb-10">
+                    <span class="font-bebas text-2xl uppercase tracking-widest">{{ $etapa->nombre }}</span>
+                    <span class="font-bebas text-5xl opacity-20">0{{ $etapa->orden }}</span>
+                </div>
+                <div class="space-y-1">
+                    <p class="text-[10px] uppercase font-black tracking-[3px] opacity-60">Fecha Límite de Cierre</p>
+                    <p class="font-bebas text-[3.5rem] leading-none tracking-tighter">{{ $etapa->fecha_fin->format('d.M') }}</p>
+                    <p class="font-mono text-sm font-bold opacity-80">{{ $etapa->fecha_fin->format('h:i A') }} / 2026</p>
+                </div>
+                @if($activa)
+                <div class="mt-8 pt-6 border-t border-black/20 flex items-center gap-3">
+                    <span class="flex h-3 w-3 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-black"></span>
+                    </span>
+                    <span class="text-[10px] font-black uppercase tracking-[4px]">Etapa actualmente abierta</span>
+                </div>
+                @endif
+            </div>
+            @endforeach
+            @endif
+        </div>
+
+        {{-- CONTENEDOR DE BÚSQUEDA: DISEÑO DE GALERÍA --}}
+        <div class="mb-32">
+            <div class="max-w-7xl">
+                {{-- Título sutil --}}
+                <p class="text-[#ff6600] font-bold text-[10px] tracking-[6px] uppercase mb-4">Buscador Oficial</p>
+
+                {{-- Input Masivo y Limpio --}}
+                <div class="relative">
+                    <input type="text" wire:model.live="search"
+                        placeholder="Escriba el nombre de la obra..."
+                        class="w-full bg-transparent border-none p-0 text-white text-4xl md:text-7xl font-light tracking-tighter outline-none placeholder:text-white/5 uppercase">
+
+                    {{-- Línea de acento dinámica --}}
+                    <div class="h-[1px] w-full bg-white/10 mt-6 relative">
+                        <div class="absolute top-0 left-0 h-[2px] bg-[#ff6600] transition-all duration-700 w-24 group-focus-within:w-full"></div>
+                    </div>
+                </div>
+
+                {{-- Instrucciones en lenguaje natural --}}
+                <div class="mt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 w-full">
+                    {{-- Texto a la izquierda --}}
+                    <p class="text-gray-500 text-sm max-w-md leading-relaxed m-0">
+                        Utilice el buscador para filtrar por el título exacto de su proyecto audiovisual o el número de radicado asignado.
+                    </p>
+
+                    {{-- Botón a la derecha --}}
+                    <div class="flex shrink-0">
+                        <a href="{{ route('validar-socio') }}" class="text-white text-[11px] font-black uppercase tracking-[3px] border border-white/20 px-8 py-4 hover:bg-[#ff6600] hover:border-[#ff6600] hover:text-white transition-all no-underline whitespace-nowrap">
+                            Ver mi estado de postulación
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        {{-- Tabla de Proyectos --}}
-        <div class="overflow-hidden border border-[#1a1a1a] bg-[#050505] shadow-2xl">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-[#0a0a0a] border-b border-[#1a1a1a]">
-                        <th class="p-6 font-bebas text-xl tracking-[3px] text-gray-400">RADICADO</th>
-                        <th class="p-6 font-bebas text-xl tracking-[3px] text-gray-400">TÍTULO DE LA OBRA</th>
-                        <th class="p-6 font-bebas text-xl tracking-[3px] text-gray-400 text-center">ESTADO / ACCIÓN</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-[#121212]">
-                    @forelse($proyectos as $proyecto)
-                        <tr class="hover:bg-white/[0.02] transition-colors group">
-                            <td class="p-6">
-                                <span class="bg-[#111] text-[#ff6600] px-3 py-2 rounded font-bold tracking-tighter border border-[#222] font-mono text-sm">
-                                    {{ $proyecto->codigo_radicado }}
-                                </span>
-                            </td>
-                            <td class="p-6">
-                                <div class="text-white font-bold text-lg uppercase group-hover:text-[#ff6600] transition-colors duration-300">
-                                    {{ $proyecto->titulo }}
-                                </div>
-                                <span class="text-[9px] text-gray-500 uppercase tracking-widest block mt-1">
-                                    Postulado: {{ $proyecto->created_at->format('d M, Y — h:i A') }}
-                                </span>
-                            </td>
-                            <td class="p-6 text-center">
-                                <div class="flex items-center justify-center">
-                                    @if(!$proyecto->publicado)
-                                        {{-- ESTADO EN REVISIÓN --}}
-                                        <div class="flex items-center gap-3 bg-[#0a0a0a] border border-[#222] px-4 py-2 rounded-full">
-                                            <div class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></div>
-                                            <span class="text-[10px] font-bold uppercase tracking-[2px] text-gray-400"> Inscrito / En Revisión </span>
-                                        </div>
-                                    @else
-                                        @php
-                                            $e1 = $proyecto->convocatoria->etapas->where('orden', 1)->first();
-                                            $e2 = $proyecto->convocatoria->etapas->where('orden', 2)->first();
-                                        @endphp
+        {{-- LISTADO DE PROYECTOS: MINIMALISMO TOTAL --}}
+        <div class="space-y-1">
+            {{-- Encabezado de tabla minimalista --}}
+            <div class="grid grid-cols-12 gap-4 px-8 py-4 border-b border-white/5 text-[10px] font-black uppercase tracking-[4px] text-gray-600">
+                <div class="col-span-8 md:col-span-9">Proyecto Audiovisual</div>
+                <div class="col-span-4 md:col-span-3 text-right">Estatus</div>
+            </div>
 
-                                        {{-- ESTADO 2: SUBSANACIÓN --}}
-                                        @if($proyecto->estado_id == 2)
-                                            @if($e1 && $e1->estaActiva())
-                                                <a href="{{ route('validar-socio') }}" class="flex items-center gap-3 px-6 py-3 bg-amber-500 text-black font-bebas text-xl tracking-wider hover:bg-white transition-all no-underline shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-                                                    CORREGIR AHORA
-                                                </a>
-                                            @else
-                                                <div class="flex flex-col items-center">
-                                                    <span class="text-[10px] text-amber-500/50 border border-amber-500/20 px-4 py-2 uppercase font-bold italic">Plazo vencido</span>
-                                                </div>
-                                            @endif
+            @forelse($proyectos as $proyecto)
+            <div class="group relative grid grid-cols-12 gap-4 px-8 py-12 items-center hover:bg-white/[0.02] transition-all border-b border-white/5">
 
-                                        {{-- ESTADO 4: ETAPA 2 --}}
-                                        @elseif($proyecto->estado_id == 4)
-                                            @if($e2 && $e2->estaActiva())
-                                                <a href="{{ route('validar-socio') }}" class="flex items-center gap-2 px-6 py-3 bg-[#ff6600] text-white font-bebas text-xl tracking-wider hover:bg-white hover:text-black transition-all no-underline shadow-[0_0_20px_rgba(255,102,0,0.3)]">
-                                                    COMPLETAR ETAPA 2
-                                                </a>
-                                            @else
-                                                <div class="flex flex-col items-center text-[#ff6600]/40">
-                                                    <span class="text-[10px] border border-[#ff6600]/20 px-4 py-2 uppercase font-bold italic">Etapa cerrada</span>
-                                                </div>
-                                            @endif
+                {{-- Columna de Información --}}
+                <div class="col-span-12 md:col-span-9">
+                    <div class="flex flex-col gap-2">
+                        <span class="text-[#ff6600] font-mono text-[10px] font-bold tracking-[2px]">
+                            #{{ $proyecto->codigo_radicado }}
+                        </span>
+                        <h3 class="text-white text-3xl md:text-5xl font-medium tracking-tight group-hover:translate-x-2 transition-transform duration-500 uppercase">
+                            {{ $proyecto->titulo }}
+                        </h3>
+                        <div class="flex gap-6 mt-2 text-[10px] text-gray-500 uppercase tracking-[2px]">
+                            <span>Registro: {{ $proyecto->created_at->format('d/m/Y') }}</span>
+                            <span class="hidden md:inline">•</span>
+                            <span class="hidden md:inline">Cód. Sistema: {{ $proyecto->id + 1000 }}</span>
+                        </div>
+                    </div>
+                </div>
 
-                                        {{-- ESTADO 8 y 9: RECHAZADO / ELIMINADO --}}
-                                        @elseif(in_array($proyecto->estado_id, [8, 9]))
-                                            <a href="{{ route('validar-socio') }}" class="flex items-center gap-2 px-6 py-3 bg-red-600/10 text-red-500 border border-red-600/40 font-bebas text-xl tracking-wider hover:bg-red-600 hover:text-white transition-all no-underline">
-                                                VER MOTIVO RECHAZO
-                                            </a>
+                {{-- Columna de Estado --}}
+                <div class="col-span-12 md:col-span-3 text-left md:text-right mt-6 md:mt-0">
+                    @if($proyecto->estado_id == 7)
+                    <span class="text-emerald-500 font-bebas text-3xl tracking-widest uppercase italic">Seleccionado</span>
+                    @elseif($proyecto->estado_id == 2)
+                    <a href="{{ route('validar-socio') }}" class="inline-block bg-[#ff6600] text-black px-8 py-3 font-bebas text-2xl tracking-tighter no-underline hover:bg-white transition-colors">
+                        Subsanar Documentos
+                    </a>
+                    @else
+                    <span class="text-white/40 font-bebas text-2xl tracking-widest uppercase">
+                        {{ $proyecto->estado->nombre }}
+                    </span>
+                    @endif
+                </div>
 
-                                        {{-- ESTADO 7: SELECCIONADO / GANADOR --}}
-                                        @elseif($proyecto->estado_id == 7)
-                                            <a href="{{ route('validar-socio') }}" 
-                                               class="flex flex-col items-center gap-1 px-6 py-3 bg-emerald-600 text-white hover:bg-emerald-500 transition-all no-underline shadow-[0_0_25px_rgba(16,185,129,0.4)] border border-emerald-400/30 group/btn">
-                                                <div class="flex items-center gap-2">
-                                                    <svg class="w-5 h-5 text-emerald-200 animate-bounce" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                    </svg>
-                                                    <span class="font-bebas text-2xl tracking-wider uppercase">¡PROYECTO GANADOR!</span>
-                                                </div>
-                                                <span class="text-[10px] font-bold uppercase tracking-[2px] text-emerald-100 opacity-80 group-hover/btn:opacity-100">
-                                                    Ver pasos a seguir →
-                                                </span>
-                                            </a>
-
-                                        {{-- OTROS ESTADOS PUBLICADOS --}}
-                                        @else
-                                            <div class="flex items-center gap-3 bg-[#0a0a0a] border border-[#222] px-4 py-2 rounded-full">
-                                                <div class="w-2 h-2 rounded-full bg-gray-600"></div>
-                                                <span class="text-[10px] font-bold uppercase tracking-[2px] text-gray-400"> 
-                                                    {{ $proyecto->estado->nombre }} 
-                                                </span>
-                                            </div>
-                                        @endif
-                                    @endif
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3" class="p-20 text-center">
-                                <p class="font-bebas text-3xl text-gray-700 tracking-widest">No se encontraron proyectos</p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                {{-- Decoración lateral sutil --}}
+                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-0 bg-[#ff6600] group-hover:h-1/2 transition-all duration-500"></div>
+            </div>
+            @empty
+            <div class="py-32 text-center">
+                <p class="text-white/10 font-bebas text-6xl uppercase italic">Sin resultados encontrados</p>
+            </div>
+            @endforelse
         </div>
 
+        {{-- PAGINACIÓN --}}
         @if($proyectos->hasPages())
-            <div class="mt-12">
-                {{ $proyectos->links() }}
-            </div>
+        <div class="mt-10 flex justify-center">
+            {{ $proyectos->links() }}
+        </div>
         @endif
-    </div>
+
+    </main>
 
     {{-- FOOTER --}}
-    <footer class="border-t border-[#1a1a1a] py-12 bg-black">
-        <div class="max-w-[1100px] mx-auto px-6 text-center">
-            <p class="text-[10px] tracking-[5px] text-gray-600 uppercase font-bold">
-                © 2026 ACTORES SOCIEDAD COLOMBIANA DE GESTIÓN
-            </p>
+    <footer class="p-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 bg-[#030303]">
+        <div class="flex flex-col gap-2">
+            <span class="font-bebas text-3xl text-white tracking-widest uppercase leading-none">Actores SCG</span>
+            <span class="font-mono text-[9px] font-bold tracking-[5px] uppercase text-white/30 italic">© 2026 Sociedad Colombiana de Gestión</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="text-right">
+                <span class="block font-mono text-[9px] font-black text-[#ff6600] tracking-[2px] uppercase">Estado del Sistema</span>
+                <span class="block font-mono text-[9px] text-white/40 uppercase tracking-[2px]">Conexión Encriptada SSL-256</span>
+            </div>
+            <div class="w-12 h-12 border border-white/10 flex items-center justify-center">
+                <div class="w-2 h-2 rounded-full bg-[#ff6600] animate-pulse"></div>
+            </div>
         </div>
     </footer>
 </div>

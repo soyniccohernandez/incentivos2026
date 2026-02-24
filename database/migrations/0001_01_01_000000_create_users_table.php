@@ -21,11 +21,16 @@
                 // --- NUEVOS CAMPOS UNIFICADOS DE SOCIO ---
                 $table->string('identificacion')->unique()->nullable();
                 $table->string('genero')->nullable();
-                $table->string('tipo_socio')->nullable(); // Ej: 'Socio', 'Administrador'
+                $table->string('tipo_socio')->nullable();
                 $table->date('fecha_nacimiento')->nullable();
                 $table->string('direccion')->nullable();
                 $table->string('telefono')->nullable();
                 $table->string('estado')->default('Activo');
+
+                // --- CAMPOS DE SEGURIDAD Y SOPORTE (OTP) ---
+                $table->string('otp_code', 6)->nullable(); // El código actual
+                $table->timestamp('otp_expires_at')->nullable(); // Cuándo vence
+                $table->timestamp('otp_last_sent_at')->nullable(); // Para el límite de reenvío
 
                 $table->rememberToken();
                 $table->timestamps();

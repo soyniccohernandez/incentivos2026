@@ -93,33 +93,45 @@ class ValidarSocio extends Component
     private function redireccionar()
     {
         session()->save();
-
         $user = Auth::user();
 
         // 1. Buscamos la convocatoria abierta
         $convocatoria = Convocatoria::where('estado', 'abierta')->first();
 
-        // 2. Buscamos si el usuario ya tiene un proyecto en esa convocatoria
-        $proyecto = Proyecto::where('user_id', $user->id)
-            ->when($convocatoria, function ($query) use ($convocatoria) {
-                return $query->where('convocatoria_id', $convocatoria->id);
-            })
-            ->first();
-
-        // 3. LA CLAVE: Si no hay proyecto, mándalo a la Etapa 1 y DETENTE
-        if (!$proyecto) {
-            return redirect()->to('/convocatoria/registro-etapa-1');
+        if (!$convocatoria) {
+            return redirect()->to('/');
         }
 
-        // 4. Si hay proyecto, decidimos según el estado
-        $ruta = match ((int)$proyecto->estado_id) {
-            Proyecto::SUBSANACION_E1 => "/convocatoria/proyecto/{$proyecto->id}/subsanar",
-            Proyecto::EN_ETAPA_2     => route('inscripcion.etapa2', ['proyectoId' => $proyecto->id]),
-            7, 8, 9                  => "/convocatoria/proyecto/{$proyecto->id}/retroalimentacion",
-            default                  => '/convocatoria/registro-etapa-1', // No uses route() aquí por ahora, usa el path
-        };
+        // 2. Buscamos si el socio ya tiene un proyecto
+        $proyecto = Proyecto::where('user_id', $user->id)
+            ->where('convocatoria_id', $convocatoria->id)
+            ->first();
 
-        return redirect()->to($ruta);
+        // 3. SI NO TIENE PROYECTO:
+        // Lo mandamos a la ruta 'dashboard' (que es /mi-panel). 
+        // Como DashboardSocio verá que no hay proyecto, cargará automáticamente la Etapa 1.
+        if (!$proyecto) {
+            return redirect()->route('dashboard');
+        }
+
+        // 4. SI YA TIENE PROYECTO:
+        // También lo mandamos a 'dashboard'. 
+        // El DashboardSocio mirará el estado_id y mostrará la vista de "Revisión", "Subsanar", etc.
+
+        // Nota: Solo usamos rutas específicas si el flujo de la Etapa 2 o Subsanación 
+        // vive en componentes totalmente aparte que no quieras meter en el Dashboard.
+
+        return match ((int)$proyecto->estado_id) {
+            // Para estados de revisión o finales, que el Dashboard decida la vista
+            1, 3, 7, 8, 9 => redirect()->route('dashboard'),
+
+            // Si tienes rutas específicas para estos procesos, las mantenemos:
+            2 => redirect()->route('subsanar-etapa-1', ['proyecto' => $proyecto->id]),
+            4 => redirect()->route('inscripcion.etapa2', ['proyectoId' => $proyecto->id]),
+
+            // Por defecto, siempre al panel central
+            default => redirect()->route('dashboard'),
+        };
     }
 
     public function render()

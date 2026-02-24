@@ -14,64 +14,111 @@
             background-size: cover;
             background-position: center;
         }
+
+        #livewire-error {
+            display: none !important;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Opcional: Una línea debajo del activo para más estilo */
+        .nav-link-scroll.text-brand-orange {
+            position: relative;
+        }
+
+        .nav-link-scroll.text-brand-orange::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #ff6600;
+        }
     </style>
 </head>
 
 <body class="bg-black text-white font-montserrat antialiased leading-relaxed">
 
-    {{-- Modal de Éxito --}}
+    {{-- Modal de Éxito - Versión Sophisticated Tech --}}
     @if (session()->has('success'))
-    <div id="success-modal" x-data="{ show: true }"
+    <div id="success-modal"
+        x-data="{ show: true }"
         x-show="show"
-        class="fixed inset-0 z-[3000] flex items-center justify-center p-4">
+        class="fixed inset-0 z-[5000] flex items-center justify-center p-6 overflow-hidden">
 
-        {{-- Overlay --}}
-        <div class="fixed inset-0 bg-black/95 backdrop-blur-sm" @click="show = false; document.getElementById('success-modal').style.display='none'"></div>
+        {{-- Overlay: Menos opaco para ver el fondo sutilmente --}}
+        <div class="fixed inset-0 bg-black/90 backdrop-blur-xl"
+            @click="show = false; document.getElementById('success-modal').style.display='none'">
+        </div>
 
-        {{-- Contenedor del Modal --}}
-        <div class="relative bg-[#111] border-2 border-[#ff6600] max-w-2xl w-full shadow-[0_0_50px_rgba(255,102,0,0.3)] z-[3001]"
+        {{-- Contenedor Principal --}}
+        <div class="relative bg-white w-full max-w-xl shadow-[0_30px_100px_rgba(0,0,0,0.5)] z-[5001] rounded-2xl overflow-hidden"
             x-show="show"
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 scale-90"
-            x-transition:enter-end="opacity-100 scale-100">
+            x-transition:enter="transition ease-out duration-500"
+            x-transition:enter-start="opacity-0 scale-90 translate-y-10"
+            x-transition:enter-end="opacity-100 scale-100 translate-y-0">
 
-            <div class="p-8 md:p-12 text-center relative">
-                {{-- Icono Check --}}
-                <div class="mx-auto w-20 h-20 bg-[#ff6600] flex items-center justify-center rounded-full mb-8">
-                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+            {{-- Cabecera con degradado sutil --}}
+            <div class="h-2 w-full bg-gradient-to-r from-brand-orange via-orange-400 to-brand-orange"></div>
+
+            <div class="p-10 md:p-14 text-center">
+
+                {{-- Icono Check: Minimalista --}}
+                <div class="mb-8 inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-50 text-green-500 shadow-inner">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
                     </svg>
                 </div>
 
-                <h2 class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-6">
-                    ¡INSCRIPCIÓN <span class="text-[#ff6600]">EXITOSA!</span>
+                <h2 class="font-bebas text-5xl md:text-6xl text-gray-900 leading-tight mb-4 tracking-tight">
+                    REGISTRO <span class="text-brand-orange">COMPLETO</span>
                 </h2>
 
-                <p class="text-gray-300 text-lg mb-6 italic">
-                    {{ session('success') }}
+                <p class="text-gray-500 text-sm md:text-base font-medium leading-relaxed mb-10 max-w-sm mx-auto">
+                    Tu propuesta ha sido cargada correctamente en nuestro sistema. Hemos generado tu identificador oficial.
                 </p>
 
-                {{-- CAJA DE RADICADO DESTACADA --}}
-                <div class="bg-[#0a0a0a] border border-[#222] p-6 mb-10 inline-block w-full max-w-sm">
-                    <span class="text-gray-500 text-[10px] uppercase tracking-[3px] block mb-2 font-bold">Número de Radicado Oficial</span>
-                    <span class="text-[#ff6600] font-bebas text-5xl tracking-[4px] block">
-                        {{ session('radicado') }}
-                    </span>
+                {{-- Visualización del Radicado: Estilo Tarjeta Digital --}}
+                <div class="bg-gray-50 border border-gray-100 rounded-xl p-8 mb-10 relative overflow-hidden group">
+                    {{-- Adorno lateral --}}
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-brand-orange"></div>
+
+                    <span class="text-gray-400 text-[10px] uppercase tracking-[3px] block mb-2 font-bold">Número de radicado</span>
+
+                    <div class="flex items-center justify-center gap-3">
+                        <span class="text-gray-900 font-bebas text-5xl md:text-6xl tracking-[2px] select-all">
+                            {{ session('radicado') ?? 'ABC-000-2026' }}
+                        </span>
+                    </div>
+
+                    <p class="mt-4 text-[9px] text-gray-400 uppercase tracking-widest font-bold">Conserva este código para futuras consultas</p>
                 </div>
 
-                <div class="flex flex-col items-center gap-4">
+                {{-- Botones y acciones --}}
+                <div class="flex flex-col gap-4">
                     <button onclick="document.getElementById('success-modal').style.display='none'"
                         @click="show = false"
-                        class="w-full md:w-auto bg-[#ff6600] text-white font-bebas text-2xl px-12 py-4 hover:bg-white hover:text-black transition-all duration-300 tracking-widest">
-                        ENTENDIDO Y FINALIZAR
+                        class="w-full bg-gray-900 text-white font-bold py-5 rounded-xl hover:bg-brand-orange transition-all duration-300 shadow-lg shadow-gray-200 uppercase tracking-widest text-xs">
+                        Entendido y Cerrar
                     </button>
 
-                    <button onclick="document.getElementById('success-modal').style.display='none'"
-                        @click="show = false"
-                        class="text-gray-500 hover:text-white text-[10px] uppercase font-bold tracking-[3px] cursor-pointer mt-4">
-                        [ CERRAR VENTANA ]
-                    </button>
+                    <div class="flex items-center justify-center gap-2 mt-2">
+                        <svg class="w-4 h-4 text-brand-orange" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                        </svg>
+                        <span class="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Confirmación enviada al correo</span>
+                    </div>
                 </div>
+            </div>
+
+            {{-- Footer del modal --}}
+            <div class="bg-gray-50 px-10 py-4 border-t border-gray-100 flex justify-between items-center text-[9px] text-gray-400 font-bold uppercase tracking-widest">
+                <span>Convocatoria 2026</span>
+                <span class="text-brand-orange">Sistema de Gestión Audiovisual</span>
             </div>
         </div>
     </div>
@@ -80,11 +127,9 @@
     {{-- Navegación Fija --}}
     <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-5 md:px-12 bg-black/95 border-b border-brand-border backdrop-blur-sm">
         {{-- LOGO Y BRANDING --}}
-        <a href="#" class="flex items-center gap-4 group no-underline">
+        <a href="{{ url('/') }}" class="flex items-center gap-4 group no-underline">
             <div class="relative overflow-hidden">
-                <img src="{{ asset('resources/imagenes/logo.png') }}"
-                    alt="Logo Actores SCG"
-                    class="h-[45px] md:h-[55px] w-auto object-contain transition-transform duration-500 group-hover:scale-110">
+                <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo Actores SCG" class="h-[45px] md:h-[55px] w-auto object-contain transition-transform duration-500 group-hover:scale-110">
             </div>
             <div class="h-8 w-[1px] bg-brand-orange/40 hidden sm:block"></div>
             <div class="flex flex-col justify-center">
@@ -102,29 +147,48 @@
 
         {{-- ENLACES --}}
         <ul class="nav-links fixed md:static top-0 -right-full md:right-0 w-full md:w-auto h-screen md:h-auto bg-brand-orange md:bg-transparent flex flex-col md:flex-row justify-center md:justify-end items-center gap-8 md:gap-[30px] transition-all duration-500 z-[1000] list-none">
-            <li><a href="#" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">INICIO</a></li>
-            <li><a href="#convocatoria" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">REQUISITOS</a></li>
-            <li><a href="#cronograma" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">CRONOGRAMA</a></li>
-            <li><a href="#pasos" class="no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-100 md:opacity-80 hover:md:text-brand-orange hover:opacity-100 transition-all">INSCRIPCIÓN</a></li>
-            <li class="md:ml-6 mt-4 md:mt-0">
+
+            {{-- ANCLAS (Con clase nav-link-scroll para el script) --}}
+            <li><a href="#inicio" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">INICIO</a></li>
+            <li><a href="#requisitos" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">REQUISITOS</a></li>
+            <li><a href="#convocatoria" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">SOBRE LA CONVOCATORIA</a></li>
+            <li><a href="#cronograma" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">CRONOGRAMA</a></li>
+            <li><a href="#anexos" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">PREPÁRATE</a></li>
+            <li><a href="#pasos" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">¿CÓMO POSTULARSE?</a></li>
+
+            {{-- RUTA FIJA (Página externa) --}}
+            <li>
                 <a href="{{ route('inscritos.publico') }}"
-                    class="no-underline text-black font-bebas text-[2.5rem] md:text-lg tracking-[1.5px] relative overflow-hidden group/btn bg-brand-orange px-10 py-4 md:px-6 md:py-2.5 shadow-[0_0_20px_rgba(255,102,0,0.3)] hover:shadow-[0_0_30px_rgba(255,102,0,0.5)] hover:-translate-y-[2px] transition-all duration-300 flex items-center gap-3">
+                    class="no-underline font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] transition-all 
+               {{ request()->routeIs('inscritos.publico') ? 'text-brand-orange opacity-100' : 'text-white opacity-80 hover:md:text-brand-orange' }}">
+                    VER INSCRITOS
+                </a>
+            </li>
+
+            {{-- BOTÓN DE ACCIÓN --}}
+            <li class="md:ml-6 mt-4 md:mt-0">
+                @auth
+                <a href="{{ route('dashboard') }}" class="no-underline text-black font-bebas text-[2.5rem] md:text-lg tracking-[1.5px] relative overflow-hidden group/btn bg-brand-orange px-10 py-4 md:px-6 md:py-2.5 shadow-[0_0_20px_rgba(255,102,0,0.3)] hover:shadow-[0_0_30px_rgba(255,102,0,0.5)] transition-all duration-300 flex items-center gap-3">
+                    <span class="relative z-10 uppercase">MI PANEL</span>
+                </a>
+                @else
+                <a href="{{ route('validar-socio') }}" class="no-underline text-black font-bebas text-[2.5rem] md:text-lg tracking-[1.5px] relative overflow-hidden group/btn bg-brand-orange px-10 py-4 md:px-6 md:py-2.5 shadow-[0_0_20px_rgba(255,102,0,0.3)] hover:shadow-[0_0_30px_rgba(255,102,0,0.5)] transition-all duration-300 flex items-center gap-3">
                     <svg class="w-5 h-5 md:w-4 md:h-4 text-black animate-pulse" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm4 0h-2v-4h2v4zm-1-9c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z" />
                     </svg>
-                    <span class="relative z-10 uppercase">VER INSCRITOS</span>
-                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></div>
+                    <span class="relative z-10 uppercase">Iniciar sesión</span>
                 </a>
+                @endauth
             </li>
         </ul>
     </nav>
 
     {{-- CONTENEDOR MAESTRO: IMPACTO TOTAL INCENTIVOS 2026 --}}
-    <section class="relative min-h-screen w-full flex flex-col bg-black overflow-hidden">
+    <section id="inicio" class="relative min-h-screen w-full flex flex-col bg-black overflow-hidden">
 
         {{-- 1. BLOQUE DE PODER: CONDICIONES DE PARTICIPACIÓN (PASO OBLIGATORIO) --}}
         {{-- mt-[90px] para compensar el navbar fijo --}}
-        <div class="relative z-[10] bg-brand-orange mt-[90px] md:mt-[100px] pt-16 pb-16 px-6 border-b-[15px] border-black shadow-[0_15px_50px_rgba(0,0,0,0.5)]">
+        <div id="requisitos" class="relative z-[10] bg-brand-orange mt-[90px] md:mt-[100px] pt-16 pb-16 px-6 border-b-[15px] border-black shadow-[0_15px_50px_rgba(0,0,0,0.5)]">
             {{-- Marca de agua masiva --}}
             <div class="absolute inset-0 opacity-10 pointer-events-none select-none flex items-center justify-center">
                 <span class="font-bebas text-[25vw] leading-none text-black tracking-tighter uppercase">LEGAL 2026</span>
@@ -395,143 +459,145 @@
             </div>
         </section>
 
-        {{-- Sección de Etapas y Documentación - Versión Acordeón --}}
-        <section id="anexos" class="mb-[120px] scroll-mt-[100px] max-w-7xl mx-auto">
-            <h2 class="font-bebas text-[3.5rem] text-brand-orange mb-10 border-b border-brand-border inline-block pb-[5px]">
-                ETAPAS Y DOCUMENTACIÓN
-            </h2>
+        {{-- Sección de Cronograma y Etapas --}}
+        <section id="anexos" class="mb-[120px] scroll-mt-[100px] max-w-7xl mx-auto px-4 font-outfit">
 
-            <div class="space-y-4">
+            {{-- Encabezado Mejorado --}}
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8 border-b border-white/10 pb-12">
+                <div class="max-w-2xl">
+                    <span class="text-brand-orange font-bold uppercase tracking-[5px] text-[0.7rem] mb-4 block opacity-90">Ruta de participación 2026</span>
+                    <h2 class="font-bebas text-[4.5rem] md:text-[5.5rem] text-white leading-[0.85] mb-6">
+                        ¡PREPÁRATE Y <br>
+                        <span class="text-brand-orange">ADELANTA TU ÉXITO!</span>
+                    </h2>
+                    <p class="text-gray-300 text-lg uppercase tracking-normal font-light max-w-xl leading-relaxed">
+                        No esperes al día de la apertura. Aquí tienes acceso a la <span class="text-white font-medium border-b border-brand-orange/30 pb-0.5">documentación oficial</span> para que comiences a proyectar tu propuesta hoy mismo.
+                    </p>
+                </div>
 
-                {{-- ETAPA 1: INSCRIPCIÓN (ABIERTA POR DEFECTO) --}}
-                <details class="group bg-[#111] border-2 border-brand-orange shadow-[0_0_20px_rgba(255,102,0,0.1)]" open>
-                    <summary class="flex items-center justify-between p-6 cursor-pointer list-none">
-                        <div class="flex items-center gap-6">
-                            <span class="text-brand-orange font-bebas text-2xl tracking-[3px]">ETAPA 01</span>
+                {{-- Bloque Informativo con Mejor Contraste --}}
+                <div class="relative bg-[#1a1a1a] border-l-4 border-brand-orange p-7 max-w-md shadow-2xl">
+                    <div class="flex items-start gap-5">
+                        <div class="text-brand-orange mt-1 bg-brand-orange/10 p-2 rounded-sm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-xs uppercase tracking-[3px] mb-3">Kit de Pre-Inscripción</h4>
+                            <p class="text-gray-400 text-[12px] uppercase leading-relaxed tracking-wider font-medium">
+                                Descarga los <span class="text-brand-orange font-bold">anexos editables</span> de la Etapa I. Diligencia con calma y ten tu carpeta lista para el radicado oficial.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="absolute -top-3 -right-2 text-brand-orange/10 font-bebas text-7xl select-none">!</div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                {{-- 10.1 ETAPA I --}}
+                <details class="group bg-[#0f0f0f] border-2 border-brand-orange/50 shadow-[0_0_50px_rgba(255,102,0,0.03)] overflow-hidden transition-all duration-500" open>
+                    <summary class="flex items-center justify-between p-8 cursor-pointer list-none select-none hover:bg-white/[0.02] transition-colors">
+                        <div class="flex items-center gap-8">
+                            <div class="hidden sm:flex flex-col items-center border-r border-white/10 pr-8">
+                                <span class="text-brand-orange font-bebas text-5xl leading-none">10.1</span>
+                                <span class="text-gray-500 font-bold text-[9px] tracking-[3px] uppercase mt-1">Cláusula</span>
+                            </div>
                             <div>
-                                <h3 class="font-bebas text-4xl text-white leading-none">INSCRIPCIÓN</h3>
-                                <p class="text-brand-orange text-[10px] uppercase font-bold tracking-widest mt-1">Actualmente activa</p>
+                                <div class="flex items-center gap-4 mb-2">
+                                    <span class="bg-brand-orange text-black text-[10px] font-black px-2.5 py-1 uppercase tracking-widest rounded-sm">Fase Actual</span>
+                                    <h3 class="font-bebas text-4xl md:text-5xl text-white tracking-[2px] uppercase">Etapa I – Inscripción</h3>
+                                </div>
+                                <p class="text-gray-400 text-[11px] uppercase tracking-[4px] font-semibold">Verificación de documentos administrativos</p>
                             </div>
                         </div>
-                        <div class="text-brand-orange transition-transform duration-300 group-open:rotate-180">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        <div class="w-12 h-12 rounded-full border-2 border-brand-orange/30 flex items-center justify-center text-brand-orange group-open:bg-brand-orange group-open:text-white transition-all duration-500 group-open:rotate-180">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
                             </svg>
                         </div>
                     </summary>
 
-                    <div class="px-6 pb-6 pt-2 border-t border-brand-orange/20">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            {{-- Anexo 1 --}}
-                            <a href="#" class="p-4 bg-brand-surface border border-brand-orange/30 flex justify-between items-center group/item hover:bg-brand-orange transition-all">
-                                <span class="text-xs font-bold text-white uppercase">Anexo 1. Manifestación de Interés</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-brand-orange group-hover/item:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" />
-                                </svg>
+                    <div class="px-8 pb-10 pt-6 border-t border-white/5 bg-black/40">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4 text-white">
+
+                            {{-- Anexo Estilo Card --}}
+                            <a href="#" class="group/item relative p-7 bg-[#1a1a1a] border border-white/5 hover:border-brand-orange transition-all duration-300 shadow-lg">
+                                <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Anexo 01</span>
+                                <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200 group-hover/item:text-white transition-colors">Manifestación de Interés</h4>
+                                <div class="mt-4 flex items-center gap-2 text-[10px] text-brand-orange font-black tracking-tighter opacity-0 group-hover/item:opacity-100 transition-all transform translate-x-[-10px] group-hover/item:translate-x-0 uppercase">
+                                    Descargar Archivo <span class="text-lg">→</span>
+                                </div>
                             </a>
 
-                            {{-- Anexo 2 - Desglosado --}}
-                            <div class="p-4 bg-brand-surface border border-brand-orange/30">
-                                <div class="flex justify-between items-center mb-3">
-                                    <span class="text-xs font-bold text-white uppercase">Anexo 2. Experiencia Previa</span>
+                            <a href="#" class="group/item relative p-7 bg-[#1a1a1a] border border-white/5 hover:border-brand-orange transition-all duration-300 shadow-lg">
+                                <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Anexo 02</span>
+                                <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200 group-hover/item:text-white transition-colors">Certificación de Experiencia</h4>
+                                <div class="mt-4 flex items-center gap-2 text-[10px] text-brand-orange font-black tracking-tighter opacity-0 group-hover/item:opacity-100 transition-all transform translate-x-[-10px] group-hover/item:translate-x-0 uppercase">
+                                    Descargar Archivo <span class="text-lg">→</span>
                                 </div>
-                                <div class="space-y-2">
-                                    <a href="#" class="flex items-center justify-between bg-black/40 p-2 border border-white/5 hover:border-brand-orange transition-all group/sub">
-                                        <span class="text-[10px] text-gray-400 uppercase font-bold group-hover/sub:text-white">Descargar Formato</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
+                            </a>
 
-                            {{-- Anexo 3 --}}
-                            <div class="relative">
-                                <a href="#" class="p-4 bg-brand-orange/10 border border-brand-orange flex justify-between items-center hover:bg-brand-orange group/item transition-all">
-                                    <div>
-                                        <span class="text-xs font-bold text-brand-orange group-hover/item:text-white uppercase">Anexo 3. Uso de Guion</span>
-                                        <p class="text-[9px] text-gray-500 group-hover/item:text-white/80 uppercase mt-1">Solo si aplica autoría de terceros</p>
-                                    </div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-brand-orange group-hover/item:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" />
-                                    </svg>
+                            {{-- Soportes Especiales --}}
+                            <div class="p-7 bg-[#1a1a1a] border-2 border-brand-orange/30 flex flex-col justify-between group shadow-xl">
+                                <div>
+                                    <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Soportes</span>
+                                    <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-white">Evidencias 1 y 2</h4>
+                                    <p class="text-[10px] text-gray-500 font-bold mt-3 italic uppercase tracking-wider leading-relaxed border-t border-white/5 pt-3">
+                                        * Documento base único para ambos archivos
+                                    </p>
+                                </div>
+                                <a href="#" class="mt-6 flex items-center justify-center gap-2 bg-brand-orange text-black p-3 text-[11px] font-black uppercase tracking-[2px] hover:bg-white transition-all shadow-lg shadow-brand-orange/10">
+                                    Descargar Formato
                                 </a>
                             </div>
 
-                            {{-- Anexo 4 --}}
-                            <a href="#" class="p-4 bg-brand-surface border border-brand-orange/30 flex justify-between items-center group/item hover:bg-brand-orange transition-all">
-                                <span class="text-xs font-bold text-white uppercase">Anexo 4. Declaraciones Juradas</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-brand-orange group-hover/item:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2" />
-                                </svg>
+                            <a href="#" class="group/item relative p-7 bg-[#1a1a1a] border-l-4 border-l-brand-orange border-y-white/5 border-r-white/5 hover:bg-[#222] transition-all duration-300">
+                                <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Anexo 03</span>
+                                <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200">Autorización Uso de Guion</h4>
+                                <span class="mt-3 block text-[10px] text-gray-500 uppercase font-black tracking-widest italic group-hover/item:text-brand-orange">Solo autoría de terceros</span>
                             </a>
-                        </div>
 
-                        <div class="mt-8">
-                            <a href="#" class="block w-full bg-brand-orange text-white font-bebas py-4 text-center text-xl tracking-widest hover:bg-white hover:text-black transition-all">
-                                DESCARGAR KIT COMPLETO ETAPA 1 (ZIP)
+                            <a href="#" class="group/item relative p-7 bg-[#1a1a1a] border border-white/5 hover:border-brand-orange transition-all duration-300 shadow-lg">
+                                <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Anexo 04</span>
+                                <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200 group-hover/item:text-white transition-colors">Declaraciones Juradas</h4>
+                                <div class="mt-4 flex items-center gap-2 text-[10px] text-brand-orange font-black tracking-tighter opacity-0 group-hover/item:opacity-100 transition-all transform translate-x-[-10px] group-hover/item:translate-x-0 uppercase">
+                                    Descargar Archivo <span class="text-lg">→</span>
+                                </div>
                             </a>
                         </div>
                     </div>
                 </details>
 
-                {{-- ETAPA 2: DESARROLLO --}}
-                <details class="group bg-[#0a0a0a] border border-[#222] opacity-70 hover:opacity-100 transition-opacity">
-                    <summary class="flex items-center justify-between p-6 cursor-pointer list-none">
-                        <div class="flex items-center gap-6">
-                            <span class="text-gray-600 font-bebas text-2xl tracking-[3px]">ETAPA 02</span>
-                            <h3 class="font-bebas text-4xl text-gray-400 leading-none uppercase">Desarrollo Técnico</h3>
+                {{-- Etapas Bloqueadas con mejor contraste de texto --}}
+                <details class="group bg-[#0a0a0a] border border-white/10 opacity-60 hover:opacity-100 transition-all duration-300">
+                    <summary class="flex items-center justify-between p-8 cursor-pointer list-none">
+                        <div class="flex items-center gap-8">
+                            <span class="text-gray-700 font-bebas text-5xl leading-none">10.2</span>
+                            <div>
+                                <h3 class="font-bebas text-4xl leading-none uppercase tracking-[2px] text-gray-500">Etapa II – Guion y Técnicos</h3>
+                                <p class="text-[10px] uppercase tracking-[4px] font-bold mt-2 text-gray-600">Habilitación según cronograma oficial</p>
+                            </div>
                         </div>
-                        <div class="text-gray-600 transition-transform duration-300 group-open:rotate-180">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
+                        <svg class="w-8 h-8 text-gray-700 transition-transform duration-500 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 9l-7 7-7-7" stroke-width="2" />
+                        </svg>
                     </summary>
-                    <div class="px-6 pb-6 grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div class="p-3 border border-[#222] flex justify-between items-center text-gray-500 italic text-sm">
-                            <span>Anexo 6. Propuesta Narrativa</span>
-                            <i class="opacity-50">Próximamente</i>
-                        </div>
-                        <div class="p-3 border border-[#222] flex justify-between items-center text-gray-500 italic text-sm">
-                            <span>Anexo 7. Presupuesto</span>
-                            <i class="opacity-50">Próximamente</i>
-                        </div>
-                        <div class="p-3 border border-[#222] flex justify-between items-center text-gray-500 italic text-sm">
-                            <span>Anexo 8. Cronograma</span>
-                            <i class="opacity-50">Próximamente</i>
-                        </div>
+                    <div class="px-8 pb-10 pt-6 border-t border-white/5 text-gray-500 text-xs uppercase tracking-[2px] text-center font-medium">
+                        La documentación técnica se habilitará en la fecha estipulada.
                     </div>
                 </details>
 
-                {{-- ETAPA 3: EVALUACIÓN (BLOQUEADA) --}}
-                <div class="bg-[#050505] border border-[#111] p-6 opacity-40 flex justify-between items-center cursor-not-allowed">
-                    <div class="flex items-center gap-6">
-                        <span class="text-gray-800 font-bebas text-2xl tracking-[3px]">ETAPA 03</span>
-                        <h3 class="font-bebas text-4xl text-gray-800 leading-none uppercase">Evaluación de Jurados</h3>
+                {{-- 11.2 ACEPTACIÓN - Más legible --}}
+                <div class="bg-gradient-to-r from-brand-orange/10 via-brand-orange/[0.02] to-transparent border-l-4 border-brand-orange p-10 shadow-xl">
+                    <div class="flex items-center gap-8">
+                        <span class="text-brand-orange font-bebas text-5xl leading-none">11.2</span>
+                        <div>
+                            <h3 class="font-bebas text-4xl text-white leading-none uppercase tracking-[2px] mb-2">Aceptación de los Incentivos</h3>
+                            <p class="text-gray-400 text-[11px] uppercase tracking-[4px] font-bold">Formalización de convenios para proyectos seleccionados</p>
+                        </div>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2" />
-                    </svg>
                 </div>
-
-                {{-- ETAPA 4: GANADORES --}}
-                <details class="group bg-[#050505] border border-dashed border-gray-800 opacity-60">
-                    <summary class="flex items-center justify-between p-6 cursor-pointer list-none">
-                        <div class="flex items-center gap-6">
-                            <span class="text-gray-600 font-bebas text-2xl tracking-[3px]">FINAL</span>
-                            <h3 class="font-bebas text-4xl text-gray-600 leading-none uppercase">Formalización Ganadores</h3>
-                        </div>
-                        <div class="text-gray-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                        </div>
-                    </summary>
-                    <div class="px-6 pb-6 text-gray-600 text-xs uppercase tracking-widest text-center py-10 border-t border-gray-900">
-                        Esta documentación estará disponible únicamente para los proyectos seleccionados.
-                    </div>
-                </details>
             </div>
         </section>
 
@@ -695,6 +761,86 @@
                 const modal = document.getElementById('success-modal');
                 if (modal) modal.style.display = 'none';
             }
+        });
+
+        /** * MANEJO DE EXPLICITACIÓN DE PÁGINA (ERROR 419)
+         * Captura el fallo de sesión antes de que Livewire muestre su modal por defecto.
+         */
+        document.addEventListener('livewire:init', () => {
+            Livewire.hook('request', ({
+                fail
+            }) => {
+                fail(({
+                    status,
+                    preventDefault
+                }) => {
+                    if (status === 419) {
+                        preventDefault(); // BLOQUEA el modal de error por defecto
+
+                        // Recarga la página para obtener un nuevo token CSRF
+                        // Esto mantiene al usuario en el flujo sin mensajes técnicos extraños
+                        window.location.reload();
+
+                        return false;
+                    }
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link-scroll');
+            const sections = document.querySelectorAll('section[id]');
+            const mobileMenuBtn = document.getElementById('mobile-menu');
+            const navLinksContainer = document.querySelector('.nav-links');
+
+            // Lógica para el menú móvil (abrir/cerrar)
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    navLinksContainer.classList.toggle('-right-full');
+                    navLinksContainer.classList.toggle('right-0');
+                });
+            }
+
+            // Lógica de resaltado (ScrollSpy)
+            function changeActiveLink() {
+                let current = '';
+
+                // Si estamos arriba del todo (menos de 100px), activar 'inicio'
+                if (window.scrollY < 100) {
+                    current = 'inicio';
+                } else {
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        // Detectamos la sección activa con un margen de 150px
+                        if (window.pageYOffset >= (sectionTop - 150)) {
+                            current = section.getAttribute('id');
+                        }
+                    });
+                }
+
+                navLinks.forEach(link => {
+                    // Limpiamos clases
+                    link.classList.remove('text-brand-orange', 'opacity-100');
+                    link.classList.add('text-white', 'opacity-80');
+
+                    // Si el link coincide con la sección actual, pintamos de naranja
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('text-brand-orange', 'opacity-100');
+                        link.classList.remove('text-white', 'opacity-80');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', changeActiveLink);
+            changeActiveLink(); // Ejecutar una vez al inicio
+
+            // Cerrar menú móvil al hacer clic en un link
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinksContainer.classList.add('-right-full');
+                    navLinksContainer.classList.remove('right-0');
+                });
+            });
         });
     </script>
 </body>

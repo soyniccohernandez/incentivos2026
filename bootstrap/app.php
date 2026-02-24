@@ -11,10 +11,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // 1. Definir a dónde enviar a los que NO tienen sesión
+        
+        // 1. A dónde enviar a los que NO tienen sesión (GUESTS)
         $middleware->redirectGuestsTo(fn() => route('validar-socio'));
 
-        // 2. Tu alias actual
+        // 2. A dónde enviar a los que SÍ tienen sesión (USERS)
+        // ESTO ES LO QUE FALTA: Cuando Laravel quiera mandar a alguien a "home", usará esto.
+        $middleware->redirectUsersTo(fn() => route('dashboard'));
+
+        // 3. Tu alias actual
         $middleware->alias([
             'check.socio' => \App\Http\Middleware\CheckSocio::class,
         ]);

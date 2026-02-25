@@ -42,7 +42,7 @@
                 <form wire:submit.prevent="validar" class="space-y-6">
                     <div class="group/item">
                         <label class="block text-[10px] uppercase font-bold text-gray-500 mb-3 tracking-widest group-hover/item:text-brand-orange transition-colors">
-                            Número de Identificación
+                            Número de Identificación de proponente
                         </label>
                         <input type="text" wire:model.defer="identificacion" {{ $paso !== 'identificar' ? 'readonly' : '' }} placeholder="EJ: 12345678" class="w-full bg-black border border-brand-border px-4 py-5 text-white text-xl focus:border-brand-orange outline-none transition-all placeholder:text-gray-800 {{ $paso !== 'identificar' ? 'opacity-50' : '' }}" required>
                         @error('identificacion') 

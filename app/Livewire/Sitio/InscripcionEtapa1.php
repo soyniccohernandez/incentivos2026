@@ -244,35 +244,45 @@ class InscripcionEtapa1 extends Component
                 'correo'         => $this->directorPropio === 'si' ? strtolower($this->socio->email) : strtolower($this->directorCorreo),
             ]);
 
-            // 3. Carga masiva de documentos
+            // 3. Carga masiva de documentos obligatorios
             $this->upload($proyecto, $this->docDirectorCompromiso, 2, 'COMPROMISO');
             $this->upload($proyecto, $this->docDirectorExperiencia, 3, 'EXPERIENCIA');
             $this->upload($proyecto, $this->docDirectorEvidencia1, 4, 'EVIDENCIA1');
             $this->upload($proyecto, $this->docDirectorEvidencia2, 5, 'EVIDENCIA2');
             $this->upload($proyecto, $this->formatoFirmado, 6, 'DECLARACIONES');
 
+            // 4. Carga condicional de Guion (Solo si NO es propio)
             if ($this->autoria === 'no' && $this->guionArchivo) {
                 $this->upload($proyecto, $this->guionArchivo, 1, 'GUION');
             }
 
             DB::commit();
 
-            // --- ENVÍO DE CORREOS (Usando rutas completas para evitar errores de importación) ---
+            // --- PREPARAR DATOS PARA LOS CORREOS ---
+            // Creamos un array con las decisiones del formulario para el correo técnico
+            $configuracionPostulacion = [
+                'autoria' => $this->autoria,
+                'directorPropio' => $this->directorPropio
+            ];
 
-            // A. Al SOCIO
+            // --- ENVÍO DE CORREOS ---
+
+            // A. Al SOCIO (Confirmación estándar)
             try {
                 Mail::to($this->socio->email)->send(new \App\Mail\InscripcionConfirmadaMail($proyecto, $this->socio));
             } catch (\Exception $e) {
                 Log::error("Error Mail Socio: " . $e->getMessage());
             }
 
-            // B. AL EQUIPO TÉCNICO (Respaldo con adjuntos)
+            // B. AL EQUIPO TÉCNICO (Dinámico y Blindado)
             try {
-                $emailRevision = 'nhernandez@actores.org.co'; // <--- Cambia esto por el correo real
-                Mail::to($emailRevision)
-                    ->later(now()->addSeconds(15), new \App\Mail\NotificacionInternaInscripcionMail($proyecto, $this->socio));
+                $emailRevision = 'nhernandez@actores.org.co';
 
-                
+                // Pasamos el proyecto, el socio y el array de configuración
+                Mail::to($emailRevision)->later(
+                    now()->addSeconds(15),
+                    new \App\Mail\NotificacionInternaInscripcionMail($proyecto, $this->socio, $configuracionPostulacion)
+                );
             } catch (\Exception $e) {
                 Log::error("Error Mail Respaldo: " . $e->getMessage());
             }
@@ -285,7 +295,7 @@ class InscripcionEtapa1 extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Error Crítico Inscripción: " . $e->getMessage());
-            $this->addError('error', 'Error al procesar el registro.');
+            $this->addError('error', 'Error al procesar el registro: ' . $e->getMessage());
         }
     }
 

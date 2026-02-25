@@ -20,6 +20,11 @@ class CheckSocio
             return redirect()->route('validar-socio');
         }
 
+        // --- NUEVA LÓGICA: Si es Admin y está en rutas de Socio ---
+        if (Auth::user()->tipo_socio === 'Administrador') {
+            return redirect()->route('admin.dashboard');
+        }
+
         return $next($request);
     }
 }

@@ -10,7 +10,7 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\RateLimiter; 
+use Illuminate\Support\Facades\RateLimiter;
 use Carbon\Carbon;
 
 #[Layout('layouts.guest')]
@@ -21,7 +21,7 @@ class ValidarSocio extends Component
     public $password_confirmation = '';
     public $paso = 'identificar';
     public $nombreSocio = '';
-    public $anio_nacimiento = ''; 
+    public $anio_nacimiento = '';
 
     public function mount()
     {
@@ -81,7 +81,7 @@ class ValidarSocio extends Component
         $this->validate([
             'anio_nacimiento' => 'required|numeric|digits:4'
         ]);
-        
+
         $user = User::where('identificacion', $this->identificacion)->first();
 
         // Si no hay fecha de nacimiento o no coincide, lanzamos el MISMO error
@@ -102,7 +102,7 @@ class ValidarSocio extends Component
     {
         $this->validate(['password' => 'required|min:6|confirmed']);
         $user = User::where('identificacion', $this->identificacion)->first();
-        
+
         $user->update(['password' => Hash::make($this->password)]);
 
         Auth::login($user, true);
@@ -114,7 +114,7 @@ class ValidarSocio extends Component
     private function acceder()
     {
         $this->validate(['password' => 'required']);
-        
+
         if (Auth::attempt(['identificacion' => $this->identificacion, 'password' => $this->password], true)) {
             session()->regenerate();
             session()->save();
@@ -127,6 +127,11 @@ class ValidarSocio extends Component
     {
         session()->save();
         $user = Auth::user();
+
+        if ($user->tipo_socio === 'Administrador') {
+            return redirect()->route('admin.dashboard');
+        }
+
         $convocatoria = Convocatoria::where('estado', 'abierta')->first();
 
         if (!$convocatoria) {

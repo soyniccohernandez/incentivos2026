@@ -10,6 +10,8 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter; 
+use Carbon\Carbon;
 
 #[Layout('layouts.guest')]
 class ValidarSocio extends Component
@@ -17,14 +19,12 @@ class ValidarSocio extends Component
     public $identificacion = '';
     public $password = '';
     public $password_confirmation = '';
-
     public $paso = 'identificar';
     public $nombreSocio = '';
-
+    public $anio_nacimiento = ''; 
 
     public function mount()
     {
-        // Si el usuario ya está logueado, no lo dejes ver el formulario, mándalo a su etapa
         if (Auth::check()) {
             return $this->redireccionar();
         }
@@ -34,6 +34,8 @@ class ValidarSocio extends Component
     {
         if ($this->paso === 'identificar') {
             $this->validarIdentificacion();
+        } elseif ($this->paso === 'verificar') {
+            $this->verificarAnio();
         } elseif ($this->paso === 'registrar') {
             $this->crearPassword();
         } elseif ($this->paso === 'login') {
@@ -47,89 +49,102 @@ class ValidarSocio extends Component
         $user = User::where('identificacion', $this->identificacion)->first();
 
         if (!$user) {
-            $this->addError('identificacion', 'La identificación no se encuentra registrada como socio.');
+            // Mensaje genérico para no confirmar si la cédula existe o no
+            $this->addError('identificacion', 'No se puede continuar con la identificación proporcionada.');
             return;
         }
 
         if (strtolower($user->estado) !== 'activo') {
-            $this->addError('identificacion', "Su estado actual ({$user->estado}) no le permite participar.");
+            $this->addError('identificacion', "Su estado actual no le permite participar en esta convocatoria.");
             return;
         }
 
         $this->nombreSocio = $user->name;
-        $this->paso = empty($user->password) ? 'registrar' : 'login';
+
+        if (empty($user->password)) {
+            $this->paso = 'verificar';
+        } else {
+            $this->paso = 'login';
+        }
+    }
+
+    private function verificarAnio()
+    {
+        $key = 'verificar-anio:' . $this->identificacion . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            $this->addError('anio_nacimiento', "Demasiados intentos. Intente en {$seconds} segundos.");
+            return;
+        }
+
+        $this->validate([
+            'anio_nacimiento' => 'required|numeric|digits:4'
+        ]);
+        
+        $user = User::where('identificacion', $this->identificacion)->first();
+
+        // Si no hay fecha de nacimiento o no coincide, lanzamos el MISMO error
+        $anioCorrecto = $user->fecha_nacimiento ? Carbon::parse($user->fecha_nacimiento)->year : null;
+
+        if ($anioCorrecto && (int)$this->anio_nacimiento === (int)$anioCorrecto) {
+            RateLimiter::clear($key);
+            $this->paso = 'registrar';
+            $this->resetErrorBag();
+        } else {
+            RateLimiter::hit($key, 60);
+            // Mensaje ambiguo por seguridad
+            $this->addError('anio_nacimiento', 'La información no coincide con nuestros registros. Por favor, verifique o contacte a soporte.');
+        }
     }
 
     private function crearPassword()
     {
         $this->validate(['password' => 'required|min:6|confirmed']);
-
         $user = User::where('identificacion', $this->identificacion)->first();
+        
         $user->update(['password' => Hash::make($this->password)]);
 
-        // --- SOLUCIÓN AL BUCLE ---
-        Auth::login($user, true); // true activa la cookie 'remember'
+        Auth::login($user, true);
         session()->regenerate();
         session()->save();
-
         return $this->redireccionar();
     }
 
     private function acceder()
     {
         $this->validate(['password' => 'required']);
-
-        // --- SOLUCIÓN AL BUCLE ---
+        
         if (Auth::attempt(['identificacion' => $this->identificacion, 'password' => $this->password], true)) {
             session()->regenerate();
             session()->save();
-
             return $this->redireccionar();
         }
-
-        $this->addError('password', 'La contraseña ingresada es incorrecta.');
+        $this->addError('password', 'Credenciales incorrectas.');
     }
 
     private function redireccionar()
     {
         session()->save();
         $user = Auth::user();
-
-        // 1. Buscamos la convocatoria abierta
         $convocatoria = Convocatoria::where('estado', 'abierta')->first();
 
         if (!$convocatoria) {
             return redirect()->to('/');
         }
 
-        // 2. Buscamos si el socio ya tiene un proyecto
         $proyecto = Proyecto::where('user_id', $user->id)
             ->where('convocatoria_id', $convocatoria->id)
             ->first();
 
-        // 3. SI NO TIENE PROYECTO:
-        // Lo mandamos a la ruta 'dashboard' (que es /mi-panel). 
-        // Como DashboardSocio verá que no hay proyecto, cargará automáticamente la Etapa 1.
         if (!$proyecto) {
             return redirect()->route('dashboard');
         }
 
-        // 4. SI YA TIENE PROYECTO:
-        // También lo mandamos a 'dashboard'. 
-        // El DashboardSocio mirará el estado_id y mostrará la vista de "Revisión", "Subsanar", etc.
-
-        // Nota: Solo usamos rutas específicas si el flujo de la Etapa 2 o Subsanación 
-        // vive en componentes totalmente aparte que no quieras meter en el Dashboard.
-
         return match ((int)$proyecto->estado_id) {
-            // Para estados de revisión o finales, que el Dashboard decida la vista
             1, 3, 7, 8, 9 => redirect()->route('dashboard'),
-
-            // Si tienes rutas específicas para estos procesos, las mantenemos:
             2 => redirect()->route('subsanar-etapa-1', ['proyecto' => $proyecto->id]),
             4 => redirect()->route('inscripcion.etapa2', ['proyectoId' => $proyecto->id]),
-
-            // Por defecto, siempre al panel central
             default => redirect()->route('dashboard'),
         };
     }

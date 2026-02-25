@@ -20,9 +20,13 @@ class InitialSetupSeeder extends Seeder
             [
                 'id' => 1,
                 'name' => 'Erick Nicolás Hernández Díaz',
-                'password' => '$2y$12$Jn85eOJ1jqwOX4m2gBMdROVPTguZYfQffx2vng1wU37eXjF.85xyi',
-                'identificacion' => '123456789', // Añadido
-                'tipo_socio' => 'Administrador', // O el valor que manejes para roles
+                'password' => null,
+                'identificacion' => '1023019881',
+                'genero' => 'Masculino',
+                'tipo_socio' => 'Administrador',
+                'fecha_nacimiento' => '1997-03-16', // Importante para la nueva validación (Año: 1990)
+                'direccion' => 'Calle Falsa 123',
+                'telefono' => '3229356936',
                 'estado' => 'Activo',
                 'email_verified_at' => now(),
                 'created_at' => '2026-02-13 22:11:15',

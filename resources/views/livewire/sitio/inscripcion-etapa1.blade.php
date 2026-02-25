@@ -137,23 +137,63 @@
                     <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#ff6600] to-orange-400"></div>
 
                     {{-- VISTA SOPORTE --}}
-                    <div x-show="mostrarSoporte" x-cloak x-transition>
-                        <button @click="mostrarSoporte = false" class="mb-8 inline-flex items-center gap-2 text-slate-400 hover:text-[#ff6600] font-bold text-[10px] uppercase tracking-widest transition-all cursor-pointer group">
+                    <div x-show="mostrarSoporte" x-cloak x-transition class="animate-in fade-in zoom-in duration-300">
+
+                        <button @click="mostrarSoporte = false" class="mb-8 inline-flex items-center gap-2 text-slate-400 hover:text-brand-orange font-bold text-[10px] uppercase tracking-widest transition-all cursor-pointer group">
                             <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path d="M15 19l-7-7 7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                             Volver a la verificación
                         </button>
-                        <h2 class="font-outfit text-4xl font-900 text-slate-800 uppercase tracking-tighter mb-4">Gestión de <span class="text-[#ff6600]">Socios</span></h2>
-                        <p class="text-slate-500 mb-10">Comunícate para actualizar tus datos:</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="p-8 bg-orange-50 border border-orange-100 rounded-[2rem]">
-                                <span class="text-[9px] font-black text-[#ff6600] uppercase tracking-[3px]">E-mail</span>
-                                <p class="text-slate-800 font-outfit text-xl font-800">socios@actores.org.co</p>
+
+                        <h2 class="font-bebas text-5xl text-slate-800 uppercase tracking-tighter mb-2">
+                            Gestión de <span class="text-brand-orange">Socios</span>
+                        </h2>
+                        <p class="text-slate-500 mb-10 font-medium tracking-wide">
+                            Para actualizar tus datos de acceso o reportar un error, utiliza nuestros canales oficiales:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <div class="relative p-8 bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-md transition-shadow group overflow-hidden">
+                                <div class="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+
+                                <div class="relative z-10">
+                                    <div class="w-12 h-12 bg-white shadow-sm border border-orange-100 rounded-2xl flex items-center justify-center mb-6 text-brand-orange">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-[10px] font-black text-brand-orange uppercase tracking-[3px] block mb-2">Enviar Correo</span>
+                                    <p class="text-slate-800 font-bebas text-2xl tracking-wide">socios@actores.org.co</p>
+                                    <a href="mailto:socios@actores.org.co" class="mt-4 inline-block text-[10px] font-bold text-slate-400 hover:text-brand-orange uppercase tracking-widest transition-colors">Abrir e-mail →</a>
+                                </div>
                             </div>
-                            <div class="p-8 bg-emerald-50 border border-emerald-100 rounded-[2rem]">
-                                <span class="text-[9px] font-black text-emerald-600 uppercase tracking-[3px]">WhatsApp</span>
-                                <p class="text-slate-800 font-outfit text-xl font-800">+57 317 4188415</p>
+
+                            <div class="relative p-8 bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-md transition-shadow group overflow-hidden">
+                                <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+
+                                <div class="relative z-10">
+                                    <div class="w-12 h-12 bg-white shadow-sm border border-emerald-100 rounded-2xl flex items-center justify-center mb-6 text-emerald-500">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[3px] block mb-2">WhatsApp Directo</span>
+                                    <p class="text-slate-800 font-bebas text-2xl tracking-wide">+57 317 4188415</p>
+                                    <a href="https://wa.me/573174188415" target="_blank" class="mt-4 inline-block text-[10px] font-bold text-slate-400 hover:text-emerald-600 uppercase tracking-widest transition-colors">Iniciar chat →</a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="mt-10 py-6 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                                Atención: <span class="text-slate-600 ml-2">Lunes a Viernes / 7:30 AM — 3:00 PM</span>
+                            </p>
+                            <div class="flex gap-4">
+                                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">Línea de soporte activa</span>
                             </div>
                         </div>
                     </div>

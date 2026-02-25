@@ -50,7 +50,7 @@ class InscripcionEtapa1 extends Component
             'titulo' => 'required|string|min:5',
             'aceptaTerminos' => 'accepted',
             'aceptaDatos' => 'accepted',
-            
+
             // Validación condicional para Guion (Anexo 3)
             'guionArchivo' => $this->autoria === 'no' ? 'required|file|mimes:pdf|max:12288' : 'nullable',
 
@@ -132,17 +132,20 @@ class InscripcionEtapa1 extends Component
     }
 
     // --- MÉTODOS DE APOYO (OTP) ---
-    public function maskEmail($email) {
+    public function maskEmail($email)
+    {
         if (!$email) return '';
         $partes = explode("@", $email);
-        $name = $partes[0]; $domain = $partes[1];
+        $name = $partes[0];
+        $domain = $partes[1];
         $nombreMask = substr($name, 0, 2) . str_repeat('*', max(0, strlen($name) - 4)) . substr($name, -2);
         $domainPartes = explode(".", $domain);
         $dominioMask = substr($domainPartes[0], 0, 2) . str_repeat('*', 3) . (isset($domainPartes[1]) ? '.' . $domainPartes[1] : '');
         return $nombreMask . '@' . $dominioMask;
     }
 
-    public function maskPhone($phone) {
+    public function maskPhone($phone)
+    {
         if (!$phone) return 'NO REGISTRADO';
         return substr($phone, 0, 3) . '***' . substr($phone, -3);
     }
@@ -203,7 +206,8 @@ class InscripcionEtapa1 extends Component
     }
 
     // --- ACCIONES FINALES ---
-    public function logout(Logout $logout): void {
+    public function logout(Logout $logout): void
+    {
         $logout();
         $this->redirect('/', navigate: true);
     }
@@ -221,6 +225,7 @@ class InscripcionEtapa1 extends Component
         try {
             DB::beginTransaction();
 
+            // 1. Creación del proyecto
             $proyecto = $this->socio->proyectos()->create([
                 'convocatoria_id'   => $convocatoria->id,
                 'titulo'            => strtoupper($this->titulo),
@@ -230,6 +235,7 @@ class InscripcionEtapa1 extends Component
                 'fecha_postulacion' => now(),
             ]);
 
+            // 2. Creación del registro del Director
             $proyecto->director()->create([
                 'es_proponente'   => ($this->directorPropio === 'si') ? 1 : 0,
                 'identificacion' => $this->directorPropio === 'si' ? $this->socio->identificacion : $this->directorIdentificacion,
@@ -238,7 +244,7 @@ class InscripcionEtapa1 extends Component
                 'correo'         => $this->directorPropio === 'si' ? strtolower($this->socio->email) : strtolower($this->directorCorreo),
             ]);
 
-            // Carga masiva de documentos
+            // 3. Carga masiva de documentos
             $this->upload($proyecto, $this->docDirectorCompromiso, 2, 'COMPROMISO');
             $this->upload($proyecto, $this->docDirectorExperiencia, 3, 'EXPERIENCIA');
             $this->upload($proyecto, $this->docDirectorEvidencia1, 4, 'EVIDENCIA1');
@@ -250,11 +256,35 @@ class InscripcionEtapa1 extends Component
             }
 
             DB::commit();
-            return redirect('/')->with(['success' => 'Inscripción exitosa.', 'radicado' => $proyecto->codigo_radicado]);
 
+            // --- ENVÍO DE CORREOS (Usando rutas completas para evitar errores de importación) ---
+
+            // A. Al SOCIO
+            try {
+                Mail::to($this->socio->email)->send(new \App\Mail\InscripcionConfirmadaMail($proyecto, $this->socio));
+            } catch (\Exception $e) {
+                Log::error("Error Mail Socio: " . $e->getMessage());
+            }
+
+            // B. AL EQUIPO TÉCNICO (Respaldo con adjuntos)
+            try {
+                $emailRevision = 'nhernandez@actores.org.co'; // <--- Cambia esto por el correo real
+                Mail::to($emailRevision)
+                    ->later(now()->addSeconds(15), new \App\Mail\NotificacionInternaInscripcionMail($proyecto, $this->socio));
+
+                
+            } catch (\Exception $e) {
+                Log::error("Error Mail Respaldo: " . $e->getMessage());
+            }
+
+            // --- REDIRECCIÓN ---
+            return redirect()->route('dashboard')->with([
+                'success' => 'Inscripción exitosa.',
+                'radicado' => $proyecto->codigo_radicado
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Error Inscripción: " . $e->getMessage());
+            Log::error("Error Crítico Inscripción: " . $e->getMessage());
             $this->addError('error', 'Error al procesar el registro.');
         }
     }

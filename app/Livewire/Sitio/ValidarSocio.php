@@ -46,14 +46,16 @@ class ValidarSocio extends Component
     private function validarIdentificacion()
     {
         $this->validate(['identificacion' => 'required|numeric']);
+
         $user = User::where('identificacion', $this->identificacion)->first();
 
+        // 1. Verificamos si el usuario NO existe en la base de datos
         if (!$user) {
-            // Mensaje genérico para no confirmar si la cédula existe o no
-            $this->addError('identificacion', 'No se puede continuar con la identificación proporcionada.');
+            $this->addError('identificacion', 'Esta identificación no corresponde a un socio registrado.');
             return;
         }
 
+        // 2. Verificamos si el estado es diferente de 'activo'
         if (strtolower($user->estado) !== 'activo') {
             $this->addError('identificacion', "Su estado actual no le permite participar en esta convocatoria.");
             return;
@@ -61,13 +63,13 @@ class ValidarSocio extends Component
 
         $this->nombreSocio = $user->name;
 
+        // 3. Determinamos el siguiente paso según si tiene contraseña definida
         if (empty($user->password)) {
             $this->paso = 'verificar';
         } else {
             $this->paso = 'login';
         }
     }
-
     private function verificarAnio()
     {
         $key = 'verificar-anio:' . $this->identificacion . request()->ip();
@@ -128,32 +130,23 @@ class ValidarSocio extends Component
         session()->save();
         $user = Auth::user();
 
+        // 1. Si es Admin, sigue yendo a su panel
         if ($user->tipo_socio === 'Administrador') {
             return redirect()->route('admin.dashboard');
         }
 
+        // 2. Buscamos si hay convocatoria abierta
         $convocatoria = Convocatoria::where('estado', 'abierta')->first();
 
+        // Si no hay convocatoria, lo mandas al inicio o a un dashboard vacío
         if (!$convocatoria) {
             return redirect()->to('/');
         }
 
-        $proyecto = Proyecto::where('user_id', $user->id)
-            ->where('convocatoria_id', $convocatoria->id)
-            ->first();
-
-        if (!$proyecto) {
-            return redirect()->route('dashboard');
-        }
-
-        return match ((int)$proyecto->estado_id) {
-            1, 3, 7, 8, 9 => redirect()->route('dashboard'),
-            2 => redirect()->route('subsanar-etapa-1', ['proyecto' => $proyecto->id]),
-            4 => redirect()->route('inscripcion.etapa2', ['proyectoId' => $proyecto->id]),
-            default => redirect()->route('dashboard'),
-        };
+        // 3. TODO lo demás (tenga proyecto, esté subsanando o vaya para etapa 2)
+        // se centraliza en el DASHBOARD.
+        return redirect()->route('dashboard');
     }
-
     public function render()
     {
         return view('livewire.sitio.validar-socio');

@@ -8,7 +8,7 @@ use App\Models\Convocatoria;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 
-#[Layout('layouts.guest')]
+#[Layout('layouts.guest')] 
 class DashboardSocio extends Component
 {
     public $proyecto;
@@ -18,12 +18,17 @@ class DashboardSocio extends Component
     {
         $user = Auth::user();
 
-        // 1. Buscamos la convocatoria abierta
+        // 1. Buscamos la convocatoria activa
         $this->convocatoria = Convocatoria::where('estado', 'abierta')->first();
 
-        // 2. Si hay convocatoria, buscamos si el socio ya tiene un proyecto ahí
+        // 2. Buscamos el proyecto con todas sus relaciones para que la vista no falle
         if ($this->convocatoria) {
-            $this->proyecto = Proyecto::where('user_id', $user->id)
+            $this->proyecto = Proyecto::with([
+                    'director',             // Para traer el nombre del director
+                    'documentos.tipoDocumento', // Para listar los archivos con sus nombres reales
+                    'estado'                // Para mostrar el nombre del estado (Revisión, etc)
+                ])
+                ->where('user_id', $user->id)
                 ->where('convocatoria_id', $this->convocatoria->id)
                 ->first();
         }
@@ -31,42 +36,31 @@ class DashboardSocio extends Component
 
     public function render()
     {
-        // CASO 1: No hay convocatoria abierta
         if (!$this->convocatoria) {
             return view('livewire.sitio.dashboard.sin-convocatoria');
         }
 
-        // CASO 2: El socio NO ha iniciado su inscripción
-        // Cargamos dinámicamente tu componente de Etapa 1
         if (!$this->proyecto) {
+            // Si no hay proyecto, mostramos el formulario de inscripción
             return <<<'HTML'
-                <div>
-                    <livewire:sitio.inscripcion-etapa1 />
-                </div>
+            <div class="w-full min-h-screen bg-black">
+                <livewire:sitio.inscripcion-etapa1 />
+            </div>
             HTML;
         }
 
-        // CASO 3: El socio YA TIENE un proyecto (Inscripción iniciada o terminada)
-        // Decidimos qué vista mostrar según el estado (los IDs que me pasaste)
-        return match ((int)$this->proyecto->estado_id) {
-            1, 3 => view('livewire.sitio.dashboard.revision'),    // Inscrito o Subsanación enviada
-            2    => view('livewire.sitio.dashboard.subsanacion'), // Pendiente por corregir
-            4, 5 => view('livewire.sitio.dashboard.etapa2'),      // Habilitado para Etapa 2
-            7, 8, 9 => view('livewire.sitio.dashboard.finalizado'), // Resultados finales
-            default => view('livewire.sitio.dashboard.revision'),
-        };
+        // Si hay proyecto, pasamos los datos necesarios a la vista
+        return view('livewire.sitio.dashboard-socio', [
+            'esNuevaInscripcion' => session()->has('success') && session()->has('radicado'),
+            'documentos' => $this->proyecto->documentos // Pasamos la colección de documentos
+        ]);
     }
-
-    // app/Livewire/Sitio/DashboardSocio.php
 
     public function logout()
     {
         Auth::logout();
-
         session()->invalidate();
         session()->regenerateToken();
-
-        // Cambiamos la redirección a la raíz del sitio
         return redirect()->to('/');
     }
 }

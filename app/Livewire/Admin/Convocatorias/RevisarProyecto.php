@@ -22,14 +22,14 @@ class RevisarProyecto extends Component
     public function mount(Proyecto $proyecto)
     {
         $this->proyecto = $proyecto->load([
-            'etapa', 
-            'estado', 
-            'director', 
-            'user',      
-            'users',     
-            'documentos.tipoDocumento', 
+            'etapa',
+            'estado',
+            'director',
+            'user',
+            'users',
+            'documentos.tipoDocumento',
         ]);
-        
+
         $this->comentarioCierre = $this->proyecto->observacion_general;
         $this->nuevoEstadoId = $this->proyecto->estado_id;
     }
@@ -61,18 +61,24 @@ class RevisarProyecto extends Component
             'proyecto_id' => $this->proyecto->id,
             'tipo_documento_id' => $tipoDocumentoId,
             'ruta_archivo' => $ruta,
-            'estado' => 'aprobado', 
+            'estado' => 'aprobado',
             'version' => $nuevaVersionNumero,
             'fecha_carga' => now(),
         ]);
 
         // Limpiar el input y refrescar la relación
         unset($this->archivoSustituto[$tipoDocumentoId]);
-        
+
         // Forzamos la recarga completa de documentos para el render
         $this->proyecto->load('documentos.tipoDocumento');
 
         session()->flash('message', 'Documento actualizado a la versión ' . $nuevaVersionNumero);
+    }
+
+    public function updatedArchivoSustituto($value, $tipoDocumentoId)
+    {
+        // Esto se ejecuta apenas el archivo termina de subir al temporal
+        $this->subirCorreccionAdmin($tipoDocumentoId);
     }
 
     public function guardarBorrador()
@@ -100,7 +106,7 @@ class RevisarProyecto extends Component
         $this->proyecto->update([
             'estado_id' => $this->nuevoEstadoId,
             'observacion_general' => $this->comentarioCierre,
-            'publicado' => true // Asumo que al finalizar quieres que sea visible
+            'publicado' => false // Asumo que al finalizar quieres que sea visible
         ]);
 
         return redirect()->route('convocatoria.gestionar', $this->proyecto->convocatoria_id)

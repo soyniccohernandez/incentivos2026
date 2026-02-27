@@ -69,7 +69,6 @@
 
             {{-- ANCLAS (Con clase nav-link-scroll para el script) --}}
             <li><a href="#inicio" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">INICIO</a></li>
-            <li><a href="#requisitos" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">REQUISITOS</a></li>
             <li><a href="#convocatoria" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">SOBRE LA CONVOCATORIA</a></li>
             <li><a href="#cronograma" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">CRONOGRAMA</a></li>
             <li><a href="#anexos" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">PREPÁRATE</a></li>
@@ -104,47 +103,51 @@
 
     {{-- CONTENEDOR MAESTRO: IMPACTO TOTAL INCENTIVOS 2026 --}}
     <section id="inicio" class="relative min-h-screen w-full flex flex-col bg-black overflow-hidden">
-
         {{-- 1. BLOQUE DE PODER: CONDICIONES DE PARTICIPACIÓN (PASO OBLIGATORIO) --}}
-        <div id="requisitos" class="relative z-[10] bg-brand-orange mt-[90px] md:mt-[100px] pt-16 pb-16 px-6 border-b-[15px] border-black shadow-[0_15px_50px_rgba(0,0,0,0.5)] overflow-hidden">
-            {{-- Marca de agua masiva --}}
+        <div id="requisitos" class="relative z-[10] bg-brand-orange mt-[90px] md:mt-[100px] pt-20 pb-20 px-6 border-b-[15px] border-black shadow-[0_15px_50px_rgba(0,0,0,0.5)] overflow-hidden">
+
+            {{-- Marca de agua masiva centrada --}}
             <div class="absolute inset-0 opacity-10 pointer-events-none select-none flex items-center justify-center">
-                <span class="font-bebas text-[25vw] leading-none text-black tracking-tighter uppercase">LEGAL 2026</span>
+                <span class="font-bebas text-[18vw] leading-none text-black tracking-tighter uppercase">AUDIOVISUALES</span>
             </div>
 
-            {{-- IMÁGENES DE APOYO LATERALES: Más grandes y con opacidad más fuerte --}}
-            <img src="{{ asset('resources/imagenes/claqueta.svg') }}" class="hidden xl:block absolute left-[-100px] top-1/2 -translate-y-1/2 w-[30rem] opacity-40 pointer-events-none" alt="">
-            <img src="{{ asset('resources/imagenes/camara.svg') }}" class="hidden xl:block absolute right-[-100px] top-1/2 -translate-y-1/2 w-[30rem] opacity-40 pointer-events-none" alt="">
+            {{-- IMÁGENES DE APOYO LATERALES --}}
+            <img src="{{ asset('resources/imagenes/claqueta.svg') }}" class="hidden xl:block absolute left-[-100px] top-1/2 -translate-y-1/2 w-[25rem] opacity-30 pointer-events-none" alt="">
+            <img src="{{ asset('resources/imagenes/camara.svg') }}" class="hidden xl:block absolute right-[-100px] top-1/2 -translate-y-1/2 w-[25rem] opacity-30 pointer-events-none" alt="">
 
-            <div class="relative z-10 max-w-7xl mx-auto">
-                <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+            <div class="relative z-10 max-w-5xl mx-auto">
+                {{-- Contenedor Principal Centrado --}}
+                <div class="flex flex-col items-center text-center gap-8">
 
-                    <div class="text-left flex-1">
-                        <div class="inline-flex items-center gap-3 bg-black text-brand-orange font-bebas text-2xl px-6 py-2 mb-6 tracking-[4px]">
-                            <span class="animate-pulse">●</span> PUNTO DE PARTIDA
-                        </div>
-                        <h2 class="font-bebas text-[4.5rem] md:text-[7.5rem] text-black leading-[0.8] tracking-tighter mb-4">
+                    {{-- Títulos --}}
+                    <div class="flex flex-col items-center">
+                        <h2 class="font-bebas text-[4.5rem] md:text-[7.5rem] text-black leading-[0.8] tracking-tighter">
                             CONDICIONES DE <br>
-                            <span class="bg-black text-brand-orange px-4 py-2 inline-block mt-2">PARTICIPACIÓN</span>
+                            <span class="bg-black text-brand-orange px-6 py-2 inline-block mt-4">PARTICIPACIÓN</span>
                         </h2>
-                        <p class="text-black font-black uppercase text-lg md:text-xl tracking-tighter leading-none mt-4">
-                            CONVOCATORIA DE INCENTIVOS DE CREACIÓN 2026
+
+                        <p class="text-black font-black uppercase text-lg md:text-2xl tracking-tighter leading-none mt-8">
+                            CONVOCATORIA DE INCENTIVOS AUDIOVISUALES 2026
                         </p>
                     </div>
 
-                    <div class="w-full lg:w-1/3 flex flex-col gap-4">
-                        <div class="bg-black/10 p-6 border-l-4 border-black mb-4">
-                            <p class="text-black font-bold uppercase text-[11px] md:text-xs leading-tight tracking-widest">
-                                Es obligatorio descargar, leer y aceptar los términos legales para habilitar su postulación a los incentivos.
-                            </p>
-                        </div>
-
-                        <a href="#" class="group relative flex items-center justify-center gap-5 bg-black text-white px-10 py-7 no-underline font-bebas text-[2.2rem] tracking-[2px] transition-all duration-300 hover:bg-white hover:text-black shadow-[0_30px_60px_rgba(0,0,0,0.3)] transform hover:-translate-y-2">
+                    {{-- Botón Centrado --}}
+                    <div class="w-full max-w-md mt-4">
+                        <a href="{{ asset('storage/formatos/condiciones-de-participacion.pdf') }}"
+                            target="_blank"
+                            class="group relative flex items-center justify-center gap-5 bg-black text-white px-10 py-8 no-underline font-bebas text-[2.2rem] tracking-[2px] transition-all duration-300 hover:bg-white hover:text-black shadow-[0_30px_60px_rgba(0,0,0,0.4)] transform hover:-translate-y-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 group-hover:animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                             </svg>
                             DESCARGAR AQUÍ
                         </a>
+                    </div>
+
+                    {{-- Aviso Legal Centrado (Debajo del botón) --}}
+                    <div class="max-w-md bg-black/10 p-4 border-t-4 border-black mt-6">
+                        <p class="text-black font-bold uppercase text-[11px] md:text-xs leading-tight tracking-widest">
+                            Es obligatorio descargar, leer y aceptar los términos legales para habilitar su postulación a los incentivos.
+                        </p>
                     </div>
 
                 </div>
@@ -260,7 +263,9 @@
             {{-- Header de Sección --}}
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 border-b border-brand-orange/20 pb-8">
                 <div>
-                    <span class="text-brand-orange font-mono text-xs font-black tracking-[5px] uppercase block mb-2">// SCHEDULE_REEL_2026</span>
+                    <span class="text-brand-orange font-mono text-xs font-black tracking-[5px] uppercase block mb-2">
+                        // ETAPAS_Y_FECHAS
+                    </span>
                     <h2 class="font-bebas text-[5rem] md:text-[7rem] text-white leading-[0.8] uppercase">
                         CRONOGRAMA <span class="text-brand-orange">CONVOCATORIA</span>
                     </h2>
@@ -273,127 +278,105 @@
                 </div>
             </div>
 
-            {{-- Tabla Industrial --}}
-            <div class="w-full overflow-hidden border border-white/10 bg-[#050505] shadow-2xl">
-                {{-- Table Head --}}
-                <div class="hidden md:grid grid-cols-12 bg-white/[0.03] border-b border-white/10 py-6 px-8">
-                    <div class="col-span-2 text-brand-orange font-bebas text-xl tracking-widest">ETAPA</div>
-                    <div class="col-span-6 text-brand-orange font-bebas text-xl tracking-widest">HITOS DEL PROCESO</div>
-                    <div class="col-span-4 text-brand-orange font-bebas text-xl tracking-widest text-right">VENTANA TEMPORAL</div>
+            <div class="w-full bg-[#050505] text-white font-sans border border-white/20">
+
+                <div class="bg-white/5 border-b border-white/20 py-4 text-center">
+                    <h2 class="text-brand-orange font-bold uppercase tracking-[0.2em] text-xl">Cronograma Incentivos Audiovisuales</h2>
                 </div>
 
-                {{-- Filas de la Tabla --}}
-                <div class="divide-y divide-white/10">
+                <div class="grid grid-cols-12 bg-white/10 border-b border-white/20">
+                    <div class="col-span-8 py-3 px-6 border-r border-white/20">
+                        <span class="text-cyan-400 font-bold uppercase tracking-wider text-sm">Desarrollo</span>
+                    </div>
+                    <div class="col-span-4 py-3 px-6 text-center">
+                        <span class="text-cyan-400 font-bold uppercase tracking-wider text-sm">Fechas</span>
+                    </div>
+                </div>
 
-                    {{-- ETAPA I: ACTIVE HIGHLIGHT --}}
-                    <div class="grid grid-cols-1 md:grid-cols-12 items-center py-10 px-8 bg-brand-orange/[0.03] relative overflow-hidden group">
-                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-brand-orange shadow-[0_0_15px_rgba(255,102,0,0.5)]"></div>
-                        <div class="col-span-2 mb-4 md:mb-0">
-                            <span class="text-brand-orange font-mono text-sm block mb-1">01. / LIVE</span>
-                            <span class="text-brand-orange font-bebas text-4xl tracking-tighter uppercase">ETAPA I</span>
+                <div class="divide-y divide-white/20">
+
+                    {{-- ETAPA I --}}
+                    <div class="grid grid-cols-12">
+                        <div class="col-span-2 flex items-center justify-center border-r border-white/20 bg-white/[0.02]">
+                            <span class="font-bebas text-4xl text-cyan-400 tracking-tighter">ETAPA I</span>
                         </div>
-                        <div class="col-span-6 pr-8">
-                            <div class="flex flex-col gap-2">
-                                <div class="flex items-center gap-3">
-                                    <h4 class="text-white font-bold text-lg uppercase">Inscripción y Subsanación</h4>
-                                    <span class="animate-pulse bg-brand-orange text-black text-[9px] font-black px-2 py-0.5 rounded">EN CURSO</span>
-                                </div>
-                                <ul class="text-gray-400 text-[11px] uppercase tracking-wider space-y-1 list-none">
-                                    <li><span class="text-brand-orange">>></span> 09-23 Mar: Inscripción de proponentes</li>
-                                    <li><span class="text-brand-orange">>></span> 15 Abr: Publicación de subsanaciones</li>
-                                    <li><span class="text-brand-orange">>></span> 16-24 Abr: Recepción de ajustes</li>
-                                    <li><span class="text-brand-orange">>></span> 11 May: Clasificados a Etapa II</li>
-                                </ul>
+                        <div class="col-span-10 divide-y divide-white/10">
+                            <div class="grid grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors">
+                                <div class="col-span-6 text-xl font-medium">Inscripción de los proponentes</div>
+                                <div class="col-span-4 text-right text-3xl font-mono font-black text-white">9 al 23 de marzo</div>
                             </div>
-                        </div>
-                        <div class="col-span-4 mt-6 md:mt-0 md:text-right">
-                            <span class="inline-block py-3 px-6 bg-brand-orange text-black font-mono font-black text-xl shadow-[0_0_30px_rgba(255,102,0,0.1)]">
-                                09 MAR — 11 MAYO
-                            </span>
+                            <div class="grid grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors">
+                                <div class="col-span-6 text-lg text-gray-300">Publicación proponentes que deben subsanar Etapa I</div>
+                                <div class="col-span-4 text-right text-2xl font-mono font-bold text-gray-200">15 de abril</div>
+                            </div>
+                            <div class="grid grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors">
+                                <div class="col-span-6 text-lg text-gray-300">Recepción de subsanaciones Etapa I</div>
+                                <div class="col-span-4 text-right text-2xl font-mono font-bold text-gray-200">16 al 24 de abril</div>
+                            </div>
+                            {{-- Ajustado: Mismo formato que superiores --}}
+                            <div class="grid grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors">
+                                <div class="col-span-6 text-lg text-gray-300">Publicación de proponentes que pasan a la Etapa II</div>
+                                <div class="col-span-4 text-right text-2xl font-mono font-bold text-gray-200">11 de mayo</div>
+                            </div>
                         </div>
                     </div>
 
                     {{-- ETAPA II --}}
-                    <div class="grid grid-cols-1 md:grid-cols-12 items-center py-10 px-8 hover:bg-white/[0.02] transition-colors group">
-                        <div class="col-span-2 mb-4 md:mb-0">
-                            <span class="text-gray-600 font-mono text-sm block mb-1">02.</span>
-                            <span class="text-white font-bebas text-3xl tracking-tighter uppercase group-hover:text-brand-orange transition-colors">ETAPA II</span>
+                    <div class="grid grid-cols-12">
+                        <div class="col-span-2 flex items-center justify-center border-r border-white/20 bg-white/[0.02]">
+                            <span class="font-bebas text-4xl text-cyan-400 tracking-tighter">ETAPA II</span>
                         </div>
-                        <div class="col-span-6 pr-8">
-                            <h4 class="text-white font-bold text-lg uppercase mb-2">Recepción de Guiones</h4>
-                            <ul class="text-gray-500 text-[11px] uppercase tracking-wider space-y-1 list-none">
-                                <li><span class="text-white/20">>></span> 13 May: Carga única de documentos y guiones (único día)</li>
-                                <li><span class="text-white/20">>></span> 04 Jun: Publicación de clasificados a Etapa III</li>
-                            </ul>
-                        </div>
-                        <div class="col-span-4 mt-6 md:mt-0 md:text-right">
-                            <span class="inline-block py-2 px-6 border border-white/20 text-white font-mono font-bold text-xl group-hover:border-brand-orange transition-all">
-                                13 MAY — 04 JUNIO
-                            </span>
+                        <div class="col-span-10 divide-y divide-white/10">
+                            <div class="grid grid-cols-10 items-center py-8 px-6 hover:bg-white/5 transition-colors">
+                                <div class="col-span-6 text-xl font-medium">Recepciones de guiones y documentos de la Etapa II</div>
+                                <div class="col-span-4 text-right text-3xl font-mono font-black">13 de mayo <span class="text-xs block text-brand-orange tracking-widest uppercase">(único día)</span></div>
+                            </div>
+                            <div class="grid grid-cols-10 items-center py-8 px-6 hover:bg-white/5 transition-colors">
+                                <div class="col-span-6 text-lg text-gray-300">Publicación de proponentes que pasan a la Etapa III</div>
+                                <div class="col-span-4 text-right text-2xl font-mono font-bold">4 de junio</div>
+                            </div>
                         </div>
                     </div>
 
                     {{-- ETAPA III --}}
-                    <div class="grid grid-cols-1 md:grid-cols-12 items-center py-10 px-8 hover:bg-white/[0.02] transition-colors group">
-                        <div class="col-span-2 mb-4 md:mb-0">
-                            <span class="text-gray-600 font-mono text-sm block mb-1">03.</span>
-                            <span class="text-white font-bebas text-3xl tracking-tighter uppercase group-hover:text-brand-orange transition-colors">ETAPA III</span>
+                    <div class="grid grid-cols-12 items-center py-10 px-6 hover:bg-white/5 transition-colors">
+                        <div class="col-span-2 border-r border-white/20 pr-4 text-center">
+                            <span class="font-bebas text-4xl text-cyan-400 tracking-tighter">ETAPA III</span>
                         </div>
-                        <div class="col-span-6 pr-8">
-                            <h4 class="text-white font-bold text-lg uppercase mb-2">Evaluación de Jurados</h4>
-                            <p class="text-gray-500 text-sm leading-relaxed max-w-md uppercase tracking-tighter italic">Revisión de guiones y documentación por expertos externos.</p>
-                        </div>
-                        <div class="col-span-4 mt-6 md:mt-0 md:text-right">
-                            <span class="inline-block py-2 px-6 border border-white/10 text-gray-400 font-mono font-bold text-xl">
-                                06 JUN — 24 JUNIO
-                            </span>
-                        </div>
+                        <div class="col-span-6 px-6 text-xl font-medium">Revisión de guiones y documentación de la Etapa III por los jurados externos</div>
+                        <div class="col-span-4 text-right text-3xl font-mono font-black">6 al 24 de junio</div>
                     </div>
 
-                    {{-- ETAPA IV: PRODUCTION --}}
-                    <div class="grid grid-cols-1 md:grid-cols-12 items-center py-10 px-8 hover:bg-white/[0.02] transition-colors group">
-                        <div class="col-span-2 mb-4 md:mb-0">
-                            <span class="text-gray-600 font-mono text-sm block mb-1">04.</span>
-                            <span class="text-white font-bebas text-3xl tracking-tighter uppercase group-hover:text-brand-orange transition-colors">ETAPA IV</span>
+                    {{-- ETAPA IV - Ajustado: Mismo formato que Etapa III --}}
+                    <div class="grid grid-cols-12 items-center py-10 px-6 hover:bg-white/5 transition-colors">
+                        <div class="col-span-2 border-r border-white/20 pr-4 text-center">
+                            <span class="font-bebas text-4xl text-cyan-400 tracking-tighter">ETAPA IV</span>
                         </div>
-                        <div class="col-span-6 pr-8">
-                            <h4 class="text-white font-bold text-lg uppercase mb-2">Producción y Resultados</h4>
-                            <ul class="text-gray-500 text-[11px] uppercase tracking-wider space-y-1 list-none">
-                                <li><span class="text-white/20">>></span> 30 Jun: Publicación de seleccionados</li>
-                                <li><span class="text-white/20">>></span> 01 Jul - 29 Sept: Desarrollo de contenido</li>
-                                <li><span class="text-white/20">>></span> 30 Sept: Entrega final de piezas (único día)</li>
-                            </ul>
-                        </div>
-                        <div class="col-span-4 mt-6 md:mt-0 md:text-right">
-                            <div class="flex flex-col md:items-end">
-                                <span class="text-white font-mono font-bold text-xl uppercase">30 JUN (Resultados)</span>
-                                <span class="text-brand-orange font-mono text-sm">JULIO — SEPTIEMBRE</span>
-                            </div>
-                        </div>
+                        <div class="col-span-6 px-6 text-xl font-medium">Publicación de proponentes seleccionados</div>
+                        <div class="col-span-4 text-right text-3xl font-mono font-black">30 de junio</div>
                     </div>
 
-                    {{-- FASE FINAL: PREMIER --}}
-                    <div class="grid grid-cols-1 md:grid-cols-12 items-center py-12 px-8 bg-white text-black group">
-                        <div class="col-span-2 mb-4 md:mb-0">
-                            <span class="font-mono text-sm block mb-1 font-black">05. / CINEMA</span>
-                            <span class="font-bebas text-4xl tracking-tighter uppercase leading-none">PREMIER</span>
-                        </div>
-                        <div class="col-span-6 pr-8">
-                            <div class="flex items-center gap-3 mb-2">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                </svg>
-                                <h4 class="font-bebas text-3xl uppercase tracking-wider leading-none">EXHIBICIÓN AL PÚBLICO</h4>
-                            </div>
-                            <p class="font-bold text-xs leading-relaxed max-w-md uppercase tracking-widest">Estreno oficial del cortometraje • Fecha por definir con seleccionados.</p>
-                        </div>
-                        <div class="col-span-4 mt-6 md:mt-0 md:text-right">
-                            <div class="inline-flex flex-col items-end">
-                                <span class="font-bebas text-[3.8rem] leading-none tracking-tighter">PRÓXIMAMENTE</span>
-                                <span class="font-mono font-black text-xs tracking-[4px] -mt-1 uppercase">OCTUBRE 2026</span>
-                            </div>
-                        </div>
+                    {{-- PRODUCCIÓN --}}
+                    <div class="grid grid-cols-12 items-center py-12 px-6 hover:bg-white/5 transition-colors">
+                        <div class="col-span-8 px-6 text-2xl font-bold uppercase tracking-wide">Producción del contenido audiovisual</div>
+                        <div class="col-span-4 text-right text-3xl font-mono font-black">1 de julio al 29 de septiembre</div>
                     </div>
+
+                    {{-- ENTREGA FINAL - Ajustado: Mismo formato que Producción --}}
+                    <div class="grid grid-cols-12 items-center py-12 px-6 hover:bg-white/5 transition-colors">
+                        <div class="col-span-8 px-6 text-2xl font-bold uppercase tracking-wide">Entrega del contenido audiovisual y documentación adicional</div>
+                        <div class="col-span-4 text-right text-3xl font-mono font-black">30 de septiembre <span class="text-xs block text-brand-orange tracking-widest uppercase">(único día)</span></div>
+                    </div>
+
+                    {{-- PREMIER - Ajustado: Fondo blanco --}}
+                    <div class="grid grid-cols-12 items-center py-16 px-6 bg-white text-black">
+                        <div class="col-span-2 border-r border-black/20 pr-4 text-center">
+                            <span class="font-bebas text-5xl text-black tracking-tighter">PREMIER</span>
+                        </div>
+                        <div class="col-span-6 px-6 text-xl font-medium italic">Por primera vez se exhibirá al público el cortometraje</div>
+                        <div class="col-span-4 text-right text-7xl font-bebas text-black tracking-widest leading-none">OCTUBRE</div>
+                    </div>
+
                 </div>
             </div>
 
@@ -436,7 +419,7 @@
                             </svg>
                         </div>
                         <div>
-                            <h4 class="text-white font-bold text-xs uppercase tracking-[3px] mb-3">Kit de Pre-Inscripción</h4>
+                            <h4 class="text-white font-bold text-xs uppercase tracking-[3px] mb-3">ARCHIVOS DE POSTULACIÓN</h4>
                             <p class="text-gray-400 text-[12px] uppercase leading-relaxed tracking-wider font-medium">
                                 Recuerda que los anexos deben diligenciarse de manera
                                 <span class="text-white font-bold">digital</span>.
@@ -470,50 +453,60 @@
                     <div class="px-8 pb-10 pt-6 border-t border-white/5 bg-black/40">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4 text-white">
 
-                            {{-- Anexo Estilo Card --}}
-                            <a href="#" class="group/item relative p-7 bg-[#1a1a1a] border border-white/5 hover:border-brand-orange transition-all duration-300 shadow-lg">
+                            {{-- Anexo 01 --}}
+                            <a href="{{ asset('storage/formatos/etapa_01/anexo-01-manifestacion-del-director.pdf') }}" target="_blank" class="group/item relative p-7 bg-[#1a1a1a] border border-white/5 hover:border-brand-orange transition-all duration-300 shadow-lg">
                                 <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Anexo 01</span>
-                                <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200 group-hover/item:text-white transition-colors">Manifestación de Interés</h4>
+                                <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200 group-hover/item:text-white transition-colors">Manifestación del director</h4>
                                 <div class="mt-4 flex items-center gap-2 text-[10px] text-brand-orange font-black tracking-tighter opacity-0 group-hover/item:opacity-100 transition-all transform translate-x-[-10px] group-hover/item:translate-x-0 uppercase">
-                                    Descargar Archivo <span class="text-lg">→</span>
+                                    Descargar Formato <span class="text-lg">→</span>
                                 </div>
                             </a>
 
-                            <a href="#" class="group/item relative p-7 bg-[#1a1a1a] border border-white/5 hover:border-brand-orange transition-all duration-300 shadow-lg">
+                            {{-- Anexo 02 --}}
+                            <a href="{{ asset('storage/formatos/etapa_01/anexo-02-experiencia-director-general.pdf') }}" target="_blank" class="group/item relative p-7 bg-[#1a1a1a] border border-white/5 hover:border-brand-orange transition-all duration-300 shadow-lg">
                                 <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Anexo 02</span>
-                                <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200 group-hover/item:text-white transition-colors">Certificación de Experiencia</h4>
+                                <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200 group-hover/item:text-white transition-colors">Experiencia como director general</h4>
                                 <div class="mt-4 flex items-center gap-2 text-[10px] text-brand-orange font-black tracking-tighter opacity-0 group-hover/item:opacity-100 transition-all transform translate-x-[-10px] group-hover/item:translate-x-0 uppercase">
-                                    Descargar Archivo <span class="text-lg">→</span>
+                                    Descargar Formato <span class="text-lg">→</span>
                                 </div>
                             </a>
 
-                            {{-- Soportes Especiales --}}
-                            <div class="p-7 bg-[#1a1a1a] border-2 border-brand-orange/30 flex flex-col justify-between group shadow-xl">
+                            {{-- Tarjeta de Soportes de Experiencia (Informativa) --}}
+                            <div class="p-7 bg-[#1a1a1a] border-2 border-brand-orange/30 flex flex-col justify-between shadow-xl relative">
+                                <div class="absolute top-0 right-0 bg-brand-orange text-black px-2 py-0.5 text-[9px] font-black uppercase tracking-tighter">
+                                    Documentación Propia
+                                </div>
                                 <div>
-                                    <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Soportes</span>
-                                    <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-white">Evidencias 1 y 2</h4>
-                                    <p class="text-[10px] text-gray-500 font-bold mt-3 italic uppercase tracking-wider leading-relaxed border-t border-white/5 pt-3">
-                                        * Documento base único para ambos archivos
+                                    <span class="text-brand-orange font-bebas text-2xl mb-1 block tracking-wider">Soportes de Experiencia</span>
+                                    <h4 class="font-bold text-[12px] uppercase tracking-widest leading-tight text-white mb-3">Certificados + Evidencias</h4>
+                                    <p class="text-[10px] text-gray-400 font-medium leading-relaxed uppercase">
+                                        Debe preparar <span class="text-white font-bold">2 archivos PDF</span>. Cada uno debe contener el certificado de experiencia y las evidencias que lo respalden (Director).
                                     </p>
                                 </div>
-                                <a href="#" class="mt-6 flex items-center justify-center gap-2 bg-brand-orange text-black p-3 text-[11px] font-black uppercase tracking-[2px] hover:bg-white transition-all shadow-lg shadow-brand-orange/10">
-                                    Descargar Formato
-                                </a>
+                                <div class="mt-4 pt-3 border-t border-white/5">
+                                    <span class="text-[9px] text-brand-orange font-black uppercase tracking-[1px]">No requiere formato de descarga</span>
+                                </div>
                             </div>
 
-                            <a href="#" class="group/item relative p-7 bg-[#1a1a1a] border-l-4 border-l-brand-orange border-y-white/5 border-r-white/5 hover:bg-[#222] transition-all duration-300">
+                            {{-- Anexo 03 --}}
+                            <a href="{{ asset('storage/formatos/etapa_01/anexo-03-autorizacion-uso-de-guion.pdf') }}" target="_blank" class="group/item relative p-7 bg-[#1a1a1a] border-l-4 border-l-brand-orange border-y-white/5 border-r-white/5 hover:bg-[#222] transition-all duration-300">
                                 <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Anexo 03</span>
                                 <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200">Autorización Uso de Guion</h4>
-                                <span class="mt-3 block text-[10px] text-gray-500 uppercase font-black tracking-widest italic group-hover/item:text-brand-orange">Solo autoría de terceros</span>
-                            </a>
-
-                            <a href="#" class="group/item relative p-7 bg-[#1a1a1a] border border-white/5 hover:border-brand-orange transition-all duration-300 shadow-lg">
-                                <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Anexo 04</span>
-                                <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200 group-hover/item:text-white transition-colors">Declaraciones Juradas</h4>
+                                <span class="mt-3 block text-[10px] text-gray-400 uppercase font-black tracking-widest italic group-hover/item:text-brand-orange">Solo si la autoría es de terceros</span>
                                 <div class="mt-4 flex items-center gap-2 text-[10px] text-brand-orange font-black tracking-tighter opacity-0 group-hover/item:opacity-100 transition-all transform translate-x-[-10px] group-hover/item:translate-x-0 uppercase">
-                                    Descargar Archivo <span class="text-lg">→</span>
+                                    Descargar Formato <span class="text-lg">→</span>
                                 </div>
                             </a>
+
+                            {{-- Anexo 04 --}}
+                            <a href="{{ asset('storage/formatos/etapa_01/anexo-04-consideraciones-y-declaraciones.pdf') }}" target="_blank" class="group/item relative p-7 bg-[#1a1a1a] border border-white/5 hover:border-brand-orange transition-all duration-300 shadow-lg">
+                                <span class="text-brand-orange font-bebas text-2xl mb-2 block tracking-wider">Anexo 04</span>
+                                <h4 class="font-bold text-[13px] uppercase tracking-widest leading-tight text-gray-200 group-hover/item:text-white transition-colors text-balance">Consideraciones y declaraciones generales</h4>
+                                <div class="mt-4 flex items-center gap-2 text-[10px] text-brand-orange font-black tracking-tighter opacity-0 group-hover/item:opacity-100 transition-all transform translate-x-[-10px] group-hover/item:translate-x-0 uppercase">
+                                    Descargar Formato <span class="text-lg">→</span>
+                                </div>
+                            </a>
+
                         </div>
                     </div>
                 </details>
@@ -671,7 +664,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <span class="absolute right-16 bg-white text-black px-2 py-1 rounded text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity shadow-lg pointer-events-none uppercase tracking-wider whitespace-nowrap">
-                Convocatoria de Incentivos Audiovisuales.
+                Condiciones de participación.
             </span>
         </a>
 

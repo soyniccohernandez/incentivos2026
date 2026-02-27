@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class InitialSetupSeeder extends Seeder
 {
@@ -20,11 +21,11 @@ class InitialSetupSeeder extends Seeder
             [
                 'id' => 1,
                 'name' => 'Erick Nicolás Hernández Díaz',
-                'password' => null,
+                'password' => Hash::make('R34ct&20430'),
                 'identificacion' => '1023019881',
                 'genero' => 'Masculino',
                 'tipo_socio' => 'Administrador',
-                'fecha_nacimiento' => '1997-03-16', // Importante para la nueva validación (Año: 1990)
+                'fecha_nacimiento' => '1997-03-16',
                 'direccion' => 'Calle Falsa 123',
                 'telefono' => '3229356936',
                 'estado' => 'Activo',
@@ -33,6 +34,40 @@ class InitialSetupSeeder extends Seeder
                 'updated_at' => now(),
             ]
         );
+
+        // 2. ABDEL FERNANDO ENCISO MARTÍNEZ
+        // User::updateOrCreate(
+        //     ['email' => 'ericknicolashernandezdiaz@gmail.com'],
+        //     [
+        //         'name' => 'ABDEL FERNANDO, ENCISO MARTÍNEZ',
+        //         'identificacion' => '79845380',
+        //         'password' => Hash::make('79845380'), // Password es la identificación
+        //         'genero' => 'Hombre',
+        //         'tipo_socio' => 'Adherido',
+        //         'fecha_nacimiento' => '1997-06-16', // Fecha solicitada
+        //         'direccion' => 'CARRERA 20 # 20 -02',
+        //         'telefono' => '3015559712',
+        //         'estado' => 'Activo',
+        //         'email_verified_at' => now(),
+        //     ]
+        // );
+
+        // // 3. ADEL DAVID VÁSQUEZ MIRANDA
+        // User::updateOrCreate(
+        //     ['email' => 'sistemas@actores.org.co'],
+        //     [
+        //         'name' => 'ADEL DAVID, VÁSQUEZ MIRANDA',
+        //         'identificacion' => '8727552',
+        //         'password' => Hash::make('8727552'), // Password es la identificación
+        //         'genero' => 'Hombre',
+        //         'tipo_socio' => 'Adherido',
+        //         'fecha_nacimiento' => '1997-06-16', // Fecha solicitada
+        //         'direccion' => 'CLL 51 # 14-42 APTO 201',
+        //         'telefono' => '3012762620',
+        //         'estado' => 'Activo',
+        //         'email_verified_at' => now(),
+        //     ]
+        // );
 
         // 2. Estados (Mantenemos tu lógica de 9 estados para que coincida con Proyecto.php)
         $estados = [
@@ -53,7 +88,7 @@ class InitialSetupSeeder extends Seeder
         DB::table('convocatorias')->updateOrInsert(
             ['id' => 1],
             [
-                'nombre' => 'Incentivos de Creación y Producción Audiovisual',
+                'nombre' => 'Incentivos Audiovisuales',
                 'descripcion' => 'Fondo de incentivos para el desarrollo actoral.',
                 'fecha_inicio' => '2026-01-01',
                 'fecha_fin' => '2026-12-31',
@@ -100,18 +135,21 @@ class InitialSetupSeeder extends Seeder
 
         // 5. Tipos de Documento
         $documentos = [
-            ['id' => 1, 'nombre' => 'Autorización uso de guion', 'etapa_id' => 1, 'obligatorio' => 0, 'permite_subsanacion' => 1],
-            ['id' => 2, 'nombre' => 'Experiencia del director', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
-            ['id' => 3, 'nombre' => 'Compromiso de participación del director', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
-            ['id' => 4, 'nombre' => 'Certificado y evidencias 1', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
-            ['id' => 5, 'nombre' => 'Certificado y evidencias 2', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
-            ['id' => 6, 'nombre' => 'Declaraciones y consideraciones', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
-            ['id' => 7, 'nombre' => 'Carta de intención', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
-            ['id' => 8, 'nombre' => 'Guion', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
-            ['id' => 9, 'nombre' => 'Radicado guion DNDA', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
-            ['id' => 10, 'nombre' => 'Propuesta creativa', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
-            ['id' => 11, 'nombre' => 'Presupuesto', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
-            ['id' => 12, 'nombre' => 'Cronograma', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
+            // ETAPA 1
+            ['id' => 1, 'nombre' => 'ANEXO 1: MANIFESTACIÓN DEL DIRECTOR', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
+            ['id' => 2, 'nombre' => 'ANEXO 2: EXPERIENCIA COMO DIRECTOR GENERAL', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
+            ['id' => 3, 'nombre' => 'ANEXO 3: AUTORIZACIÓN USO DEL GUION', 'etapa_id' => 1, 'obligatorio' => 0, 'permite_subsanacion' => 1],
+            ['id' => 4, 'nombre' => 'CERTIFICADO Y EVIDENCIAS 1', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
+            ['id' => 5, 'nombre' => 'CERTIFICADO Y EVIDENCIAS 2', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
+            ['id' => 6, 'nombre' => 'ANEXO 4: CONSIDERACIONES Y DECLARACIONES GENERALES', 'etapa_id' => 1, 'obligatorio' => 1, 'permite_subsanacion' => 1],
+
+            // ETAPA 2 (Ajustados a mayúsculas)
+            ['id' => 7, 'nombre' => 'CARTA DE INTENCIÓN', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
+            ['id' => 8, 'nombre' => 'GUION', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
+            ['id' => 9, 'nombre' => 'RADICADO GUION DNDA', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
+            ['id' => 10, 'nombre' => 'PROPUESTA CREATIVA', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
+            ['id' => 11, 'nombre' => 'PRESUPUESTO', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
+            ['id' => 12, 'nombre' => 'CRONOGRAMA', 'etapa_id' => 2, 'obligatorio' => 1, 'permite_subsanacion' => 0],
         ];
 
         foreach ($documentos as $doc) {

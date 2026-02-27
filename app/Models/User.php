@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,33 +9,29 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** * Traits incorporados:
-     * HasApiTokens: Para autenticación segura.
-     * HasFactory: Para crear datos de prueba.
-     * Notifiable: Para enviar correos y alertas.
-     */
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * Atributos asignables (Mass Assignment).
-     * Todos estos campos podrán ser guardados desde el formulario.
+     * He agregado 'otp_requests' y los campos de dirección/género que estaban en tu migración.
      */
     protected $fillable = [
         'name',
         'email',
         'password',
         'identificacion',
-        'telefono',
+        'genero',          // Agregado según tu nueva migración
         'tipo_socio',
+        'fecha_nacimiento', // Agregado según tu nueva migración
+        'direccion',       // Agregado según tu nueva migración
+        'telefono',
+        'estado',
         'otp_code',
         'otp_expires_at',
         'otp_last_sent_at',
+        'otp_requests',    // <--- CRÍTICO: Para poder guardar el contador de intentos
     ];
 
-    /**
-     * Atributos ocultos.
-     * No se mostrarán al convertir el modelo a un array o JSON.
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -45,27 +40,22 @@ class User extends Authenticatable
 
     /**
      * Casting de atributos.
-     * IMPORTANTE: 'datetime' convierte los strings de la BD en objetos Carbon.
-     * Esto soluciona el error: "Call to a member function format() on string"
+     * Agregamos 'otp_requests' como integer para asegurar que Laravel lo trate como número.
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'otp_expires_at' => 'datetime',
         'otp_last_sent_at' => 'datetime',
+        'fecha_nacimiento' => 'date',
+        'otp_requests' => 'integer', // <--- Asegura que siempre sea un número
     ];
 
-    /**
-     * Relación: Un usuario puede tener muchos proyectos.
-     */
     public function proyectos()
     {
         return $this->hasMany(Proyecto::class);
     }
 
-    /**
-     * Accesor opcional para verificar si es Admin.
-     */
     public function isAdmin(): bool
     {
         return $this->tipo_socio === 'Administrador';

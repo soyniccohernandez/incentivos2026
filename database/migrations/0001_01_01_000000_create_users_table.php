@@ -28,14 +28,16 @@
                 $table->string('estado')->default('Activo');
 
                 // --- CAMPOS DE SEGURIDAD Y SOPORTE (OTP) ---
-                $table->string('otp_code', 6)->nullable(); // El código actual
-                $table->timestamp('otp_expires_at')->nullable(); // Cuándo vence
-                $table->timestamp('otp_last_sent_at')->nullable(); // Para el límite de reenvío
+                $table->string('otp_code', 6)->nullable();
+                $table->timestamp('otp_expires_at')->nullable();
+                $table->timestamp('otp_last_sent_at')->nullable();
+
+                // CONTADOR DE SOLICITUDES (Para la lógica de bloqueos)
+                $table->integer('otp_requests')->default(0);
 
                 $table->rememberToken();
                 $table->timestamps();
             });
-
             Schema::create('password_reset_tokens', function (Blueprint $table) {
                 $table->string('email')->primary();
                 $table->string('token');

@@ -41,6 +41,7 @@ class InscripcionEtapa1 extends Component
     public $docDirectorCompromiso, $docDirectorExperiencia, $docDirectorEvidencia1, $docDirectorEvidencia2, $formatoFirmado;
     public $aceptaTerminos = false, $aceptaDatos = false;
 
+
     /**
      * REGLAS DE VALIDACIÓN DINÁMICAS
      */
@@ -150,59 +151,102 @@ class InscripcionEtapa1 extends Component
         return substr($phone, 0, 3) . '***' . substr($phone, -3);
     }
 
+    // 1. Define la propiedad arriba (esta es la que manda)
+    // PROPIEDADES DE CONFIGURACIÓN
+    public $segundosEntreIntentos = 10;
+    public $maxIntentos = 3;
+
     public function enviarCodigo()
     {
         $this->resetErrorBag();
-        if ($this->socio->otp_last_sent_at) {
-            $segundosDiferencia = abs(now()->diffInSeconds($this->socio->otp_last_sent_at));
-            if ($segundosDiferencia < 60) {
-                $restante = 60 - $segundosDiferencia;
-                $this->addError('codigoUsuario', "ESPERA " . ceil($restante) . " SEGUNDOS PARA REINTENTAR.");
-                return;
-            }
+        $socioData = DB::table('users')->where('id', $this->socio->id)->first();
+        if (!$socioData) return;
+
+        if ($socioData->otp_requests >= $this->maxIntentos) {
+            Log::warning("OTP BLOQUEADO: Socio {$socioData->id} alcanzó el máximo de {$this->maxIntentos} intentos.");
+            $this->addError('codigoUsuario', 'Máximo de intentos alcanzado.');
+            return;
         }
 
-        $nuevoCodigo = (string)rand(100000, 999999);
         try {
-            $this->socio->update([
+            $nuevoCodigo = (string)rand(100000, 999999);
+            $intentoActual = $socioData->otp_requests + 1;
+
+            DB::table('users')->where('id', $socioData->id)->update([
                 'otp_code' => $nuevoCodigo,
-                'otp_expires_at' => now()->addMinutes(10),
                 'otp_last_sent_at' => now(),
+                'otp_requests' => $intentoActual,
+                'otp_expires_at' => now()->addMinutes(10),
             ]);
-            $this->intentosFallidos = 0;
+
+            $this->socio = \App\Models\User::find($socioData->id);
             $this->otpEnviado = true;
-            $this->codigoUsuario = '';
-            Mail::to($this->socio->email)->send(new CodigoVerificacionMail($nuevoCodigo, $this->socio));
+
+            Log::info("OTP ENVIADO", [
+                'intento' => "$intentoActual de $this->maxIntentos",
+                'codigo' => $nuevoCodigo
+            ]);
+
+            $this->dispatch('timer-reset', seconds: $this->segundosEntreIntentos);
         } catch (\Exception $e) {
-            Log::error("Error OTP: " . $e->getMessage());
-            $this->otpEnviado = false;
-            $this->addError('codigoUsuario', 'ERROR AL ENVIAR EL CORREO.');
+            Log::error("OTP ERROR: " . $e->getMessage());
+            $this->addError('codigoUsuario', 'Error al procesar la solicitud.');
         }
     }
 
     public function validarCodigo()
     {
         $this->resetErrorBag();
-        if (!$this->socio->otp_code || !$this->socio->otp_expires_at || now()->isAfter($this->socio->otp_expires_at)) {
-            $this->addError('codigoUsuario', 'CÓDIGO EXPIRADO.');
-            $this->otpEnviado = false;
+
+        /**
+         * Consultamos directamente a la DB para validar sin refrescar el objeto $this->socio
+         * Esto es vital para que Livewire no envíe datos que reinicien el timer de Alpine.js
+         */
+        $socioActual = DB::table('users')->where('id', $this->socio->id)->first();
+
+        // 1. Verificación de existencia y expiración
+        if (!$socioActual || !$socioActual->otp_code || now()->isAfter($socioActual->otp_expires_at)) {
+            $this->addError('codigoUsuario', 'CÓDIGO EXPIRADO O NO GENERADO.');
             return;
         }
 
-        if ($this->codigoUsuario !== $this->socio->otp_code) {
+        // 2. Verificación de coincidencia
+        if ($this->codigoUsuario !== $socioActual->otp_code) {
             $this->intentosFallidos++;
+
             if ($this->intentosFallidos >= 3) {
-                $this->socio->update(['otp_code' => null, 'otp_expires_at' => null]);
-                $this->otpEnviado = false;
-                $this->addError('codigoUsuario', 'INTENTOS AGOTADOS.');
+                // Invalida el código en la DB
+                DB::table('users')->where('id', $this->socio->id)->update(['otp_code' => null]);
+
+                Log::warning("OTP FALLIDO: Socio {$this->socio->id} agotó sus 3 intentos de validación.");
+                $this->addError('codigoUsuario', 'CÓDIGO INVALIDADO POR INTENTOS. PIDA UNO NUEVO.');
             } else {
-                $this->addError('codigoUsuario', "CÓDIGO INCORRECTO.");
+                $this->addError('codigoUsuario', "CÓDIGO INCORRECTO. INTENTO {$this->intentosFallidos}/3");
             }
             return;
         }
 
-        $this->socio->update(['otp_code' => null, 'otp_expires_at' => null]);
-        $this->mostrarPasoCero = false;
+        // 3. ÉXITO: LIMPIEZA TOTAL
+        // Solo llegamos aquí si el código fue correcto
+        try {
+            DB::table('users')->where('id', $this->socio->id)->update([
+                'otp_code' => null,
+                'otp_expires_at' => null,
+                'otp_requests' => 0,
+            ]);
+
+            Log::info("OTP VALIDADO EXITOSAMENTE", ['socio_id' => $this->socio->id]);
+
+            // Solo refrescamos el modelo al final del éxito para pasar al siguiente paso
+            $this->socio->refresh();
+            $this->intentosFallidos = 0;
+            $this->codigoUsuario = ''; // Limpiamos el input
+            $this->mostrarPasoCero = false;
+            session()->forget('message');
+        } catch (\Exception $e) {
+            Log::error("ERROR AL FINALIZAR OTP: " . $e->getMessage());
+            $this->addError('codigoUsuario', 'Error al procesar el ingreso.');
+        }
     }
 
     // --- ACCIONES FINALES ---
@@ -244,41 +288,48 @@ class InscripcionEtapa1 extends Component
                 'correo'         => $this->directorPropio === 'si' ? strtolower($this->socio->email) : strtolower($this->directorCorreo),
             ]);
 
-            // 3. Carga masiva de documentos obligatorios
-            $this->upload($proyecto, $this->docDirectorCompromiso, 2, 'COMPROMISO');
-            $this->upload($proyecto, $this->docDirectorExperiencia, 3, 'EXPERIENCIA');
+            // 3. Carga masiva de documentos según la nueva tabla
+
+            // ID 1: ANEXO 1 - MANIFESTACIÓN DEL DIRECTOR
+            $this->upload($proyecto, $this->docDirectorCompromiso, 1, 'MANIFESTACION');
+
+            // ID 2: ANEXO 2 - EXPERIENCIA COMO DIRECTOR GENERAL
+            $this->upload($proyecto, $this->docDirectorExperiencia, 2, 'EXPERIENCIA');
+
+            // ID 3: ANEXO 3 - AUTORIZACIÓN USO DEL GUION
+            // Se carga solo si NO es autoría propia
+            if ($this->autoria === 'no' && $this->guionArchivo) {
+                $this->upload($proyecto, $this->guionArchivo, 3, 'AUTORIZACION_GUION');
+            }
+
+            // ID 4: CERTIFICADO Y EVIDENCIAS 1
             $this->upload($proyecto, $this->docDirectorEvidencia1, 4, 'EVIDENCIA1');
+
+            // ID 5: CERTIFICADO Y EVIDENCIAS 2
             $this->upload($proyecto, $this->docDirectorEvidencia2, 5, 'EVIDENCIA2');
+
+            // ID 6: ANEXO 4 - CONSIDERACIONES Y DECLARACIONES GENERALES
             $this->upload($proyecto, $this->formatoFirmado, 6, 'DECLARACIONES');
 
-            // 4. Carga condicional de Guion (Solo si NO es propio)
-            if ($this->autoria === 'no' && $this->guionArchivo) {
-                $this->upload($proyecto, $this->guionArchivo, 1, 'GUION');
-            }
+            // NOTA: El bloque 4 antiguo fue eliminado porque ya se procesó en el ID 3
 
             DB::commit();
 
             // --- PREPARAR DATOS PARA LOS CORREOS ---
-            // Creamos un array con las decisiones del formulario para el correo técnico
             $configuracionPostulacion = [
                 'autoria' => $this->autoria,
                 'directorPropio' => $this->directorPropio
             ];
 
             // --- ENVÍO DE CORREOS ---
-
-            // A. Al SOCIO (Confirmación estándar)
             try {
                 Mail::to($this->socio->email)->send(new \App\Mail\InscripcionConfirmadaMail($proyecto, $this->socio));
             } catch (\Exception $e) {
                 Log::error("Error Mail Socio: " . $e->getMessage());
             }
 
-            // B. AL EQUIPO TÉCNICO (Dinámico y Blindado)
             try {
                 $emailRevision = 'nhernandez@actores.org.co';
-
-                // Pasamos el proyecto, el socio y el array de configuración
                 Mail::to($emailRevision)->later(
                     now()->addSeconds(15),
                     new \App\Mail\NotificacionInternaInscripcionMail($proyecto, $this->socio, $configuracionPostulacion)
@@ -287,7 +338,6 @@ class InscripcionEtapa1 extends Component
                 Log::error("Error Mail Respaldo: " . $e->getMessage());
             }
 
-            // --- REDIRECCIÓN ---
             return redirect()->route('dashboard')->with([
                 'success' => 'Inscripción exitosa.',
                 'radicado' => $proyecto->codigo_radicado
@@ -315,5 +365,14 @@ class InscripcionEtapa1 extends Component
     public function render()
     {
         return view('livewire.sitio.inscripcion-etapa1');
+    }
+
+    public function limpiarDocumento($propiedad)
+    {
+        // Elimina el archivo de la propiedad (esto lo quita de la memoria)
+        $this->$propiedad = null;
+
+        // Limpia los errores de validación de ese campo específico
+        $this->resetValidation($propiedad);
     }
 }

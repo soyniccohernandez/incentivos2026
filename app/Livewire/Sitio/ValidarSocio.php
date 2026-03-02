@@ -9,7 +9,6 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Carbon\Carbon;
 
@@ -46,30 +45,56 @@ class ValidarSocio extends Component
     private function validarIdentificacion()
     {
         $this->validate(['identificacion' => 'required|numeric']);
-
         $user = User::where('identificacion', $this->identificacion)->first();
 
-        // 1. Verificamos si el usuario NO existe en la base de datos
+        // 1. Verificación básica de existencia
         if (!$user) {
             $this->addError('identificacion', 'Esta identificación no corresponde a un socio registrado.');
             return;
         }
 
-        // 2. Verificamos si el estado es diferente de 'activo'
+        // --- ACCESO VIP PARA ADMINISTRADORES ---
+        if ($user->tipo_socio === 'Administrador') {
+            $this->nombreSocio = $user->name;
+            $this->paso = empty($user->password) ? 'verificar' : 'login';
+            return; // Salimos aquí, el admin no necesita validar fechas ni convocatorias
+        }
+
+        // 2. Verificación de estado para socios normales
         if (strtolower($user->estado) !== 'activo') {
-            $this->addError('identificacion', "Su estado actual no le permite participar en esta convocatoria.");
+            $this->addError('identificacion', "Su cuenta no está activa para participar.");
             return;
         }
 
-        $this->nombreSocio = $user->name;
+        // 3. Validación de Convocatoria para socios
+        $convocatoria = Convocatoria::where('estado', 'abierta')->with('etapas')->first();
 
-        // 3. Determinamos el siguiente paso según si tiene contraseña definida
-        if (empty($user->password)) {
-            $this->paso = 'verificar';
-        } else {
-            $this->paso = 'login';
+        if (!$convocatoria) {
+            $this->addError('identificacion', "No hay convocatorias abiertas actualmente.");
+            return;
         }
+
+        $ahora = now();
+        $etapaActiva = $convocatoria->etapas->first(function ($etapa) use ($ahora) {
+            return $ahora->between($etapa->fecha_inicio, $etapa->fecha_fin);
+        });
+
+        // 4. Validación de Subsanación para socios
+        if ($etapaActiva && str_contains(strtolower($etapaActiva->nombre), 'subsanación')) {
+            $tieneProyecto = Proyecto::where('user_id', $user->id)
+                ->where('convocatoria_id', $convocatoria->id)
+                ->exists();
+            if (!$tieneProyecto) {
+                $this->addError('identificacion', "Fase de Subsanación: Solo para socios con proyectos registrados.");
+                return;
+            }
+        }
+
+        // 5. Si es socio y pasó los filtros (o no hay bloqueos de fecha según lo hablamos antes)
+        $this->nombreSocio = $user->name;
+        $this->paso = empty($user->password) ? 'verificar' : 'login';
     }
+
     private function verificarAnio()
     {
         $key = 'verificar-anio:' . $this->identificacion . request()->ip();
@@ -80,13 +105,9 @@ class ValidarSocio extends Component
             return;
         }
 
-        $this->validate([
-            'anio_nacimiento' => 'required|numeric|digits:4'
-        ]);
+        $this->validate(['anio_nacimiento' => 'required|numeric|digits:4']);
 
         $user = User::where('identificacion', $this->identificacion)->first();
-
-        // Si no hay fecha de nacimiento o no coincide, lanzamos el MISMO error
         $anioCorrecto = $user->fecha_nacimiento ? Carbon::parse($user->fecha_nacimiento)->year : null;
 
         if ($anioCorrecto && (int)$this->anio_nacimiento === (int)$anioCorrecto) {
@@ -95,8 +116,7 @@ class ValidarSocio extends Component
             $this->resetErrorBag();
         } else {
             RateLimiter::hit($key, 60);
-            // Mensaje ambiguo por seguridad
-            $this->addError('anio_nacimiento', 'La información no coincide con nuestros registros. Por favor, verifique o contacte a soporte.');
+            $this->addError('anio_nacimiento', 'La información no coincide con nuestros registros.');
         }
     }
 
@@ -109,7 +129,6 @@ class ValidarSocio extends Component
 
         Auth::login($user, true);
         session()->regenerate();
-        session()->save();
         return $this->redireccionar();
     }
 
@@ -119,7 +138,6 @@ class ValidarSocio extends Component
 
         if (Auth::attempt(['identificacion' => $this->identificacion, 'password' => $this->password], true)) {
             session()->regenerate();
-            session()->save();
             return $this->redireccionar();
         }
         $this->addError('password', 'Credenciales incorrectas.');
@@ -127,26 +145,22 @@ class ValidarSocio extends Component
 
     private function redireccionar()
     {
-        session()->save();
         $user = Auth::user();
 
-        // 1. Si es Admin, sigue yendo a su panel
         if ($user->tipo_socio === 'Administrador') {
             return redirect()->route('admin.dashboard');
         }
 
-        // 2. Buscamos si hay convocatoria abierta
+        // Solo los socios normales son expulsados si no hay convocatoria activa
         $convocatoria = Convocatoria::where('estado', 'abierta')->first();
-
-        // Si no hay convocatoria, lo mandas al inicio o a un dashboard vacío
         if (!$convocatoria) {
-            return redirect()->to('/');
+            Auth::logout();
+            return redirect()->to('/')->with('error', 'No hay convocatorias activas.');
         }
 
-        // 3. TODO lo demás (tenga proyecto, esté subsanando o vaya para etapa 2)
-        // se centraliza en el DASHBOARD.
         return redirect()->route('dashboard');
     }
+
     public function render()
     {
         return view('livewire.sitio.validar-socio');

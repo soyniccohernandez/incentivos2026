@@ -7,49 +7,57 @@ use App\Models\Etapa;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 
-#[Layout('layouts.app')] // O tu layout de admin
+#[Layout('layouts.app')]
 class ConvocatoriaConfig extends Component
 {
-    public $convocatoria;
-    public $etapas = [];
+    public $convocatoriaId;
+    public $nombreConvocatoria;
     public $estadoConvocatoria;
+    public $etapas = [];
 
     public function mount($id)
     {
-        $this->convocatoria = Convocatoria::with('etapas')->findOrFail($id);
-        $this->estadoConvocatoria = $this->convocatoria->estado;
-        $this->cargarEtapas();
-    }
-
-    public function cargarEtapas()
-    {
-        $this->etapas = $this->convocatoria->etapas->sortBy('orden')->map(function ($e) {
+        $convocatoria = Convocatoria::with('etapas')->findOrFail($id);
+        
+        $this->convocatoriaId = $convocatoria->id;
+        $this->nombreConvocatoria = $convocatoria->nombre;
+        $this->estadoConvocatoria = $convocatoria->estado; 
+        
+        $this->etapas = $convocatoria->etapas->sortBy('orden')->map(function ($e) {
             return [
                 'id' => $e->id,
                 'nombre' => $e->nombre,
-                'fecha_inicio' => $e->fecha_inicio?->format('Y-m-d\TH:i'),
-                'fecha_fin' => $e->fecha_fin?->format('Y-m-d\TH:i'),
-                'es_subsanable' => $e->es_subsanable
+                'fecha_inicio' => $e->fecha_inicio ? $e->fecha_inicio->format('Y-m-d\TH:i') : null,
+                'fecha_fin' => $e->fecha_fin ? $e->fecha_fin->format('Y-m-d\TH:i') : null,
             ];
         })->toArray();
     }
 
     public function guardar()
     {
-        // 1. Actualizar Estado Global
-        $this->convocatoria->update(['estado' => $this->estadoConvocatoria]);
+        $this->validate([
+            'estadoConvocatoria' => 'required|in:borrador,abierta,cerrada',
+            'etapas.*.fecha_inicio' => 'nullable|date',
+            'etapas.*.fecha_fin' => 'nullable|date',
+        ]);
 
-        // 2. Actualizar Etapas
+        // 1. Actualización Atómica de la Convocatoria
+        $convocatoria = Convocatoria::findOrFail($this->convocatoriaId);
+        $convocatoria->update([
+            'estado' => $this->estadoConvocatoria
+        ]);
+
+        // 2. Actualización de Etapas
         foreach ($this->etapas as $etapaData) {
             Etapa::where('id', $etapaData['id'])->update([
-                'fecha_inicio' => $etapaData['fecha_inicio'],
-                'fecha_fin' => $etapaData['fecha_fin'],
-                'es_subsanable' => $etapaData['es_subsanable']
+                'fecha_inicio' => $etapaData['fecha_inicio'] ? date('Y-m-d H:i:s', strtotime($etapaData['fecha_inicio'])) : null,
+                'fecha_fin' => $etapaData['fecha_fin'] ? date('Y-m-d H:i:s', strtotime($etapaData['fecha_fin'])) : null,
             ]);
         }
 
-        session()->flash('mensaje', 'Configuración guardada correctamente.');
-        return redirect()->route('convocatoria.gestionar', $this->convocatoria->id);
+        session()->flash('mensaje', 'Configuración actualizada correctamente.');
+
+        return redirect()->route('convocatoria.gestionar', $this->convocatoriaId);
     }
 
     public function render()

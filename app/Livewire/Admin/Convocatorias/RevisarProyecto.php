@@ -8,6 +8,7 @@ use App\Models\Documento;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('layouts.app')]
 class RevisarProyecto extends Component
@@ -18,17 +19,41 @@ class RevisarProyecto extends Component
     public $comentarioCierre;
     public $nuevoEstadoId;
     public $archivoSustituto = [];
+    public $foto_url = null;
+    public $iniciales = 'U';
+
 
     public function mount(Proyecto $proyecto)
     {
+        // Corregido: 'users' cambiado por 'elenco'
         $this->proyecto = $proyecto->load([
             'etapa',
             'estado',
             'director',
             'user',
-            'users',
+            'elenco', // Relación correcta según tu modelo
             'documentos.tipoDocumento',
         ]);
+
+        // En el mount() de tu componente de revisión:
+        $this->foto_url = null;
+        $this->iniciales = 'U';
+
+        if ($proyecto->user) {
+            // Generar Iniciales
+            $parts = explode(' ', trim($proyecto->user->name));
+            $this->iniciales = strtoupper(substr($parts[0] ?? 'U', 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+
+            // Buscar Foto por Identificación
+            if ($proyecto->user->identificacion) {
+                $archivos = Storage::disk('public')->files('socios');
+                $fotoEncontrada = collect($archivos)->first(fn($path) => str_contains(basename($path), (string)$proyecto->user->identificacion));
+
+                if ($fotoEncontrada) {
+                    $this->foto_url = asset('storage/' . $fotoEncontrada);
+                }
+            }
+        }
 
         $this->comentarioCierre = $this->proyecto->observacion_general;
         $this->nuevoEstadoId = $this->proyecto->estado_id;
@@ -40,7 +65,7 @@ class RevisarProyecto extends Component
             'archivoSustituto.' . $tipoDocumentoId => 'required|mimes:pdf|max:15360',
         ]);
 
-        // Buscamos el documento actual (el de mayor versión)
+        // Buscamos el documento actual
         $documentoAnterior = Documento::where('proyecto_id', $this->proyecto->id)
             ->where('tipo_documento_id', $tipoDocumentoId)
             ->orderBy('version', 'desc')
@@ -48,15 +73,15 @@ class RevisarProyecto extends Component
 
         $nuevaVersionNumero = $documentoAnterior ? ($documentoAnterior->version + 1) : 1;
 
-        // Guardar archivo
+        // Guardar archivo 
         $ruta = $this->archivoSustituto[$tipoDocumentoId]->store('proyectos/correcciones_admin', 'public');
 
-        // IMPORTANTE: Marcamos TODOS los anteriores como corregidos para que no se dupliquen en la vista
+        // Marcamos anteriores como corregidos
         Documento::where('proyecto_id', $this->proyecto->id)
             ->where('tipo_documento_id', $tipoDocumentoId)
             ->update(['estado' => 'corregido']);
 
-        // Crear la nueva versión aprobada
+        // Crear nueva versión aprobada 
         Documento::create([
             'proyecto_id' => $this->proyecto->id,
             'tipo_documento_id' => $tipoDocumentoId,
@@ -66,18 +91,15 @@ class RevisarProyecto extends Component
             'fecha_carga' => now(),
         ]);
 
-        // Limpiar el input y refrescar la relación
         unset($this->archivoSustituto[$tipoDocumentoId]);
 
-        // Forzamos la recarga completa de documentos para el render
+        // Refrescamos relaciones
         $this->proyecto->load('documentos.tipoDocumento');
-
         session()->flash('message', 'Documento actualizado a la versión ' . $nuevaVersionNumero);
     }
 
     public function updatedArchivoSustituto($value, $tipoDocumentoId)
     {
-        // Esto se ejecuta apenas el archivo termina de subir al temporal
         $this->subirCorreccionAdmin($tipoDocumentoId);
     }
 
@@ -106,17 +128,16 @@ class RevisarProyecto extends Component
         $this->proyecto->update([
             'estado_id' => $this->nuevoEstadoId,
             'observacion_general' => $this->comentarioCierre,
-            'publicado' => false // Asumo que al finalizar quieres que sea visible
+            'publicado' => false // Si finalizas la revisión, normalmente querrás que el socio vea el resultado
         ]);
 
         return redirect()->route('convocatoria.gestionar', $this->proyecto->convocatoria_id)
-            ->with('message', 'Revisión técnica finalizada y publicada.');
+            ->with('message', 'Revisión técnica finalizada.');
     }
 
     public function render()
     {
-        // Solo tomamos los documentos que NO están marcados como "corregidos" 
-        // o agrupamos y tomamos solo el de mayor versión por tipo.
+        // Agrupamos documentos por etapa para la vista
         $documentosPorEtapa = $this->proyecto->documentos
             ->groupBy(fn($doc) => $doc->tipoDocumento->etapa_id)
             ->sortKeys();

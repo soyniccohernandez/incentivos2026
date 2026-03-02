@@ -3,16 +3,49 @@
 use App\Livewire\Actions\Logout;
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 new class extends Component
 {
+    public $foto_url = null;
+    public $iniciales = '';
+
+    public function mount()
+    {
+        $user = Auth::user();
+
+        // 1. Iniciales
+        $nameParts = explode(' ', trim($user->name));
+        $this->iniciales = strtoupper(
+            substr($nameParts[0] ?? 'U', 0, 1) .
+                (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : '')
+        );
+
+        // 2. Búsqueda de Foto
+        $identificacion = (string)$user->identificacion; // Forzamos a string
+
+        if ($identificacion) {
+            // Obtenemos todos los archivos de la carpeta
+            $files = Storage::disk('public')->files('socios');
+
+            // Buscamos coincidencia exacta del nombre (sin importar la extensión)
+            $fotoEncontrada = collect($files)->first(function ($path) use ($identificacion) {
+                $filename = pathinfo($path, PATHINFO_FILENAME); // Solo el nombre, sin .jpg, .png, etc.
+                return $filename === $identificacion;
+            });
+
+            if ($fotoEncontrada) {
+                $this->foto_url = asset('storage/' . $fotoEncontrada);
+            }
+        }
+    }
+
     /**
      * Log the current user out of the application.
      */
     public function logout(Logout $logout): void
     {
         $logout();
-
         $this->redirect('/', navigate: true);
     }
 }; ?>
@@ -75,45 +108,28 @@ new class extends Component
                     <button @click="dropdownOpen = !dropdownOpen"
                         class="flex items-center gap-4 pl-2 pr-4 py-2 rounded-2xl border border-white/10 bg-[#0a0a0a] hover:bg-[#111111] transition-all group">
 
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff6600] to-[#ff3300] flex items-center justify-center text-white font-outfit font-extrabold text-sm shadow-lg shadow-[#ff6600]/20 overflow-hidden">
-                            @php
-                            $identificacion = Auth::user()->documento;
-                            $extensiones = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'PNG'];
-                            $foto_url = null;
-
-                            foreach ($extensiones as $ext) {
-                            if (file_exists(storage_path("app/public/socios/{$identificacion}.{$ext}"))) {
-                            $foto_url = asset("storage/socios/{$identificacion}.{$ext}");
-                            break;
-                            }
-                            }
-
-                            $iniciales = collect(explode(' ', Auth::user()->name))
-                            ->map(fn($n) => mb_substr($n, 0, 1))
-                            ->take(2)
-                            ->implode('');
-                            @endphp
-
+                        {{-- Avatar --}}
+                        <div class="h-14 w-14 rounded-2xl bg-white border border-white/5 shadow-sm flex items-center justify-center overflow-hidden shrink-0">
                             @if($foto_url)
-                            <img src="{{ $foto_url }}" class="w-full h-full object-cover">
+                            <img src="{{ $foto_url }}" class="w-full h-full object-cover" alt="Foto Titular">
                             @else
-                            {{ $iniciales }}
+                            <div class="w-full h-full bg-slate-900 flex items-center justify-center">
+                                <span class="font-outfit text-xl font-extrabold text-[#ff6600] uppercase">
+                                    {{ $iniciales }}
+                                </span>
+                            </div>
                             @endif
                         </div>
+
                         <div class="flex flex-col items-start text-left">
                             <span class="font-outfit text-sm font-bold text-white leading-none truncate max-w-[140px]">
                                 {{ auth()->user()->name }}
                             </span>
-
                             <span class="text-[9px] font-black text-[#ff6600] uppercase tracking-[2px] mt-1.5">
-                                @if(Auth::user()->tipo_socio === 'Administrador')
-                                Administrador
-                                @else
-                                Socio Proponente
-                                @endif
+                                {{ Auth::user()->tipo_socio === 'Administrador' ? 'Administrador' : 'Socio Proponente' }}
                             </span>
                         </div>
-                        <svg class="w-4 h-4 text-slate-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-slate-500 group-hover:text-white transition-transform" :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
@@ -133,16 +149,13 @@ new class extends Component
                         </div>
 
                         <div class="p-3">
-                            @if(Auth::user()->tipo_socio === 'Administrador')
                             <a href="{{ route('profile') }}" wire:navigate class="flex items-center gap-3 px-4 py-3.5 font-inter text-[10px] font-black text-slate-300 hover:bg-[#ff6600] hover:text-white rounded-xl no-underline transition-all group">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="2" />
                                 </svg>
-                                EDITAR PERFIL ADMIN
+                                MI PERFIL {{ Auth::user()->tipo_socio === 'Administrador' ? 'ADMIN' : '' }}
                             </a>
-                            @endif
 
-                            {{-- Botón de Logout Corregido --}}
                             <button wire:click="logout" class="w-full flex items-center gap-3 text-left px-4 py-3.5 font-inter text-[10px] font-black text-red-400 hover:bg-red-500/10 rounded-xl transition-all mt-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-width="2" />
@@ -170,8 +183,13 @@ new class extends Component
     <div x-show="open" x-transition class="sm:hidden bg-black border-t border-white/10">
         <div class="px-6 py-8 space-y-6">
             <div class="flex items-center gap-4 mb-8">
-                <div class="w-12 h-12 rounded-xl bg-[#ff6600] flex items-center justify-center text-white font-outfit font-black text-lg">
-                    {{ substr(auth()->user()->name, 0, 1) }}
+                {{-- Avatar Mobile --}}
+                <div class="w-12 h-12 rounded-xl bg-[#ff6600] flex items-center justify-center text-white font-outfit font-black text-lg overflow-hidden">
+                    @if($foto_url)
+                    <img src="{{ $foto_url }}" class="w-full h-full object-cover">
+                    @else
+                    {{ $iniciales }}
+                    @endif
                 </div>
                 <div>
                     <div class="font-outfit text-base font-bold text-white uppercase tracking-tight">{{ auth()->user()->name }}</div>
@@ -179,11 +197,7 @@ new class extends Component
                 </div>
             </div>
             <a href="{{ route('dashboard') }}" wire:navigate class="block font-inter text-xs font-black text-[#ff6600] tracking-[4px] no-underline uppercase">Mi Proceso</a>
-
-            @if(Auth::user()->tipo_socio === 'Administrador')
             <a href="{{ route('profile') }}" wire:navigate class="block font-inter text-xs font-black text-slate-400 no-underline tracking-[4px] uppercase">Mi Perfil</a>
-            @endif
-
             <button wire:click="logout" class="w-full text-left font-inter text-xs font-black text-red-500 tracking-[4px] uppercase">Finalizar Sesión</button>
         </div>
     </div>

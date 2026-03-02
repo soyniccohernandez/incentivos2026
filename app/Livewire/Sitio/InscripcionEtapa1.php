@@ -266,10 +266,44 @@ class InscripcionEtapa1 extends Component
             return;
         }
 
+        // --- 1. VALIDACIÓN DE EXCLUSIVIDAD DEL DIRECTOR ---
+
+        // Identificamos la cédula a validar (del socio logueado o del tercero)
+        $idDirectorValidar = ($this->directorPropio === 'si')
+            ? $this->socio->identificacion
+            : $this->directorIdentificacion;
+
+        // A. ¿Ya es el dueño (user) de un proyecto? (Usando la relación correcta: 'user')
+        $existeComoProponente = \App\Models\Proyecto::where('convocatoria_id', $convocatoria->id)
+            ->whereHas('user', function ($q) use ($idDirectorValidar) {
+                $q->where('identificacion', $idDirectorValidar);
+            })->exists();
+
+        // B. ¿Ya figura como Director en otro proyecto?
+        $existeComoDirector = \App\Models\Director::whereHas('proyecto', function ($q) use ($convocatoria) {
+            $q->where('convocatoria_id', $convocatoria->id);
+        })
+            ->where('identificacion', $idDirectorValidar)
+            ->exists();
+
+        // C. ¿Figura en el elenco de otro proyecto? (Usando la relación: 'elenco')
+        $existeComoParticipante = \App\Models\Proyecto::where('convocatoria_id', $convocatoria->id)
+            ->whereHas('elenco', function ($q) use ($idDirectorValidar) {
+                $q->where('identificacion', $idDirectorValidar);
+            })->exists();
+
+        if ($existeComoProponente || $existeComoDirector || $existeComoParticipante) {
+            $this->addError('directorIdentificacion', "La persona con identificación $idDirectorValidar ya participa en un proyecto de esta convocatoria y no puede participar en más de uno.");
+            return;
+        }
+
+        // --- 2. TRANSACCIÓN DE GUARDADO ---
+
         try {
             DB::beginTransaction();
 
             // 1. Creación del proyecto
+            // Aquí usamos la propiedad $this->socio que entiendo es el objeto User logueado
             $proyecto = $this->socio->proyectos()->create([
                 'convocatoria_id'   => $convocatoria->id,
                 'titulo'            => strtoupper($this->titulo),
@@ -281,47 +315,30 @@ class InscripcionEtapa1 extends Component
 
             // 2. Creación del registro del Director
             $proyecto->director()->create([
-                'es_proponente'   => ($this->directorPropio === 'si') ? 1 : 0,
+                'es_proponente'  => ($this->directorPropio === 'si') ? 1 : 0,
                 'identificacion' => $this->directorPropio === 'si' ? $this->socio->identificacion : $this->directorIdentificacion,
                 'nombre'         => $this->directorPropio === 'si' ? strtoupper($this->socio->name) : strtoupper($this->directorNombre),
                 'celular'        => $this->directorPropio === 'si' ? $this->socio->telefono : $this->directorCelular,
                 'correo'         => $this->directorPropio === 'si' ? strtolower($this->socio->email) : strtolower($this->directorCorreo),
             ]);
 
-            // 3. Carga masiva de documentos según la nueva tabla
-
-            // ID 1: ANEXO 1 - MANIFESTACIÓN DEL DIRECTOR
+            // 3. Carga masiva de documentos
             $this->upload($proyecto, $this->docDirectorCompromiso, 1, 'MANIFESTACION');
-
-            // ID 2: ANEXO 2 - EXPERIENCIA COMO DIRECTOR GENERAL
             $this->upload($proyecto, $this->docDirectorExperiencia, 2, 'EXPERIENCIA');
 
-            // ID 3: ANEXO 3 - AUTORIZACIÓN USO DEL GUION
-            // Se carga solo si NO es autoría propia
             if ($this->autoria === 'no' && $this->guionArchivo) {
                 $this->upload($proyecto, $this->guionArchivo, 3, 'AUTORIZACION_GUION');
             }
 
-            // ID 4: CERTIFICADO Y EVIDENCIAS 1
             $this->upload($proyecto, $this->docDirectorEvidencia1, 4, 'EVIDENCIA1');
-
-            // ID 5: CERTIFICADO Y EVIDENCIAS 2
             $this->upload($proyecto, $this->docDirectorEvidencia2, 5, 'EVIDENCIA2');
-
-            // ID 6: ANEXO 4 - CONSIDERACIONES Y DECLARACIONES GENERALES
             $this->upload($proyecto, $this->formatoFirmado, 6, 'DECLARACIONES');
-
-            // NOTA: El bloque 4 antiguo fue eliminado porque ya se procesó en el ID 3
 
             DB::commit();
 
-            // --- PREPARAR DATOS PARA LOS CORREOS ---
-            $configuracionPostulacion = [
-                'autoria' => $this->autoria,
-                'directorPropio' => $this->directorPropio
-            ];
+            // --- 3. NOTIFICACIONES ---
+            $configuracionPostulacion = ['autoria' => $this->autoria, 'directorPropio' => $this->directorPropio];
 
-            // --- ENVÍO DE CORREOS ---
             try {
                 Mail::to($this->socio->email)->send(new \App\Mail\InscripcionConfirmadaMail($proyecto, $this->socio));
             } catch (\Exception $e) {

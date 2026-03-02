@@ -229,10 +229,16 @@
                                 </p>
                             </div>
                         </div>
+                        {{-- LÓGICA DE VALIDACIÓN --}}
+                        @php
+                        $idSocio = trim((string)(Auth::user()->identificacion ?? ''));
+                        $idDirector = trim((string)($proyecto->director->identificacion ?? ''));
+                        $esMismoDirector = ($idSocio === $idDirector && $idSocio !== '');
+                        @endphp
 
                         {{-- DATOS DEL PROPONENTE (TITULAR) --}}
                         <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden group mb-10">
-                            {{-- Decoración sutil de fondo (Marca de agua) --}}
+                            {{-- Decoración sutil de fondo --}}
                             <div class="absolute right-10 top-1/2 -translate-y-1/2 text-slate-50 opacity-10 group-hover:scale-110 transition-transform duration-500 pointer-events-none">
                                 <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -240,34 +246,33 @@
                             </div>
 
                             <div class="relative z-10">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[4px] mb-8">Titular del Proyecto</p>
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[4px]">Socio Proponente del Proyecto</p>
+
+                                    {{-- SELLO SI ES DIRECTOR TAMBIÉN --}}
+                                    @if($esMismoDirector)
+                                    <div class="flex items-center gap-2 bg-orange-50 text-[#ff6600] px-4 py-1.5 rounded-full border border-orange-100">
+                                        <span class="relative flex h-2 w-2">
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                                        </span>
+                                        <span class="text-[9px] font-black tracking-widest uppercase">Proponente y Director de proyecto</span>
+                                    </div>
+                                    @endif
+                                </div>
 
                                 <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
-                                    {{-- Contenedor de Foto / Avatar --}}
                                     <div class="shrink-0 h-24 w-24 rounded-[2rem] bg-slate-100 border-4 border-white shadow-2xl shadow-slate-200 overflow-hidden flex items-center justify-center">
-                                        @php
-                                        $identificacion = Auth::user()->documento;
-                                        $extensiones = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'PNG'];
-                                        $rutaFoto = null;
-                                        foreach ($extensiones as $ext) {
-                                        if (file_exists(storage_path("app/public/socios/{$identificacion}.{$ext}"))) {
-                                        $rutaFoto = asset("storage/socios/{$identificacion}.{$ext}");
-                                        break;
-                                        }
-                                        }
-                                        @endphp
-
-                                        @if($rutaFoto)
-                                        <img src="{{ $rutaFoto }}" class="h-full w-full object-cover">
+                                        @if($foto_url)
+                                        <img src="{{ $foto_url }}" class="h-full w-full object-cover" alt="Foto del Socio">
                                         @else
                                         <span class="font-outfit text-3xl font-900 text-[#ff6600] uppercase">
-                                            {{ collect(explode(' ', Auth::user()->name))->map(fn($n) => mb_substr($n, 0, 1))->take(2)->implode('') }}
+                                            {{ $iniciales }}
                                         </span>
                                         @endif
                                     </div>
 
                                     <div class="flex-1 min-w-0 w-full">
-                                        {{-- Nombre y Título --}}
                                         <div class="text-center lg:text-left mb-6">
                                             <h3 class="font-outfit text-3xl font-800 text-slate-900 uppercase leading-tight">
                                                 {{ Auth::user()->name }}
@@ -277,10 +282,8 @@
                                             </p>
                                         </div>
 
-                                        {{-- Rejilla de Datos de Contacto (Mismo estilo que el Director) --}}
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mt-6 pt-8 border-t border-slate-50">
-
-                                            {{-- Documento --}}
+                                            {{-- Identificación --}}
                                             <div class="flex items-center gap-4">
                                                 <div class="h-10 w-10 shrink-0 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,7 +313,7 @@
                                                 </div>
                                             </div>
 
-                                            {{-- Email (Ancho completo de la rejilla interna) --}}
+                                            {{-- Email --}}
                                             <div class="flex items-center gap-4 md:col-span-2">
                                                 <div class="h-10 w-10 shrink-0 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,18 +327,18 @@
                                                     </p>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- INFO CLAVE DIRECTOR Y GUION --}}
+                        {{-- SECCIÓN DIRECTOR Y LIBRETO --}}
                         <div class="grid grid-cols-1 gap-6">
-                            {{-- TARJETA: DIRECTOR DE LA OBRA --}}
+
+                            {{-- MOSTRAR SOLO SI NO ES EL MISMO SOCIO --}}
+                            @if($proyecto->director && !$esMismoDirector)
                             <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden group">
-                                {{-- Decoración sutil de fondo --}}
                                 <div class="absolute right-10 top-1/2 -translate-y-1/2 text-slate-50 opacity-10 group-hover:scale-110 transition-transform duration-500 pointer-events-none">
                                     <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -346,9 +349,8 @@
                                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[4px] mb-8">Información del Director</p>
 
                                     <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
-                                        {{-- Avatar --}}
                                         <div class="shrink-0 h-24 w-24 rounded-[2rem] bg-slate-950 flex items-center justify-center text-white font-outfit text-4xl font-800 shadow-2xl shadow-slate-200">
-                                            {{ mb_substr($proyecto->director->nombre ?? 'S', 0, 1) }}
+                                            {{ mb_substr($proyecto->director->nombre ?? 'D', 0, 1) }}
                                         </div>
 
                                         <div class="flex-1 min-w-0 w-full">
@@ -357,14 +359,11 @@
                                                     {{ $proyecto->director->nombre ?? 'Sin asignar' }}
                                                 </h4>
                                                 <p class="text-[11px] text-[#ff6600] font-bold uppercase mt-2 tracking-[0.3em]">
-                                                    {{ ($proyecto->director->es_proponente ?? false) ? 'Socio Proponente' : 'Director Externo' }}
+                                                    Director Externo
                                                 </p>
                                             </div>
 
-                                            {{-- Rejilla de Datos de Contacto: 2 columnas en desktop para que no se pisen --}}
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mt-6 pt-8 border-t border-slate-50">
-
-                                                {{-- Identificación --}}
                                                 <div class="flex items-center gap-4">
                                                     <div class="h-10 w-10 shrink-0 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -377,7 +376,6 @@
                                                     </div>
                                                 </div>
 
-                                                {{-- Teléfono --}}
                                                 <div class="flex items-center gap-4">
                                                     <div class="h-10 w-10 shrink-0 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -389,27 +387,12 @@
                                                         <p class="text-sm font-bold text-slate-700">{{ $proyecto->director->celular ?? '---' }}</p>
                                                     </div>
                                                 </div>
-
-                                                {{-- Correo Electrónico (Ocupa las 2 columnas en pantallas medianas si es necesario) --}}
-                                                <div class="flex items-center gap-4 md:col-span-2">
-                                                    <div class="h-10 w-10 shrink-0 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 00-2 2z" stroke-width="2" />
-                                                        </svg>
-                                                    </div>
-                                                    <div class="min-w-0">
-                                                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Correo Electrónico</p>
-                                                        <p class="text-sm font-bold text-slate-700 lowercase break-all">
-                                                            {{ $proyecto->director->correo ?? '---' }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            @endif
 
                             {{-- TARJETA: ORIGEN DEL LIBRETO --}}
                             <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden group">

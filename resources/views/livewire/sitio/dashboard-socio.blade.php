@@ -33,8 +33,161 @@
         {{-- GRID PRINCIPAL --}}
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
+            {{-- CABECERA DE ESTADO (ESTILO LIGHT INDUSTRIAL) --}}
+            <div class="lg:col-span-12 space-y-8">
+                <div class="bg-white rounded-[3rem] p-8 md:p-12 border border-slate-100 shadow-sm relative overflow-hidden">
+                    {{-- Marca de agua sutil de fondo --}}
+                    <div class="absolute -right-10 -top-10 text-slate-50 pointer-events-none">
+                        <svg width="300" height="300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z" />
+                        </svg>
+                    </div>
+
+                    <div class="relative z-10">
+                        <div class="flex flex-col lg:flex-row justify-between items-center gap-10">
+
+                            {{-- LADO IZQUIERDO: INDICADOR DE ESTADO --}}
+                            <div class="w-full lg:w-7/12 space-y-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="h-16 w-16 rounded-3xl {{ $proyecto->estado_id == 2 ? 'bg-red-50 text-red-500 border-red-100' : 'bg-orange-50 text-[#ff6600] border-orange-100' }} border-2 flex items-center justify-center shadow-sm">
+                                        @if($proyecto->estado_id == 2)
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2.5" />
+                                        </svg>
+                                        @else
+                                        <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2.5" />
+                                        </svg>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[4px] mb-1">Estatus del Radicado</p>
+                                        <h2 class="font-outfit text-4xl md:text-5xl font-900 uppercase tracking-tighter leading-tight text-slate-900">
+                                            @php
+                                            $estadoStr = $proyecto->estado->nombre;
+                                            $separador = strpos($estadoStr, '/') !== false ? '/' : (strpos($estadoStr, '-') !== false ? '-' : null);
+                                            if ($separador) { [$principal, $secundario] = explode($separador, $estadoStr, 2); }
+                                            else { $principal = $estadoStr; $secundario = null; }
+                                            @endphp
+                                            {{ trim($principal) }}
+                                            @if($secundario)
+                                            <span class="{{ in_array($proyecto->estado_id, [2, 8]) ? 'text-red-500' : 'text-[#ff6600]' }} opacity-80">{{ $separador }} {{ trim($secundario) }}</span>
+                                            @endif
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                {{-- COMENTARIO DESTACADO --}}
+                                <div class="bg-slate-50 border-l-4 border-slate-900 p-6 rounded-r-3xl">
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Observación de Registro</p>
+                                    <p class="text-lg font-medium text-slate-700 leading-relaxed italic">
+                                        "{{ $proyecto->observacion_general ?? 'Su solicitud se encuentra en etapa de revisión por el comité técnico de incentivos.' }}"
+                                    </p>
+                                </div>
+                            </div>
+
+                            {{-- LADO DERECHO: ACCIÓN Y CONTACTO --}}
+                            <div class="w-full lg:w-5/12 space-y-4">
+                                <div class="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-xl shadow-slate-200/50">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <span class="flex h-3 w-3 rounded-full bg-blue-500"></span>
+                                        <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest">Canal de Atención</p>
+                                    </div>
+
+                                    <p class="text-xs text-slate-500 mb-6 leading-relaxed">
+                                        Para cualquier actualización, duda o trámite relacionado con este radicado, por favor comuníquese con el área de **Incentivos**:
+                                    </p>
+
+                                    <div class="space-y-4">
+                                        {{-- Correo --}}
+                                        <a href="mailto:incentivos@actores.org.co" class="flex items-center gap-4 group no-underline">
+                                            <div class="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center text-white group-hover:bg-[#ff6600] transition-colors">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-width="2" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Canal Oficial</p>
+                                                <p class="text-sm font-bold text-slate-900">incentivos@actores.org.co</p>
+                                            </div>
+                                        </a>
+
+                                        {{-- Asunto sugerido dinámico --}}
+                                        <div x-data="{ 
+            asunto: 'TRÁMITE - {{ $proyecto->codigo_radicado }} - {{ strtoupper($proyecto->titulo) }}',
+            copied: false,
+            copyToClipboard() {
+                navigator.clipboard.writeText(this.asunto);
+                this.copied = true;
+                setTimeout(() => this.copied = false, 2000);
+            }
+        }" class="bg-slate-50 p-3 rounded-2xl border border-dashed border-slate-200 flex items-center justify-between">
+                                            <div class="min-w-0">
+                                                <p class="text-[8px] font-black text-slate-400 uppercase mb-1">Asunto Sugerido:</p>
+                                                <p class="text-[10px] font-mono text-slate-600 truncate" x-text="asunto"></p>
+                                            </div>
+                                            <button @click="copyToClipboard()" type="button" class="ml-2 p-2 hover:bg-white rounded-lg transition-colors text-slate-400 hover:text-[#ff6600]">
+                                                <svg x-show="!copied" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M8 7v8a2 2 0 002 2h6a2 2 0 002-2V7a2 2 0 00-2-2h-6a2 2 0 00-2 2z" stroke-width="2" />
+                                                </svg>
+                                                <svg x-show="copied" class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M5 13l4 4L19 7" stroke-width="2" />
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        {{-- Canales de Contacto Directo --}}
+                                        <div class="grid grid-cols-2 gap-3 pt-2">
+                                            {{-- Llamada --}}
+                                            <a href="tel:+573174188415" class="flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-100 hover:border-slate-300 hover:shadow-sm transition-all group no-underline">
+                                                <div class="text-slate-400 group-hover:text-slate-900 transition-colors">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-phone">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
+                                                    </svg>
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Llamar</span>
+                                                    <span class="text-[11px] font-bold text-slate-700 italic">317 4188415</span>
+                                                </div>
+                                            </a>
+
+                                            {{-- WhatsApp --}}
+                                            <a href="https://wa.me/573174188415" target="_blank" class="flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-100 hover:border-green-200 hover:bg-green-50/30 transition-all group no-underline">
+                                                <div class="text-slate-400 group-hover:text-green-500 transition-colors">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+                                                        <path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+                                                    </svg>
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">WhatsApp</span>
+                                                    <span class="text-[11px] font-bold text-slate-700 italic">Chat Directo</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- BARRA DE PROGRESO INFERIOR --}}
+                        <div class="mt-8 pt-6 border-t border-slate-50">
+                            <div class="flex items-center justify-between mb-3 text-[10px] font-black uppercase tracking-[2px]">
+                                <span class="text-slate-400">Progreso del Flujo de Trabajo</span>
+                                <span class="text-slate-900">Etapa {{ $proyecto->etapa_id }} de 4</span>
+                            </div>
+                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden p-0.5">
+                                <div class="h-full bg-slate-950 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(0,0,0,0.1)]" style="width: {{ ($proyecto->etapa_id / 4) * 100 }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {{-- COLUMNA IZQUIERDA (8) - EL PROYECTO --}}
-            <div class="lg:col-span-8 space-y-8">
+            <div class="lg:col-span-12 space-y-8">
 
                 {{-- CARD DE IDENTIDAD DEL PROYECTO --}}
                 <div class="bg-white rounded-[3rem] border border-slate-100 shadow-sm overflow-hidden relative">
@@ -137,7 +290,7 @@
                                                 <div class="min-w-0">
                                                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Identificación</p>
                                                     <p class="text-sm font-bold text-slate-700 truncate">
-                                                        {{ Auth::user()->documento ?? 'No registrado' }}
+                                                        {{ Auth::user()->identificacion ?? 'No registrado' }}
                                                     </p>
                                                 </div>
                                             </div>
@@ -347,145 +500,7 @@
                 </div>
             </div>
 
-            {{-- COLUMNA DERECHA (ESTADO) --}}
-            <div class="lg:col-span-4 space-y-8">
-                <div class="bg-slate-950 rounded-[3rem] p-10 text-white shadow-2xl sticky top-10 overflow-hidden">
-                    <div class="absolute -right-4 -top-4 opacity-[0.05] pointer-events-none">
-                        <svg width="150" height="150" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" />
-                        </svg>
-                    </div>
 
-                    <p class="text-[11px] font-black text-slate-500 uppercase tracking-[3px] text-center mb-8">Estado Actual</p>
-
-                    <div class="text-center mb-10 relative z-10">
-                        <div class="h-24 w-24 rounded-[2rem] bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
-                            @if($proyecto->estado_id == 2)
-                            <svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2.5" />
-                            </svg>
-                            @else
-                            <svg class="w-10 h-10 text-[#ff6600] animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2.5" />
-                            </svg>
-                            @endif
-                        </div>
-                        <div class="space-y-4">
-                            {{-- Indicador Visual de Actividad --}}
-                            <div class="flex items-center gap-3">
-                                <span class="relative flex h-3 w-3">
-                                    {{-- El color cambia a Rojo solo si es estado 2 (Subsanación) o 8 (Eliminado), sino es Naranja --}}
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full {{ in_array($proyecto->estado_id, [2, 8]) ? 'bg-red-400' : 'bg-[#ff6600]' }} opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-3 w-3 {{ in_array($proyecto->estado_id, [2, 8]) ? 'bg-red-500' : 'bg-[#ff6600]' }}"></span>
-                                </span>
-                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-[4px]">
-                                    Estatus Actual
-                                </p>
-                            </div>
-
-                            {{-- Nombre del Estado Dinámico --}}
-                            <h2 class="font-outfit text-4xl md:text-5xl font-900 uppercase tracking-tighter leading-[0.85] text-white">
-                                @php
-                                $estadoStr = $proyecto->estado->nombre;
-                                // Si el estado contiene un "/" o un "-", lo dividimos para darle estilo
-                                $separador = strpos($estadoStr, '/') !== false ? '/' : (strpos($estadoStr, '-') !== false ? '-' : null);
-
-                                if ($separador) {
-                                [$principal, $secundario] = explode($separador, $estadoStr, 2);
-                                } else {
-                                $principal = $estadoStr;
-                                $secundario = null;
-                                }
-                                @endphp
-
-                                {{ trim($principal) }}
-
-                                @if($secundario)
-                                <span class="block text-2xl md:text-3xl {{ in_array($proyecto->estado_id, [2, 8]) ? 'text-red-500' : 'text-[#ff6600]' }} mt-1 opacity-90">
-                                    {{ $separador }} {{ trim($secundario) }}
-                                </span>
-                                @endif
-                            </h2>
-
-                            {{-- Pequeña descripción de la BD para dar contexto al socio --}}
-                            <div class="pt-2">
-                                <p class="text-[11px] text-slate-400 font-medium leading-relaxed border-l-2 border-white/10 pl-4 italic">
-                                    {{ $proyecto->estado->descripcion }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white/5 rounded-2xl p-6 border border-white/10 mb-8">
-                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-3">Comentarios Técnicos</p>
-                        <p class="text-xs text-slate-300 leading-relaxed italic">
-                            "{{ $proyecto->observacion_general ?? 'Su expediente está en proceso.' }}"
-                        </p>
-                    </div>
-
-                    @if($proyecto->estado_id == 2)
-                    <div class="w-full space-y-3">
-                        <div class="flex items-center gap-2 px-1">
-                            <span class="flex h-2 w-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]"></span>
-                            <p class="text-[10px] font-black text-orange-500 uppercase tracking-[0.15em]">
-                                Acción Requerida
-                            </p>
-                        </div>
-
-                        <div class="bg-gradient-to-b from-orange-500/[0.08] to-transparent p-4 rounded-xl border border-orange-500/20">
-                            <p class="text-xs text-slate-300 mb-4 leading-relaxed">
-                                Debes corregir los documentos de la <span class="text-orange-400 font-bold">Etapa 1</span>.
-                                Revisa los <a href="#comentarios-tecnicos" class="text-orange-400 underline decoration-orange-500/30 hover:text-orange-300 font-semibold transition-colors">comentarios técnicos detallados abajo</a> para conocer los ajustes solicitados.
-                            </p>
-
-                            <div class="space-y-3">
-                                <div class="bg-black/20 p-3 rounded-lg border border-white/5">
-                                    <p class="text-[9px] text-slate-500 uppercase font-bold mb-1 tracking-wider">Enviar documentos a:</p>
-                                    <p class="text-sm font-semibold text-white">incentivos@actores.org.co</p>
-                                </div>
-
-                                <div x-data="{ 
-                    asunto: 'SUBSANACIÓN E1 - {{ $proyecto->codigo_radicado }} - {{ strtoupper($proyecto->titulo) }}',
-                    copied: false,
-                    copyToClipboard() {
-                        navigator.clipboard.writeText(this.asunto);
-                        this.copied = true;
-                        setTimeout(() => this.copied = false, 2000);
-                    }
-                }" class="bg-black/20 p-3 rounded-lg border border-white/5">
-                                    <p class="text-[9px] text-slate-500 uppercase font-bold mb-1 tracking-wider">Asunto del correo:</p>
-                                    <div class="flex items-center justify-between gap-3">
-                                        <p class="text-[12px] font-mono text-orange-300 break-words leading-tight" x-text="asunto"></p>
-                                        <button @click="copyToClipboard()"
-                                            type="button"
-                                            class="flex-shrink-0 p-1.5 rounded-md hover:bg-white/10 transition-all active:scale-95 group relative">
-                                            <svg x-show="!copied" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 group-hover:text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6a2 2 0 002-2V7a2 2 0 00-2-2h-6a2 2 0 00-2 2z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                                            </svg>
-                                            <svg x-show="copied" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            <span x-show="copied" class="absolute -top-8 left-1/2 -translate-x-1/2 text-[9px] bg-green-500 text-white px-2 py-1 rounded shadow-lg">¡Copiado!</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
-                    <div class="mt-10 pt-8 border-t border-white/10 space-y-4">
-                        <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
-                            <span class="text-slate-500">Progreso</span>
-                            <span class="text-white">Etapa 1 de 2</span>
-                        </div>
-                        <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                            <div class="h-full bg-[#ff6600] w-1/2 rounded-full shadow-[0_0_10px_#ff6600]"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

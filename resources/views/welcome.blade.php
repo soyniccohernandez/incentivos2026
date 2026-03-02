@@ -44,63 +44,60 @@
 
 
     {{-- Navegación Fija --}}
-    <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-5 md:px-12 bg-black/95 border-b border-brand-border backdrop-blur-sm">
+    <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-4 py-5 md:px-12 bg-black/95 border-b border-white/10 backdrop-blur-sm">
+
         {{-- LOGO Y BRANDING --}}
-        <a href="{{ url('/') }}" class="flex items-center gap-4 group no-underline">
+        <a href="{{ url('/') }}" class="flex items-center gap-3 md:gap-4 group no-underline shrink-0">
             <div class="relative overflow-hidden">
-                <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo Actores SCG" class="h-[45px] md:h-[55px] w-auto object-contain transition-transform duration-500 group-hover:scale-110">
+                <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo Actores SCG" class="h-[40px] md:h-[55px] w-auto object-contain transition-transform duration-500 group-hover:scale-110">
             </div>
-            <div class="h-8 w-[1px] bg-brand-orange/40 hidden sm:block"></div>
+            <div class="h-8 w-[1px] bg-orange-500/40 hidden sm:block"></div>
             <div class="flex flex-col justify-center">
-                <span class="font-bebas text-2xl md:text-3xl text-brand-orange tracking-[1px] leading-none">ACTORES S.C.G.</span>
-                <span class="text-[8px] font-bold text-gray-500 tracking-[2px] uppercase leading-tight hidden md:block">Sociedad de Gestión</span>
+                <span class="font-bebas text-xl md:text-3xl text-orange-500 tracking-[1px] leading-none">ACTORES S.C.G.</span>
+                <span class="text-[7px] md:text-[8px] font-bold text-gray-500 tracking-[2px] uppercase leading-tight hidden sm:block">Sociedad de Gestión</span>
             </div>
         </a>
 
-        {{-- BOTÓN MENÚ MÓVIL --}}
-        <div class="flex flex-col gap-[6px] cursor-pointer md:hidden z-[1100]" id="mobile-menu">
-            <span class="w-[30px] h-[3px] bg-white transition-all duration-300"></span>
-            <span class="w-[30px] h-[3px] bg-white transition-all duration-300"></span>
-            <span class="w-[30px] h-[3px] bg-white transition-all duration-300"></span>
+        {{-- BOTÓN MENÚ MÓVIL (Ahora visible hasta 'lg') --}}
+        <div class="flex flex-col gap-[6px] cursor-pointer lg:hidden z-[1100]" id="mobile-menu">
+            <span class="w-[28px] h-[3px] bg-white transition-all duration-300 origin-center"></span>
+            <span class="w-[28px] h-[3px] bg-white transition-all duration-300"></span>
+            <span class="w-[28px] h-[3px] bg-white transition-all duration-300 origin-center"></span>
         </div>
 
-        {{-- ENLACES --}}
-        <ul class="nav-links fixed md:static top-0 -right-full md:right-0 w-full md:w-auto h-screen md:h-auto bg-brand-orange md:bg-transparent flex flex-col md:flex-row justify-center md:justify-end items-center gap-8 md:gap-[30px] transition-all duration-500 z-[1000] list-none">
+        {{-- ENLACES (Cambiado md: por lg:) --}}
+        <ul class="nav-links fixed lg:static top-0 -right-full lg:right-0 w-full lg:w-auto h-screen lg:h-auto bg-orange-600 lg:bg-transparent flex flex-col lg:flex-row justify-center lg:justify-end items-center gap-6 lg:gap-6 xl:gap-8 transition-all duration-500 z-[1000] list-none px-6">
 
-            {{-- ANCLAS (Con clase nav-link-scroll para el script) --}}
-            <li><a href="#inicio" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">INICIO</a></li>
-            <li><a href="#convocatoria" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">SOBRE LA CONVOCATORIA</a></li>
-            <li><a href="#cronograma" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">CRONOGRAMA</a></li>
-            <li><a href="#anexos" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">PREPÁRATE</a></li>
-            <li><a href="#pasos" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] opacity-80 hover:md:text-brand-orange transition-all">¿CÓMO POSTULARSE?</a></li>
+            {{-- ANCLAS --}}
+            <li><a href="#inicio" class="nav-link-scroll no-underline text-white font-bebas text-[2rem] lg:text-lg xl:text-xl tracking-[1.5px] opacity-80 hover:lg:text-orange-500 transition-all">INICIO</a></li>
+            <li><a href="#convocatoria" class="nav-link-scroll no-underline text-white font-bebas text-[2rem] lg:text-lg xl:text-xl tracking-[1.5px] opacity-80 hover:lg:text-orange-500 transition-all">CONVOCATORIA</a></li>
+            <li><a href="#cronograma" class="nav-link-scroll no-underline text-white font-bebas text-[2rem] lg:text-lg xl:text-xl tracking-[1.5px] opacity-80 hover:lg:text-orange-500 transition-all">CRONOGRAMA</a></li>
+            <li><a href="#anexos" class="nav-link-scroll no-underline text-white font-bebas text-[2rem] lg:text-lg xl:text-xl tracking-[1.5px] opacity-80 hover:lg:text-orange-500 transition-all">PREPÁRATE</a></li>
+            <li><a href="#pasos" class="nav-link-scroll no-underline text-white font-bebas text-[2rem] lg:text-lg xl:text-xl tracking-[1.5px] opacity-80 hover:lg:text-orange-500 transition-all">POSTULACIÓN</a></li>
 
-            {{-- RUTA FIJA (Página externa) --}}
+            {{-- RUTA FIJA --}}
             <li>
                 <a href="{{ route('inscritos.publico') }}"
-                    class="no-underline font-bebas text-[2.5rem] md:text-xl tracking-[1.5px] transition-all 
-               {{ request()->routeIs('inscritos.publico') ? 'text-brand-orange opacity-100' : 'text-white opacity-80 hover:md:text-brand-orange' }}">
+                    class="no-underline font-bebas text-[2rem] lg:text-lg xl:text-xl tracking-[1.5px] transition-all 
+                {{ request()->routeIs('inscritos.publico') ? 'text-black lg:text-orange-500' : 'text-white opacity-80 hover:lg:text-orange-500' }}">
                     VER INSCRITOS
                 </a>
             </li>
 
             {{-- BOTÓN DE ACCIÓN --}}
-            <li class="md:ml-6 mt-4 md:mt-0">
+            <li class="lg:ml-4 mt-6 lg:mt-0">
                 @auth
-                <a href="{{ route('dashboard') }}" class="no-underline text-black font-bebas text-[2.5rem] md:text-lg tracking-[1.5px] relative overflow-hidden group/btn bg-brand-orange px-10 py-4 md:px-6 md:py-2.5 shadow-[0_0_20px_rgba(255,102,0,0.3)] hover:shadow-[0_0_30px_rgba(255,102,0,0.5)] transition-all duration-300 flex items-center gap-3">
-                    <span class="relative z-10 uppercase">MI PANEL</span>
+                <a href="{{ route('dashboard') }}" class="no-underline text-black font-bebas text-[2rem] lg:text-base xl:text-lg tracking-[1.5px] bg-white lg:bg-orange-500 px-8 py-3 lg:px-5 lg:py-2 transition-all duration-300 flex items-center shadow-lg">
+                    MI PANEL
                 </a>
                 @else
-                <a href="{{ route('validar-socio') }}" class="no-underline text-black font-bebas text-[2.5rem] md:text-lg tracking-[1.5px] relative overflow-hidden group/btn bg-brand-orange px-10 py-4 md:px-6 md:py-2.5 shadow-[0_0_20px_rgba(255,102,0,0.3)] hover:shadow-[0_0_30px_rgba(255,102,0,0.5)] transition-all duration-300 flex items-center gap-3">
-                    <svg class="w-5 h-5 md:w-4 md:h-4 text-black animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm4 0h-2v-4h2v4zm-1-9c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z" />
-                    </svg>
-                    <span class="relative z-10 uppercase">CONSULTAR MI ESTADO</span>
+                <a href="{{ route('validar-socio') }}" class="no-underline text-black font-bebas text-[1.8rem] lg:text-sm xl:text-base tracking-[1.5px] bg-white lg:bg-orange-500 px-8 py-3 lg:px-4 lg:py-2 transition-all duration-300 flex items-center gap-2 shadow-lg">
+                    <span class="uppercase">CONSULTAR ESTADO</span>
                 </a>
                 @endauth
             </li>
         </ul>
     </nav>
-
     {{-- CONTENEDOR MAESTRO: IMPACTO TOTAL INCENTIVOS 2026 --}}
     <section id="inicio" class="relative min-h-screen w-full flex flex-col bg-black overflow-hidden">
         {{-- 1. BLOQUE DE PODER: CONDICIONES DE PARTICIPACIÓN (PASO OBLIGATORIO) --}}
@@ -278,103 +275,101 @@
                 </div>
             </div>
 
-            <div class="w-full bg-[#050505] text-white font-sans border border-white/20">
+            <div class="w-full bg-[#050505] text-white font-sans border border-white/20 overflow-hidden">
 
-                <div class="bg-white/5 border-b border-white/20 py-4 text-center">
-                    <h2 class="text-brand-orange font-bold uppercase tracking-[0.2em] text-xl">Cronograma Incentivos Audiovisuales</h2>
+                <div class="bg-white/5 border-b border-white/20 py-6 text-center">
+                    <h2 class="text-orange-500 font-bold uppercase tracking-[0.2em] text-xl md:text-2xl px-4">
+                        Cronograma Incentivos Audiovisuales
+                    </h2>
                 </div>
 
-                <div class="grid grid-cols-12 bg-white/10 border-b border-white/20">
+                <div class="hidden md:grid grid-cols-12 bg-white/10 border-b border-white/20">
                     <div class="col-span-8 py-3 px-6 border-r border-white/20">
-                        <span class="text-cyan-400 font-bold uppercase tracking-wider text-sm">Desarrollo</span>
+                        <span class="text-orange-500 font-bold uppercase tracking-wider text-sm">Desarrollo</span>
                     </div>
                     <div class="col-span-4 py-3 px-6 text-center">
-                        <span class="text-cyan-400 font-bold uppercase tracking-wider text-sm">Fechas</span>
+                        <span class="text-orange-500 font-bold uppercase tracking-wider text-sm">Fechas</span>
                     </div>
                 </div>
 
                 <div class="divide-y divide-white/20">
 
-                    {{-- ETAPA I --}}
-                    <div class="grid grid-cols-12">
-                        <div class="col-span-2 flex items-center justify-center border-r border-white/20 bg-white/[0.02]">
-                            <span class="font-bebas text-4xl text-cyan-400 tracking-tighter">ETAPA I</span>
+                    <div class="grid grid-cols-1 md:grid-cols-12">
+                        <div class="md:col-span-2 flex items-center justify-center border-b md:border-b-0 md:border-r border-white/20 bg-white/[0.02] py-4 md:py-0">
+                            <span class="font-bebas text-4xl text-orange-500 tracking-tighter">ETAPA I</span>
                         </div>
-                        <div class="col-span-10 divide-y divide-white/10">
-                            <div class="grid grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors">
-                                <div class="col-span-6 text-xl font-medium">Inscripción de los proponentes</div>
-                                <div class="col-span-4 text-right text-3xl font-mono font-black text-white">9 al 23 de marzo</div>
+                        <div class="md:col-span-10 divide-y divide-white/10">
+                            <div class="grid grid-cols-1 md:grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors gap-2">
+                                <div class="md:col-span-6 text-xl font-medium">Inscripción de los proponentes</div>
+                                <div class="md:col-span-4 md:text-right text-3xl font-mono font-black text-white">9 al 23 de marzo</div>
                             </div>
-                            <div class="grid grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors">
-                                <div class="col-span-6 text-lg text-gray-300">Publicación proponentes que deben subsanar Etapa I</div>
-                                <div class="col-span-4 text-right text-2xl font-mono font-bold text-gray-200">15 de abril</div>
+                            <div class="grid grid-cols-1 md:grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors gap-2">
+                                <div class="md:col-span-6 text-lg text-gray-300">Publicación proponentes que deben subsanar Etapa I</div>
+                                <div class="md:col-span-4 md:text-right text-2xl font-mono font-bold text-gray-200">15 de abril</div>
                             </div>
-                            <div class="grid grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors">
-                                <div class="col-span-6 text-lg text-gray-300">Recepción de subsanaciones Etapa I</div>
-                                <div class="col-span-4 text-right text-2xl font-mono font-bold text-gray-200">16 al 24 de abril</div>
+                            <div class="grid grid-cols-1 md:grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors gap-2">
+                                <div class="md:col-span-6 text-lg text-gray-300">Recepción de subsanaciones Etapa I</div>
+                                <div class="md:col-span-4 md:text-right text-2xl font-mono font-bold text-gray-200">16 al 24 de abril</div>
                             </div>
-                            {{-- Ajustado: Mismo formato que superiores --}}
-                            <div class="grid grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors">
-                                <div class="col-span-6 text-lg text-gray-300">Publicación de proponentes que pasan a la Etapa II</div>
-                                <div class="col-span-4 text-right text-2xl font-mono font-bold text-gray-200">11 de mayo</div>
+                            <div class="grid grid-cols-1 md:grid-cols-10 items-center py-6 px-6 hover:bg-white/5 transition-colors gap-2">
+                                <div class="md:col-span-6 text-lg text-gray-300">Publicación de proponentes que pasan a la Etapa II</div>
+                                <div class="md:col-span-4 md:text-right text-2xl font-mono font-bold text-gray-200">11 de mayo</div>
                             </div>
                         </div>
                     </div>
 
-                    {{-- ETAPA II --}}
-                    <div class="grid grid-cols-12">
-                        <div class="col-span-2 flex items-center justify-center border-r border-white/20 bg-white/[0.02]">
-                            <span class="font-bebas text-4xl text-cyan-400 tracking-tighter">ETAPA II</span>
+                    <div class="grid grid-cols-1 md:grid-cols-12">
+                        <div class="md:col-span-2 flex items-center justify-center border-b md:border-b-0 md:border-r border-white/20 bg-white/[0.02] py-4 md:py-0">
+                            <span class="font-bebas text-4xl text-orange-500 tracking-tighter">ETAPA II</span>
                         </div>
-                        <div class="col-span-10 divide-y divide-white/10">
-                            <div class="grid grid-cols-10 items-center py-8 px-6 hover:bg-white/5 transition-colors">
-                                <div class="col-span-6 text-xl font-medium">Recepciones de guiones y documentos de la Etapa II</div>
-                                <div class="col-span-4 text-right text-3xl font-mono font-black">13 de mayo <span class="text-xs block text-brand-orange tracking-widest uppercase">(único día)</span></div>
+                        <div class="md:col-span-10 divide-y divide-white/10">
+                            <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-6 hover:bg-white/5 transition-colors gap-2">
+                                <div class="md:col-span-6 text-xl font-medium">Recepciones de guiones y documentos de la Etapa II</div>
+                                <div class="md:col-span-4 md:text-right text-3xl font-mono font-black text-white">
+                                    13 de mayo <span class="text-xs block text-orange-500 tracking-widest uppercase md:mt-1">(único día)</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-10 items-center py-8 px-6 hover:bg-white/5 transition-colors">
-                                <div class="col-span-6 text-lg text-gray-300">Publicación de proponentes que pasan a la Etapa III</div>
-                                <div class="col-span-4 text-right text-2xl font-mono font-bold">4 de junio</div>
+                            <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-6 hover:bg-white/5 transition-colors gap-2">
+                                <div class="md:col-span-6 text-lg text-gray-300">Publicación de proponentes que pasan a la Etapa III</div>
+                                <div class="md:col-span-4 md:text-right text-2xl font-mono font-bold text-white">4 de junio</div>
                             </div>
                         </div>
                     </div>
 
-                    {{-- ETAPA III --}}
-                    <div class="grid grid-cols-12 items-center py-10 px-6 hover:bg-white/5 transition-colors">
-                        <div class="col-span-2 border-r border-white/20 pr-4 text-center">
-                            <span class="font-bebas text-4xl text-cyan-400 tracking-tighter">ETAPA III</span>
+                    <div class="grid grid-cols-1 md:grid-cols-12 items-center py-10 px-6 hover:bg-white/5 transition-colors gap-4">
+                        <div class="md:col-span-2 md:border-r border-white/20 md:pr-4 text-center">
+                            <span class="font-bebas text-4xl text-orange-500 tracking-tighter">ETAPA III</span>
                         </div>
-                        <div class="col-span-6 px-6 text-xl font-medium">Revisión de guiones y documentación de la Etapa III por los jurados externos</div>
-                        <div class="col-span-4 text-right text-3xl font-mono font-black">6 al 24 de junio</div>
+                        <div class="md:col-span-6 md:px-6 text-xl font-medium text-center md:text-left">Revisión de guiones y documentación de la Etapa III por los jurados externos</div>
+                        <div class="md:col-span-4 md:text-right text-center text-3xl font-mono font-black text-white">6 al 24 de junio</div>
                     </div>
 
-                    {{-- ETAPA IV - Ajustado: Mismo formato que Etapa III --}}
-                    <div class="grid grid-cols-12 items-center py-10 px-6 hover:bg-white/5 transition-colors">
-                        <div class="col-span-2 border-r border-white/20 pr-4 text-center">
-                            <span class="font-bebas text-4xl text-cyan-400 tracking-tighter">ETAPA IV</span>
+                    <div class="grid grid-cols-1 md:grid-cols-12 items-center py-10 px-6 hover:bg-white/5 transition-colors gap-4">
+                        <div class="md:col-span-2 md:border-r border-white/20 md:pr-4 text-center">
+                            <span class="font-bebas text-4xl text-orange-500 tracking-tighter">ETAPA IV</span>
                         </div>
-                        <div class="col-span-6 px-6 text-xl font-medium">Publicación de proponentes seleccionados</div>
-                        <div class="col-span-4 text-right text-3xl font-mono font-black">30 de junio</div>
+                        <div class="md:col-span-6 md:px-6 text-xl font-medium text-center md:text-left">Publicación de proponentes seleccionados</div>
+                        <div class="md:col-span-4 md:text-right text-center text-3xl font-mono font-black text-white">30 de junio</div>
                     </div>
 
-                    {{-- PRODUCCIÓN --}}
-                    <div class="grid grid-cols-12 items-center py-12 px-6 hover:bg-white/5 transition-colors">
-                        <div class="col-span-8 px-6 text-2xl font-bold uppercase tracking-wide">Producción del contenido audiovisual</div>
-                        <div class="col-span-4 text-right text-3xl font-mono font-black">1 de julio al 29 de septiembre</div>
+                    <div class="grid grid-cols-1 md:grid-cols-12 items-center py-12 px-6 hover:bg-white/5 transition-colors gap-4">
+                        <div class="md:col-span-8 md:px-6 text-2xl font-bold uppercase tracking-wide text-center md:text-left text-orange-500">Producción del contenido audiovisual</div>
+                        <div class="md:col-span-4 md:text-right text-center text-3xl font-mono font-black text-white">1 de julio al 29 de septiembre</div>
                     </div>
 
-                    {{-- ENTREGA FINAL - Ajustado: Mismo formato que Producción --}}
-                    <div class="grid grid-cols-12 items-center py-12 px-6 hover:bg-white/5 transition-colors">
-                        <div class="col-span-8 px-6 text-2xl font-bold uppercase tracking-wide">Entrega del contenido audiovisual y documentación adicional</div>
-                        <div class="col-span-4 text-right text-3xl font-mono font-black">30 de septiembre <span class="text-xs block text-brand-orange tracking-widest uppercase">(único día)</span></div>
+                    <div class="grid grid-cols-1 md:grid-cols-12 items-center py-12 px-6 hover:bg-white/5 transition-colors gap-4">
+                        <div class="md:col-span-8 md:px-6 text-2xl font-bold uppercase tracking-wide text-center md:text-left">Entrega del contenido audiovisual y documentación adicional</div>
+                        <div class="md:col-span-4 md:text-right text-center text-3xl font-mono font-black text-white">
+                            30 de septiembre <span class="text-xs block text-orange-500 tracking-widest uppercase md:mt-1">(único día)</span>
+                        </div>
                     </div>
 
-                    {{-- PREMIER - Ajustado: Fondo blanco --}}
-                    <div class="grid grid-cols-12 items-center py-16 px-6 bg-white text-black">
-                        <div class="col-span-2 border-r border-black/20 pr-4 text-center">
+                    <div class="grid grid-cols-1 md:grid-cols-12 items-center py-12 md:py-16 px-6 bg-white text-black gap-6">
+                        <div class="md:col-span-2 md:border-r border-black/20 md:pr-4 text-center">
                             <span class="font-bebas text-5xl text-black tracking-tighter">PREMIER</span>
                         </div>
-                        <div class="col-span-6 px-6 text-xl font-medium italic">Por primera vez se exhibirá al público el cortometraje</div>
-                        <div class="col-span-4 text-right text-7xl font-bebas text-black tracking-widest leading-none">OCTUBRE</div>
+                        <div class="md:col-span-6 md:px-6 text-xl font-medium italic text-center md:text-left">Por primera vez se exhibirá al público el cortometraje</div>
+                        <div class="md:col-span-4 text-center md:text-right text-6xl md:text-7xl font-bebas text-black tracking-widest leading-none">OCTUBRE</div>
                     </div>
 
                 </div>
@@ -657,64 +652,92 @@
         </div>
     </footer>
 
-    {{-- Botones Flotantes --}}
-    <div class="fixed bottom-6 right-6 flex flex-col gap-4 z-[2000]">
-        <a href="#" class="flex items-center justify-center bg-brand-orange text-white w-14 h-14 rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all duration-300 hover:bg-[#ff6a33] hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(232,82,27,0.3)] group relative">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span class="absolute right-16 bg-white text-black px-2 py-1 rounded text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity shadow-lg pointer-events-none uppercase tracking-wider whitespace-nowrap">
-                Condiciones de participación.
-            </span>
-        </a>
 
-        <a href="https://wa.me/573174188415" target="_blank"
-            class="flex items-center justify-center bg-[#25D366] text-white w-14 h-14 rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(37,211,102,0.4)] group relative">
-            <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.588-5.946 0-6.556 5.332-11.888 11.888-11.888 3.176 0 6.161 1.237 8.404 3.48s3.481 5.229 3.481 8.404c0 6.556-5.332 11.888-11.888 11.888-2.01 0-3.988-.508-5.73-1.472l-6.254 1.641zm6.309-4.321c1.547.92 3.123 1.399 4.759 1.399 5.075 0 9.212-4.136 9.212-9.212 0-2.457-.957-4.767-2.693-6.503s-4.047-2.693-6.504-2.693c-5.075 0-9.212 4.136-9.212 9.212 0 1.77.51 3.5 1.476 4.997l-.999 3.648 3.765-.988zm11.458-6.191c-.078-.13-.288-.208-.603-.365-.315-.157-1.859-.918-2.148-1.023-.289-.105-.499-.157-.709.157-.21.315-.814 1.023-.997 1.233-.183.21-.367.236-.682.079-.315-.157-1.332-.49-2.537-1.565-.937-.836-1.57-1.868-1.754-2.183-.184-.315-.02-.486.137-.643.141-.141.315-.367.472-.551.157-.184.21-.315.315-.525.105-.21.052-.394-.026-.551-.079-.157-.709-1.706-.971-2.336-.255-.615-.514-.532-.709-.542-.183-.008-.393-.01-.603-.01s-.551.079-.84.394c-.289.315-1.102 1.076-1.102 2.625 0 1.549 1.129 3.045 1.286 3.255.157.21 2.221 3.391 5.38 4.754.752.324 1.339.518 1.797.663.754.24 1.441.206 1.983.125.603-.09 1.859-.761 2.121-1.469.262-.708.262-1.312.184-1.441z" />
-            </svg>
-            <span class="absolute right-16 bg-white text-black px-2 py-1 rounded text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity shadow-lg pointer-events-none uppercase tracking-wider">
-                Escríbenos
-            </span>
-        </a>
-    </div>
 
     <script>
-        const menu = document.querySelector('#mobile-menu');
-        const menuLinks = document.querySelector('.nav-links');
-        const bars = menu.querySelectorAll('span');
+        document.addEventListener('DOMContentLoaded', () => {
+            // Seleccionamos los elementos una sola vez
+            const menuBtn = document.querySelector('#mobile-menu');
+            const navLinksContainer = document.querySelector('.nav-links');
+            const bars = menuBtn ? menuBtn.querySelectorAll('span') : [];
+            const navLinks = document.querySelectorAll('.nav-link-scroll');
+            const sections = document.querySelectorAll('section[id]');
 
-        menu.addEventListener('click', () => {
-            menuLinks.classList.toggle('-right-full');
-            menuLinks.classList.toggle('right-0');
-            bars[0].classList.toggle('translate-y-[9px]');
-            bars[0].classList.toggle('rotate-45');
-            bars[1].classList.toggle('opacity-0');
-            bars[2].classList.toggle('-translate-y-[9px]');
-            bars[2].classList.toggle('-rotate-45');
-        });
+            // 1. LÓGICA DEL MENÚ MÓVIL (Abrir/Cerrar y Animación de Barras)
+            if (menuBtn && navLinksContainer) {
+                menuBtn.addEventListener('click', () => {
+                    const isOpen = navLinksContainer.classList.contains('right-0');
 
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                menuLinks.classList.add('-right-full');
-                menuLinks.classList.remove('right-0');
-                bars[0].classList.remove('translate-y-[9px]', 'rotate-45');
-                bars[1].classList.remove('opacity-0');
-                bars[2].classList.remove('-translate-y-[9px]', '-rotate-45');
+                    // Toggle del contenedor
+                    navLinksContainer.classList.toggle('-right-full');
+                    navLinksContainer.classList.toggle('right-0');
+
+                    // Animación de la hamburguesa a X
+                    if (bars.length === 3) {
+                        bars[0].classList.toggle('translate-y-[9px]');
+                        bars[0].classList.toggle('rotate-45');
+                        bars[1].classList.toggle('opacity-0');
+                        bars[2].classList.toggle('-translate-y-[9px]');
+                        bars[2].classList.toggle('-rotate-45');
+                    }
+                });
+            }
+
+            // 2. CERRAR MENÚ AL HACER CLIC EN UN LINK
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navLinksContainer.classList.contains('right-0')) {
+                        navLinksContainer.classList.add('-right-full');
+                        navLinksContainer.classList.remove('right-0');
+
+                        // Resetear la hamburguesa
+                        if (bars.length === 3) {
+                            bars[0].classList.remove('translate-y-[9px]', 'rotate-45');
+                            bars[1].classList.remove('opacity-0');
+                            bars[2].classList.remove('-translate-y-[9px]', '-rotate-45');
+                        }
+                    }
+                });
+            });
+
+            // 3. LÓGICA DE RESALTADO (ScrollSpy)
+            function changeActiveLink() {
+                let current = '';
+                const scrollPos = window.scrollY + 160; // Margen para detectar antes de llegar
+
+                sections.forEach(section => {
+                    if (scrollPos >= section.offsetTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                // Si estamos al puro inicio
+                if (window.scrollY < 100) current = 'inicio';
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-brand-orange', 'opacity-100');
+                    link.classList.add('text-white', 'opacity-80');
+
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('text-brand-orange', 'opacity-100');
+                        link.classList.remove('text-white', 'opacity-80');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', changeActiveLink);
+            changeActiveLink();
+
+            // 4. SEGURO DE VIDA MODAL (Esc)
+            document.addEventListener('keydown', (e) => {
+                if (e.key === "Escape") {
+                    const modal = document.getElementById('success-modal');
+                    if (modal) modal.style.display = 'none';
+                }
             });
         });
 
-        // ESTO ES EL SEGURO DE VIDA: Si Alpine falla, JS puro cerrará el modal
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape") {
-                const modal = document.getElementById('success-modal');
-                if (modal) modal.style.display = 'none';
-            }
-        });
-
-        /** * MANEJO DE EXPLICITACIÓN DE PÁGINA (ERROR 419)
-         * Captura el fallo de sesión antes de que Livewire muestre su modal por defecto.
-         */
+        // 5. MANEJO ERROR 419 (Livewire)
         document.addEventListener('livewire:init', () => {
             Livewire.hook('request', ({
                 fail
@@ -724,70 +747,10 @@
                     preventDefault
                 }) => {
                     if (status === 419) {
-                        preventDefault(); // BLOQUEA el modal de error por defecto
-
-                        // Recarga la página para obtener un nuevo token CSRF
-                        // Esto mantiene al usuario en el flujo sin mensajes técnicos extraños
+                        preventDefault();
                         window.location.reload();
-
                         return false;
                     }
-                });
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const navLinks = document.querySelectorAll('.nav-link-scroll');
-            const sections = document.querySelectorAll('section[id]');
-            const mobileMenuBtn = document.getElementById('mobile-menu');
-            const navLinksContainer = document.querySelector('.nav-links');
-
-            // Lógica para el menú móvil (abrir/cerrar)
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', () => {
-                    navLinksContainer.classList.toggle('-right-full');
-                    navLinksContainer.classList.toggle('right-0');
-                });
-            }
-
-            // Lógica de resaltado (ScrollSpy)
-            function changeActiveLink() {
-                let current = '';
-
-                // Si estamos arriba del todo (menos de 100px), activar 'inicio'
-                if (window.scrollY < 100) {
-                    current = 'inicio';
-                } else {
-                    sections.forEach(section => {
-                        const sectionTop = section.offsetTop;
-                        // Detectamos la sección activa con un margen de 150px
-                        if (window.pageYOffset >= (sectionTop - 150)) {
-                            current = section.getAttribute('id');
-                        }
-                    });
-                }
-
-                navLinks.forEach(link => {
-                    // Limpiamos clases
-                    link.classList.remove('text-brand-orange', 'opacity-100');
-                    link.classList.add('text-white', 'opacity-80');
-
-                    // Si el link coincide con la sección actual, pintamos de naranja
-                    if (link.getAttribute('href') === `#${current}`) {
-                        link.classList.add('text-brand-orange', 'opacity-100');
-                        link.classList.remove('text-white', 'opacity-80');
-                    }
-                });
-            }
-
-            window.addEventListener('scroll', changeActiveLink);
-            changeActiveLink(); // Ejecutar una vez al inicio
-
-            // Cerrar menú móvil al hacer clic en un link
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    navLinksContainer.classList.add('-right-full');
-                    navLinksContainer.classList.remove('right-0');
                 });
             });
         });

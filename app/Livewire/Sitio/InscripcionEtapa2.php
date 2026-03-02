@@ -3,215 +3,44 @@
 namespace App\Livewire\Sitio;
 
 use App\Models\Proyecto;
-use App\Models\Socio;
-use App\Models\Documento;
-use App\Models\TipoDocumento;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Carbon\Carbon;
-use Livewire\Attributes\Layout;
 
-#[Layout('layouts.guest')]
 class InscripcionEtapa2 extends Component
 {
     use WithFileUploads;
 
     public Proyecto $proyecto;
-    public $socio;
+    public User $socio;
+    public $foto_url, $iniciales;
 
-    // Archivos técnicos
+    // --- VARIABLES DE ETAPA 2 ---
     public $guionFinal, $radicadoGuion, $propuestaCreativa, $presupuesto, $cronograma;
-
-    // Elenco
     public $elenco = [];
 
-    public function mount($proyectoId)
+    public function mount(Proyecto $proyecto)
     {
-        $this->proyecto = Proyecto::with(['socio', 'convocatoria'])
-            ->where('id', $proyectoId)
-            ->where('socio_id', session('socio_id'))
-            ->firstOrFail();
+        $this->proyecto = $proyecto;
+        $this->socio = Auth::user();
 
-        $this->socio = $this->proyecto->socio;
+        // Iniciales Avatar Proponente
+        $parts = explode(' ', trim($this->socio->name));
+        $this->iniciales = strtoupper(substr($parts[0] ?? 'U', 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
 
-        // Inicializar con un espacio vacío en el elenco
+        // Cargar foto proponente
+        if ($this->socio->identificacion) {
+            $archivos = Storage::disk('public')->files('socios');
+            $fotoEncontrada = collect($archivos)->first(fn($path) => str_contains(basename($path), (string)$this->socio->identificacion));
+            if ($fotoEncontrada) $this->foto_url = asset('storage/' . $fotoEncontrada);
+        }
+
+        // Inicializar elenco con un registro vacío
         $this->agregarMiembro();
-    }
-
-    /**
-     * Valida edad y estado administrativo del socio (Inhabilidades de perfil)
-     */
-    private function verificarInhabilidadesSocio(Socio $socio)
-    {
-        // 1. Mayoría de edad
-        if ($socio->fecha_nacimiento && Carbon::parse($socio->fecha_nacimiento)->diffInYears(now()) < 18) {
-            return "Inhabilidad: El participante debe ser mayor de edad.";
-        }
-
-        // 2. Estado administrativo
-        if ($socio->estado !== 'activo') {
-            $mensajes = [
-                'moroso'          => "Inhabilidad por mora en obligaciones administrativas.",
-                'sancionado'      => "Inhabilidad por sanción ética vigente.",
-                'bloqueado_cargo' => "Inhabilidad: Miembros de administración no participan.",
-                'retirado'        => "El socio se encuentra en estado de retiro.",
-            ];
-            return $mensajes[$socio->estado] ?? "Estado ($socio->estado) no permitido.";
-        }
-        return "OK";
-    }
-
-    /**
-     * Busca un socio y aplica la validación de exclusividad total según tu DB
-     */
-    public function buscarSocio($index)
-    {
-        if (!isset($this->elenco[$index])) return;
-        $cedula = trim($this->elenco[$index]['cedula']);
-        if (empty($cedula)) return;
-
-        $this->elenco[$index]['buscando'] = true;
-        $this->elenco[$index]['encontrado'] = false;
-        $this->elenco[$index]['nombre'] = '';
-
-        // A. Validar duplicados en el mismo formulario
-        foreach ($this->elenco as $idx => $m) {
-            if ($idx !== $index && $m['cedula'] === $cedula) {
-                $this->elenco[$index]['nombre'] = 'ESTE SOCIO YA ESTÁ EN TU LISTA';
-                $this->elenco[$index]['buscando'] = false;
-                return;
-            }
-        }
-
-        $socioEncontrado = Socio::where('identificacion', $cedula)->first();
-
-        if ($socioEncontrado) {
-            // B. Validar Inhabilidades de Perfil
-            $inhabilidadPerfil = $this->verificarInhabilidadesSocio($socioEncontrado);
-            if ($inhabilidadPerfil !== "OK") {
-                $this->elenco[$index]['nombre'] = mb_strtoupper($inhabilidadPerfil);
-            } else {
-
-                $convId = $this->proyecto->convocatoria_id;
-                $proyIdActual = $this->proyecto->id;
-
-                // 1. ¿Es Proponente de otro proyecto? (Tabla proyectos)
-                $esProponenteOtro = Proyecto::where('convocatoria_id', $convId)
-                    ->where('id', '!=', $proyIdActual)
-                    ->where('socio_id', $socioEncontrado->id)
-                    ->exists();
-
-                // 2. ¿Es Director de otro proyecto? (Tabla directores)
-                $esDirectorOtro = DB::table('directores')
-                    ->join('proyectos', 'proyectos.id', '=', 'directores.proyecto_id')
-                    ->where('proyectos.convocatoria_id', $convId)
-                    ->where('proyectos.id', '!=', $proyIdActual)
-                    ->where('directores.identificacion', $cedula)
-                    ->exists();
-
-                // 3. ¿Ya es Elenco en otro proyecto? (Tabla proyecto_socio)
-                $esElencoOtro = DB::table('proyecto_socio')
-                    ->join('proyectos', 'proyectos.id', '=', 'proyecto_socio.proyecto_id')
-                    ->where('proyectos.convocatoria_id', $convId)
-                    ->where('proyecto_socio.socio_id', $socioEncontrado->id)
-                    ->where('proyectos.id', '!=', $proyIdActual)
-                    ->exists();
-
-                if ($esProponenteOtro || $esDirectorOtro || $esElencoOtro) {
-                    $this->elenco[$index]['nombre'] = 'INHABILITADO: YA PARTICIPA EN OTRO PROYECTO';
-                } else {
-                    // TODO CORRECTO
-                    $this->elenco[$index]['nombre'] = $socioEncontrado->nombre;
-                    $this->elenco[$index]['socio_id'] = $socioEncontrado->id;
-                    $this->elenco[$index]['encontrado'] = true;
-                    $this->elenco[$index]['foto_url'] = $this->obtenerUrlFoto($cedula);
-
-                    $parts = explode(' ', mb_strtoupper($socioEncontrado->nombre));
-                    $this->elenco[$index]['iniciales'] = (count($parts) >= 2)
-                        ? mb_substr($parts[0], 0, 1) . mb_substr($parts[1], 0, 1)
-                        : mb_substr($parts[0], 0, 1);
-                }
-            }
-        } else {
-            $this->elenco[$index]['nombre'] = 'LA IDENTIFICACIÓN NO ESTÁ REGISTRADA';
-        }
-
-        $this->elenco[$index]['buscando'] = false;
-    }
-
-    public function guardar()
-    {
-        try {
-            $this->validate([
-                'elenco.*.cedula' => 'required',
-                'elenco.*.archivo_autorizacion_path' => 'required',
-                'guionFinal' => 'required|mimes:pdf|max:20480',
-                'radicadoGuion' => 'required|mimes:pdf|max:10240',
-                'propuestaCreativa' => 'required|mimes:pdf|max:30720',
-                'presupuesto' => 'required|mimes:xlsx,xls|max:10240',
-                'cronograma' => 'required|mimes:xlsx,xls|max:10240',
-            ]);
-
-            DB::transaction(function () {
-                // 1. Guardar Elenco (Tabla pivote proyecto_socio)
-                $this->proyecto->socios()->detach();
-                foreach ($this->elenco as $miembro) {
-                    if ($miembro['encontrado'] && $miembro['archivo_autorizacion_path']) {
-                        $path = (is_object($miembro['archivo_autorizacion_path']))
-                            ? $miembro['archivo_autorizacion_path']->store("proyectos/{$this->proyecto->id}/elenco", 'public')
-                            : $miembro['archivo_autorizacion_path'];
-
-                        $this->proyecto->socios()->attach($miembro['socio_id'], [
-                            'archivo_autorizacion_path' => $path,
-                        ]);
-                    }
-                }
-
-                // 2. Guardar Documentos Técnicos (Tabla documentos)
-                $mapeo = [
-                    'Guion' => $this->guionFinal,
-                    'Radicado guion DNDA' => $this->radicadoGuion,
-                    'Propuesta creativa' => $this->propuestaCreativa,
-                    'Presupuesto' => $this->presupuesto,
-                    'Cronograma' => $this->cronograma,
-                ];
-
-                foreach ($mapeo as $nombreTipo => $archivo) {
-                    $tipo = TipoDocumento::where('nombre', 'LIKE', "%{$nombreTipo}%")
-                        ->where('etapa_id', 2)
-                        ->first();
-
-                    if ($tipo && $archivo) {
-                        Documento::create([
-                            'proyecto_id' => $this->proyecto->id,
-                            'tipo_documento_id' => $tipo->id,
-                            'ruta_archivo' => $archivo->store("proyectos/{$this->proyecto->id}/etapa2", 'public'),
-                            'estado' => 'pendiente',
-                            'version' => 1,
-                            'fecha_carga' => now(),
-                        ]);
-                    }
-                }
-
-                // 3. Actualizar estado y etapa del proyecto
-                $this->proyecto->update([
-                    'estado_id' => 5, // Etapa 2 - En Revisión según tu tabla estados
-                    'etapa_id' => 2,
-                    'publicado' => false
-                ]);
-            });
-
-            return redirect('/')->with([
-                'success' => '¡ETAPA 2 COMPLETADA! La documentación técnica y el elenco han sido vinculados correctamente. Tu proyecto ya se encuentra en validación oficial.',
-                'radicado' => $this->proyecto->codigo_radicado
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            session()->flash('error', 'Error: ' . $e->getMessage());
-        }
     }
 
     public function agregarMiembro()
@@ -219,48 +48,142 @@ class InscripcionEtapa2 extends Component
         $this->elenco[] = [
             'cedula' => '',
             'nombre' => '',
-            'socio_id' => null,
-            'archivo_autorizacion_path' => null,
+            'user_id' => null,
+            'archivo_autorizacion' => null,
             'encontrado' => false,
-            'foto_url' => null,
-            'iniciales' => '',
-            'buscando' => false
+            'buscando' => false,
+            'foto_url' => null,      // LLAVE AGREGADA
+            'iniciales' => '?'       // LLAVE AGREGADA
+        ];
+    }
+
+    public function agregarProponenteComoMiembro()
+    {
+        $this->elenco[] = [
+            'cedula' => $this->socio->identificacion,
+            'nombre' => strtoupper($this->socio->name),
+            'user_id' => $this->socio->id,
+            'archivo_autorizacion' => null,
+            'encontrado' => true,
+            'buscando' => false,
+            'foto_url' => $this->foto_url, // LLAVE AGREGADA
+            'iniciales' => $this->iniciales // LLAVE AGREGADA
         ];
     }
 
     public function removerMiembro($index)
     {
-        if (count($this->elenco) > 1) {
-            unset($this->elenco[$index]);
-            $this->elenco = array_values($this->elenco);
-        }
+        unset($this->elenco[$index]);
+        $this->elenco = array_values($this->elenco);
     }
 
-    public function agregarProponenteComoMiembro()
+    public function buscarSocio($index)
     {
-        foreach ($this->elenco as $miembro) {
-            if ($miembro['cedula'] == $this->socio->identificacion) return;
-        }
-        if (count($this->elenco) == 1 && empty($this->elenco[0]['cedula'])) {
-            $index = 0;
+        $cedula = trim($this->elenco[$index]['cedula']);
+        if (empty($cedula)) return;
+
+        $this->elenco[$index]['buscando'] = true;
+        $user = User::where('identificacion', $cedula)->first();
+
+        if ($user) {
+            $this->elenco[$index]['nombre'] = strtoupper($user->name);
+            $this->elenco[$index]['user_id'] = $user->id;
+            $this->elenco[$index]['encontrado'] = true;
+
+            // Lógica para buscar foto del socio encontrado
+            $archivos = Storage::disk('public')->files('socios');
+            $foto = collect($archivos)->first(fn($path) => str_contains(basename($path), (string)$user->identificacion));
+            $this->elenco[$index]['foto_url'] = $foto ? asset('storage/' . $foto) : null;
+
+            // Iniciales del socio encontrado
+            $p = explode(' ', trim($user->name));
+            $this->elenco[$index]['iniciales'] = strtoupper(substr($p[0] ?? 'U', 0, 1) . (isset($p[1]) ? substr($p[1], 0, 1) : ''));
         } else {
-            $this->agregarMiembro();
-            $index = count($this->elenco) - 1;
+            $this->elenco[$index]['nombre'] = 'NO ENCONTRADO';
+            $this->elenco[$index]['encontrado'] = false;
+            $this->elenco[$index]['foto_url'] = null;
+            $this->elenco[$index]['iniciales'] = '?';
         }
-        $this->elenco[$index]['cedula'] = $this->socio->identificacion;
-        $this->buscarSocio($index);
+        $this->elenco[$index]['buscando'] = false;
     }
 
-    private function obtenerUrlFoto($cedula)
+    public function guardar()
     {
-        $directory = 'socios/';
-        $files = Storage::disk('public')->files($directory);
-        $foto = collect($files)->first(fn($p) => str_starts_with(basename($p), $cedula . '.'));
-        return $foto ? asset('storage/' . $foto) . '?v=' . time() : null;
+        $this->validate([
+            'guionFinal' => 'required|mimes:pdf|max:20480',
+            'radicadoGuion' => 'required|mimes:pdf|max:10240',
+            'propuestaCreativa' => 'required|mimes:pdf|max:20480',
+            'presupuesto' => 'required|mimes:xlsx,xls|max:10240',
+            'cronograma' => 'required|mimes:xlsx,xls|max:10240',
+            'elenco.*.archivo_autorizacion' => 'required|mimes:pdf|max:5120',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $this->upload($this->proyecto, $this->guionFinal, 7, 'GUION_FINAL');
+            $this->upload($this->proyecto, $this->radicadoGuion, 8, 'DNDA_RADICADO');
+            $this->upload($this->proyecto, $this->propuestaCreativa, 9, 'PROPUESTA_CREATIVA');
+            $this->upload($this->proyecto, $this->presupuesto, 10, 'PRESUPUESTO');
+            $this->upload($this->proyecto, $this->cronograma, 11, 'CRONOGRAMA');
+
+            foreach ($this->elenco as $miembro) {
+                if ($miembro['encontrado'] && $miembro['archivo_autorizacion']) {
+                    $path = $miembro['archivo_autorizacion']->store('elenco/' . now()->year, 'public');
+                    // IMPORTANTE: Asegúrate que la relación en el modelo Proyecto se llame 'elenco'
+                    $this->proyecto->elenco()->attach($miembro['user_id'], [
+                        'archivo_autorizacion_path' => $path,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+
+            $this->proyecto->update(['estado_id' => 5, 'etapa_id' => 2]);
+
+            DB::commit();
+            return redirect()->route('dashboard')->with('success', 'Inscripción completada.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Error Etapa 2: " . $e->getMessage());
+            $this->addError('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    private function upload($proyecto, $file, $tipoId, $prefix)
+    {
+        if ($file) {
+            $name = "E2_{$tipoId}_{$prefix}_" . time() . "." . $file->getClientOriginalExtension();
+            $path = $file->storeAs('documentos/' . now()->year, $name, 'public');
+            $proyecto->documentos()->create([
+                'tipo_documento_id' => $tipoId,
+                'ruta_archivo' => $path,
+                'fecha_carga' => now(),
+            ]);
+        }
     }
 
     public function render()
     {
         return view('livewire.sitio.inscripcion-etapa2');
+    }
+
+    // En InscripcionEtapa2.php
+
+    public function limpiarDocumento($propiedad, $index = null)
+    {
+        if ($index !== null && $propiedad === 'elenco') {
+            // Lógica para el array de elenco
+            if (isset($this->elenco[$index]['archivo_autorizacion'])) {
+                $this->elenco[$index]['archivo_autorizacion'] = null;
+            }
+            // Limpiamos la validación específica del índice
+            $this->resetValidation("elenco.$index.archivo_autorizacion");
+        } else {
+            // Lógica igual a la Etapa 1 para variables simples
+            // (guionFinal, presupuesto, cronograma, etc.)
+            $this->$propiedad = null;
+            $this->resetValidation($propiedad);
+        }
     }
 }

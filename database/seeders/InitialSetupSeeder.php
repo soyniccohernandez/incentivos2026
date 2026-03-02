@@ -105,29 +105,38 @@ class InitialSetupSeeder extends Seeder
             [
                 'id' => 1,
                 'convocatoria_id' => 1,
-                'nombre' => 'Etapa 1: Inscripción',
+                'nombre' => 'CONVOCATORIA Y SUBSANACIÓN', // Agrupamos todo lo inicial
                 'orden' => 1,
                 'es_subsanable' => 1,
-                'fecha_inicio' => $ahora->copy()->subDays(5),
-                'fecha_fin' => $ahora->copy()->addDays(10),
+                'fecha_inicio' => '2026-03-09 00:00:00',
+                'fecha_fin' => '2026-04-24 23:59:59',
             ],
             [
                 'id' => 2,
                 'convocatoria_id' => 1,
-                'nombre' => 'Etapa 2: Requisitos Técnicos',
+                'nombre' => 'VERIFICACIÓN TÉCNICA',
                 'orden' => 2,
                 'es_subsanable' => 0,
-                'fecha_inicio' => $ahora->copy()->addDays(11),
-                'fecha_fin' => $ahora->copy()->addDays(20),
+                'fecha_inicio' => '2026-04-25 00:00:00',
+                'fecha_fin' => '2026-05-13 23:59:59',
             ],
             [
                 'id' => 3,
                 'convocatoria_id' => 1,
-                'nombre' => 'Etapa 3: Evaluación de Jurados',
+                'nombre' => 'EVALUACIÓN DE JURADOS',
                 'orden' => 3,
                 'es_subsanable' => 0,
-                'fecha_inicio' => $ahora->copy()->addDays(21),
-                'fecha_fin' => $ahora->copy()->addDays(30),
+                'fecha_inicio' => '2026-05-14 00:00:00',
+                'fecha_fin' => '2026-06-24 23:59:59',
+            ],
+            [
+                'id' => 4,
+                'convocatoria_id' => 1,
+                'nombre' => 'SELECCIÓN Y PREMIER', // El hito final
+                'orden' => 4,
+                'es_subsanable' => 0,
+                'fecha_inicio' => '2026-06-25 00:00:00',
+                'fecha_fin' => '2026-10-31 23:59:59',
             ],
         ];
 

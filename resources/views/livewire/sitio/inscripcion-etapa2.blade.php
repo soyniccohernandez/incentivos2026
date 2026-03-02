@@ -1,144 +1,179 @@
-<div class="min-h-screen bg-black text-left" x-data="{ showExitModal: false }">
-    {{-- NAV --}}
-    <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-5 md:px-12 bg-black/95 border-b border-brand-border backdrop-blur-sm">
-        <div class="flex items-center gap-8">
-            <a href="/" class="font-bebas text-3xl text-brand-orange tracking-[2px] no-underline">
-                ACTORES S.C.G.
-            </a>
-            <span class="font-bebas text-xl text-gray-500 hidden md:block uppercase tracking-widest border-l border-brand-border pl-8">
-                Etapa 02: Información Técnica y Elenco
-            </span>
-        </div>
-        <button @click="showExitModal = true" class="group flex items-center gap-3 text-gray-500 hover:text-white transition-colors focus:outline-none">
-            <span class="font-bold text-[10px] uppercase tracking-[3px]">Abandonar Registro</span>
-            <div class="p-2 border border-brand-border group-hover:border-red-500 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
+<div class="w-full">
+    {{-- ESTILOS Y FUENTES PREMIUM --}}
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;800;900&display=swap');
+
+        .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .font-inter {
+            font-family: 'Inter', sans-serif;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    {{-- NAV PREMIUM --}}
+    <nav x-data="{ dropdownOpen: false }" class="bg-black border-b border-white/10 sticky top-0 z-[1000] antialiased">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center gap-8">
+                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-4 no-underline group">
+                        <img src="{{ asset('resources/imagenes/logo.png') }}" class="h-9 w-auto brightness-200 group-hover:scale-105 transition-transform">
+                        <div class="flex flex-col border-l border-white/10 pl-4">
+                            <span class="font-outfit text-lg font-900 text-white tracking-tight leading-none uppercase">PORTAL <span class="text-[#ff6600]">POSTULACIÓN</span></span>
+                            <span class="text-[9px] font-semibold text-gray-500 uppercase tracking-[2px] mt-1 font-inter">Incentivos 2026</span>
+                        </div>
+                    </a>
+                    <div class="hidden lg:flex items-center gap-3 ml-4 bg-white/[0.03] px-4 py-1.5 rounded-full border border-white/5">
+                        <div class="w-1.5 h-1.5 bg-[#ff6600] rounded-full animate-pulse shadow-[0_0_8px_#ff6600]"></div>
+                        <span class="font-inter text-[11px] font-bold text-gray-400 tracking-wider uppercase">Etapa 02: Expediente Técnico</span>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-3 px-2 py-1.5 hover:bg-white/5 transition-all rounded-lg group">
+                        <div class="w-9 h-9 bg-gradient-to-br from-[#ff6600] to-[#cc5200] rounded-lg flex items-center justify-center text-black font-outfit font-800 text-sm overflow-hidden shadow-lg">
+                            {{ $iniciales }}
+                        </div>
+                        <div class="text-left hidden sm:block">
+                            <span class="text-sm font-700 text-white block leading-none">{{ auth()->user()->name }}</span>
+                            <span class="text-[9px] font-bold text-gray-500 uppercase mt-1 block tracking-widest">Socio Proponente</span>
+                        </div>
+                    </button>
+                </div>
             </div>
-        </button>
+        </div>
     </nav>
 
-    <main class="bg-black min-h-screen pt-32 pb-24 px-6 text-left">
-        <div class="max-w-[1100px] mx-auto text-left">
+    <main class="min-h-screen bg-[#f8fafc] font-inter pb-24 pt-10 text-left">
+        <div class="max-w-7xl mx-auto px-6">
             {{-- HEADER --}}
-            <header class="mb-12 border-l-4 border-brand-orange pl-6 text-left">
-                <div class="text-brand-orange font-bold text-sm uppercase tracking-[3px] mb-2">
-                    Proyecto: {{ $proyecto->codigo_radicado }}
+            <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div class="border-l-4 border-[#ff6600] pl-6">
+                    <span class="text-[#ff6600] font-bold text-[10px] uppercase tracking-[4px] mb-2 block">EXPEDIENTE: {{ $proyecto->codigo_radicado }}</span>
+                    <h1 class="font-outfit text-5xl md:text-6xl font-900 text-slate-800 leading-none uppercase tracking-tighter">
+                        DETALLES <span class="text-[#ff6600]">TÉCNICOS</span>
+                    </h1>
                 </div>
-                <h1 class="font-bebas text-[clamp(2.5rem,6vw,4.5rem)] leading-none mb-4 text-white uppercase">
-                    {{ $proyecto->titulo }}
-                </h1>
+                <div class="hidden md:block text-right">
+                    <p class="text-slate-400 font-bold text-[10px] uppercase tracking-[2px]">Proyecto Registrado</p>
+                    <p class="font-outfit text-xl font-800 text-slate-700 uppercase">{{ $proyecto->titulo }}</p>
+                </div>
             </header>
 
-            <form wire:submit.prevent="guardar" class="space-y-12">
+            <form wire:submit.prevent="guardar" class="space-y-10">
                 {{-- 1. SECCIÓN ELENCO --}}
-                <section class="bg-brand-surface border border-brand-border p-8 md:p-10 relative overflow-hidden text-left">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-brand-border pb-6 mb-10 gap-6">
-                        <h2 class="font-bebas text-3xl text-brand-orange tracking-wider uppercase">
-                            1. ELENCO (MIEMBROS SOCIOS)
-                        </h2>
-                        <div class="flex gap-4">
-                            <button type="button" wire:click="agregarProponenteComoMiembro" class="bg-white text-black px-5 py-2.5 font-bold text-[10px] uppercase tracking-widest hover:bg-brand-orange transition-all active:scale-95 shadow-lg">
-                                YO ACTUARÉ
-                            </button>
-                            <button type="button" wire:click="agregarMiembro" class="bg-brand-orange text-black px-5 py-2.5 font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-all active:scale-95 shadow-lg">
-                                + AGREGAR SOCIO
-                            </button>
+                <section class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm relative overflow-hidden">
+                    {{-- CABECERA SECCIÓN --}}
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 border-b border-slate-100 pb-8">
+                        <div class="flex items-center gap-4">
+                            <div class="h-8 w-1 bg-[#ff6600] rounded-full"></div>
+                            <h2 class="font-outfit text-2xl font-800 text-slate-800 uppercase tracking-tight">1. Elenco (Miembros Socios)</h2>
                         </div>
+                        <button type="button" wire:click="agregarProponenteComoMiembro" class="px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-slate-200 transition-all shadow-sm">
+                            Yo Actuaré
+                        </button>
                     </div>
 
-
-
-                    <div class="space-y-10 text-left">
+                    {{-- LISTADO DE MIEMBROS --}}
+                    <div class="space-y-6">
                         @foreach($elenco as $index => $miembro)
-                        <div class="bg-black/40 border border-brand-border p-8 md:p-10 relative group hover:border-brand-orange/30 transition-all duration-500" wire:key="miembro-etapa2-{{ $index }}">
+                        <div class="bg-slate-50/50 border border-slate-100 p-8 rounded-[2rem] relative animate-fade-in group hover:border-orange-200 transition-all" wire:key="miembro-{{ $index }}">
                             @if(count($elenco) > 1)
-                            <button type="button" wire:click="removerMiembro({{ $index }})" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 transition-colors z-30">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
+                            <button type="button" wire:click="removerMiembro({{ $index }})" class="absolute top-6 right-6 text-slate-300 hover:text-red-500 transition-colors">✕</button>
                             @endif
 
-                            <div class="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-12 items-start">
-                                {{-- FOTO --}}
-                                <div class="mb-6 md:mb-0">
-                                    <div class="w-28 h-28 rounded-full border-2 {{ $miembro['encontrado'] ? 'border-brand-orange shadow-[0_0_20px_rgba(255,77,0,0.2)]' : 'border-gray-800' }} flex items-center justify-center overflow-hidden bg-black transition-all duration-300 mx-auto">
-                                        @if($miembro['encontrado'] && $miembro['foto_url'])
+                            <div class="flex flex-col lg:flex-row gap-10 items-start">
+                                <div class="shrink-0 mx-auto lg:mx-0">
+                                    <div class="w-24 h-24 rounded-2xl bg-white border-2 {{ ($miembro['encontrado'] ?? false) ? 'border-[#ff6600]' : 'border-slate-200' }} flex items-center justify-center overflow-hidden shadow-sm transition-all">
+                                        @if(($miembro['encontrado'] ?? false) && ($miembro['foto_url'] ?? false))
                                         <img src="{{ $miembro['foto_url'] }}" class="w-full h-full object-cover">
-                                        @elseif($miembro['encontrado'])
-                                        <span class="font-bebas text-5xl text-brand-orange">{{ $miembro['iniciales'] }}</span>
                                         @else
-                                        <svg class="w-12 h-12 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                                        </svg>
+                                        <span class="font-outfit text-3xl font-800 {{ ($miembro['encontrado'] ?? false) ? 'text-[#ff6600]' : 'text-slate-200' }}">
+                                            {{ ($miembro['encontrado'] ?? false) ? $miembro['iniciales'] : '?' }}
+                                        </span>
                                         @endif
                                     </div>
                                 </div>
 
-                                {{-- DATOS Y CARGA --}}
-                                <div class="space-y-8">
-                                    <div class="flex flex-col lg:flex-row gap-8 items-start">
-                                        <div class="w-full lg:w-[320px]">
-                                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-2 tracking-widest text-left">Identificación del Socio</label>
-                                            <div class="flex shadow-lg">
-                                                <input type="text" wire:model.defer="elenco.{{ $index }}.cedula" wire:keydown.enter.prevent="buscarSocio({{ $index }})" class="flex-1 bg-black border border-brand-border px-4 py-4 text-white focus:border-brand-orange outline-none uppercase text-sm font-bold tracking-widest transition-all">
-                                                <button type="button" wire:click="buscarSocio({{ $index }})" class="bg-brand-orange text-black px-6 font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-all">
-                                                    @if($miembro['buscando'])
-                                                    <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                <div class="flex-grow w-full space-y-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {{-- CÉDULA CON SPINNER --}}
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Cédula del Socio</label>
+                                            <div class="flex gap-2">
+                                                <input type="text" wire:model.defer="elenco.{{ $index }}.cedula" wire:keydown.enter.prevent="buscarSocio({{ $index }})" class="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-[#ff6600] transition-all uppercase">
+                                                <button type="button" wire:click="buscarSocio({{ $index }})" wire:loading.attr="disabled" wire:target="buscarSocio({{ $index }})" class="bg-slate-800 text-white px-4 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#ff6600] transition-colors min-w-[90px] flex items-center justify-center">
+                                                    <span wire:loading.remove wire:target="buscarSocio({{ $index }})">Validar</span>
+                                                    <svg wire:loading wire:target="buscarSocio({{ $index }})" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                     </svg>
-                                                    @else BUSCAR @endif
                                                 </button>
                                             </div>
-                                            @error("elenco.$index.cedula") <span class="text-red-500 text-[10px] mt-1 block uppercase font-bold">{{ $message }}</span> @enderror
+                                            @error("elenco.$index.cedula") <span class="text-red-500 text-[9px] font-bold mt-1 block uppercase">{{ $message }}</span> @enderror
                                         </div>
 
-                                        <div class="flex-1 w-full">
-                                            <label class="block text-[10px] uppercase font-bold text-brand-orange/70 mb-2 tracking-widest text-left">Información Validada</label>
-                                            <div class="border-b border-white/10 min-h-[56px] flex items-center">
-                                                @if($miembro['nombre'])
-                                                <p class="font-bebas text-3xl tracking-wide uppercase leading-tight {{ !$miembro['encontrado'] ? 'text-red-500 text-xs font-sans font-bold tracking-widest' : 'text-white' }}">
-                                                    {{ $miembro['nombre'] }}
-                                                </p>
-                                                @else
-                                                <p class="text-gray-800 italic text-xl font-bebas tracking-widest uppercase">Esperando búsqueda...</p>
-                                                @endif
+                                        {{-- NOMBRE CON SKELETON --}}
+                                        <div>
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Nombre Completo</label>
+                                            <div class="bg-slate-100/50 border border-slate-200 rounded-xl px-4 py-3 min-h-[46px] flex items-center relative overflow-hidden">
+                                                <span wire:loading.remove wire:target="buscarSocio({{ $index }})" class="font-outfit text-sm font-800 {{ ($miembro['encontrado'] ?? false) ? 'text-slate-700' : 'text-slate-400 italic' }} uppercase">
+                                                    {{ $miembro['nombre'] ?? 'Esperando búsqueda...' }}
+                                                </span>
+                                                <div wire:loading wire:target="buscarSocio({{ $index }})" class="flex items-center gap-2">
+                                                    <div class="h-2 w-20 bg-slate-200 animate-pulse rounded"></div>
+                                                    <span class="text-[9px] font-bold text-[#ff6600] animate-pulse">BUSCANDO...</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {{-- Carga Elenco --}}
-                                    <div class="pt-6 border-t border-white/5" x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true" x-on:livewire-upload-finish="isUploading = false" x-on:livewire-upload-progress="progress = $event.detail.progress">
-                                        <div class="flex flex-col md:flex-row gap-6 items-end">
-                                            <div class="shrink-0">
-                                                <a href="{{ asset('storage/formatos/etapa_02_autorizacion_elenco_2026.pdf') }}" target="_blank" class="inline-block bg-brand-orange text-black px-6 py-3 font-bold text-[10px] uppercase tracking-widest no-underline hover:bg-white transition-all active:scale-95 shadow-lg">
-                                                    Descargar Formato
-                                                </a>
-                                            </div>
-                                            <div class="flex-1 w-full text-left">
-                                                <label class="block text-[10px] uppercase font-bold text-gray-500 mb-2 tracking-widest">Subir Formato Firmado (PDF)</label>
-                                                <div class="relative group/input">
-                                                    <input type="file" wire:model.live="elenco.{{ $index }}.archivo_autorizacion_path" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                                                    <div class="bg-black border border-brand-border px-4 py-3 text-[10px] text-gray-400 font-black uppercase tracking-widest flex items-center justify-between group-hover/input:bg-gray-900 transition-colors">
-                                                        <span>{{ $miembro['archivo_autorizacion_path'] ? 'Archivo seleccionado' : 'Seleccionar archivo' }}</span>
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                                        </svg>
+                                    {{-- ARCHIVO ELENCO --}}
+                                    <div class="pt-6 border-t border-slate-200" x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true" x-on:livewire-upload-finish="isUploading = false" x-on:livewire-upload-error="isUploading = false" x-on:livewire-upload-progress="progress = $event.detail.progress">
+                                        <div class="flex flex-col md:flex-row items-center gap-6">
+                                            <a href="{{ asset('storage/formatos/etapa_02_autorizacion_elenco_2026.pdf') }}" target="_blank" class="w-full md:w-auto px-6 py-3 bg-white border border-slate-200 rounded-xl text-[9px] font-black text-slate-500 uppercase tracking-widest hover:border-[#ff6600] transition-all flex items-center justify-center gap-2">
+                                                Formato PDF
+                                            </a>
+                                            <div class="flex-1 w-full">
+                                                <div class="relative">
+                                                    @if(!($miembro['archivo_autorizacion'] ?? false))
+                                                    <label x-show="!isUploading" class="flex items-center justify-between w-full px-5 py-3 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:bg-white hover:border-[#ff6600]/30 transition-all group/up">
+                                                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Subir Autorización Firmada (PDF)</span>
+                                                        <input type="file" wire:model.live="elenco.{{ $index }}.archivo_autorizacion" class="hidden" accept=".pdf">
+                                                    </label>
+                                                    <div x-show="isUploading" x-cloak class="w-full h-12 flex flex-col justify-center px-5 bg-white border border-orange-100 rounded-xl">
+                                                        <div class="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                                                            <div class="h-full bg-[#ff6600] transition-all duration-300" :style="`width: ${progress}%`"></div>
+                                                        </div>
                                                     </div>
+                                                    @else
+                                                    <div class="bg-white border border-emerald-100 p-3 rounded-xl flex items-center justify-between animate-fade-in shadow-sm">
+                                                        <span class="text-[9px] font-bold text-slate-600 uppercase truncate">{{ is_string($miembro['archivo_autorizacion']) ? 'Archivo cargado' : $miembro['archivo_autorizacion']->getClientOriginalName() }}</span>
+                                                        <button type="button" @click="isUploading = false; progress = 0; $wire.limpiarDocumento('elenco', {{ $index }})" class="text-slate-300 hover:text-red-500 transition-colors">✕</button>
+                                                    </div>
+                                                    @endif
                                                 </div>
-                                                <div x-show="isUploading" class="mt-2 w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
-                                                    <div class="bg-brand-orange h-full transition-all duration-300" :style="'width: ' + progress + '%'"></div>
-                                                </div>
-                                                @if($miembro['archivo_autorizacion_path'])
-                                                <div class="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/50 rounded-full">
-                                                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                                                    <span class="text-green-500 text-[9px] font-black uppercase tracking-widest">Cargado con éxito</span>
-                                                </div>
-                                                @endif
-                                                @error("elenco.$index.archivo_autorizacion_path") <span class="text-red-500 text-[10px] mt-2 block uppercase font-bold text-left">{{ $message }}</span> @enderror
+                                                @error("elenco.$index.archivo_autorizacion") <span class="text-red-500 text-[9px] font-bold mt-1 block uppercase">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
                                     </div>
@@ -147,176 +182,102 @@
                         </div>
                         @endforeach
                     </div>
+
+                    <div class="mt-8 flex justify-center">
+                        <button type="button" wire:click="agregarMiembro" class="group flex items-center gap-3 px-8 py-4 bg-white border-2 border-dashed border-slate-200 text-slate-500 rounded-2xl font-bold text-[11px] uppercase tracking-[2px] hover:border-[#ff6600] hover:text-[#ff6600] transition-all">
+                            <span class="flex items-center justify-center w-6 h-6 bg-slate-100 text-slate-400 rounded-lg group-hover:bg-[#ff6600] group-hover:text-white transition-colors">+</span> Agregar miembro a mi elenco
+                        </button>
+                    </div>
                 </section>
 
-                {{-- 2. DOCUMENTACIÓN TÉCNICA --}}
-                <section class="bg-brand-surface border border-brand-border p-8 md:p-12 space-y-10 text-left relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none">
-                        <svg class="w-40 h-40 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-                        </svg>
+                {{-- 2. EXPEDIENTE TÉCNICO --}}
+                <section class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="h-8 w-1 bg-[#ff6600] rounded-full"></div>
+                        <h2 class="font-outfit text-2xl font-800 text-slate-800 uppercase tracking-tight">2. Documentación Técnica (PDF)</h2>
                     </div>
-                    <div class="border-b border-brand-border pb-6">
-                        <h2 class="font-bebas text-4xl text-brand-orange tracking-[2px] uppercase mb-2">
-                            2. EXPEDIENTE TÉCNICO
-                        </h2>
-                        <p class="text-[10px] text-gray-500 uppercase font-bold tracking-[3px]">
-                            Los archivos deben ser originales y estar en formato PDF
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mt-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         @foreach([
-                        ['model' => 'guionFinal', 'label' => 'Guion Versión Final', 'icon' => 'M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V6h10v2z', 'desc' => 'Incluir diálogos y encabezados estandarizados.'],
-                        ['model' => 'radicadoGuion', 'label' => 'Radicado Guion DNDA', 'icon' => 'M11.67 3.87L9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12zM12.33 20.13l1.77 1.77L24 12 14.1 2.1l-1.77 1.77L20.46 12z', 'desc' => 'Certificado ante la Dirección de Derecho de Autor.'],
-                        ['model' => 'propuestaCreativa', 'label' => 'Propuesta Creativa', 'icon' => 'M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z', 'desc' => 'Moodboard, estética visual y de dirección.']
+                        ['model' => 'guionFinal', 'label' => 'Guion Final', 'desc' => 'Versión Definitiva'],
+                        ['model' => 'radicadoGuion', 'label' => 'Radicado DNDA', 'desc' => 'Derechos de Autor'],
+                        ['model' => 'propuestaCreativa', 'label' => 'Propuesta', 'desc' => 'Concepto Visual']
                         ] as $doc)
-                        <div class="relative p-8 border border-brand-border bg-black/40 group hover:border-brand-orange/40 transition-all duration-500 text-left flex flex-col h-full"
-                            x-data="{ isUploading: false, progress: 0 }"
-                            x-on:livewire-upload-start="isUploading = true"
-                            x-on:livewire-upload-finish="isUploading = false"
-                            x-on:livewire-upload-progress="progress = $event.detail.progress">
-
-                            <div class="flex items-start justify-between mb-6">
-                                <div class="p-3 bg-brand-orange/10 border border-brand-orange/20 text-brand-orange group-hover:bg-brand-orange group-hover:text-black transition-all duration-500">
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="{{ $doc['icon'] }}" />
-                                    </svg>
-                                </div>
+                        <div class="p-6 bg-slate-50/50 rounded-[2rem] border border-slate-100 group hover:border-orange-200 transition-all flex flex-col justify-between" x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true" x-on:livewire-upload-finish="isUploading = false" x-on:livewire-upload-error="isUploading = false" x-on:livewire-upload-progress="progress = $event.detail.progress">
+                            <div class="mb-6">
+                                <h4 class="font-outfit text-sm font-800 text-slate-700 uppercase mb-1">{{ $doc['label'] }} *</h4>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{{ $doc['desc'] }}</p>
                             </div>
-                            <div class="flex-1">
-                                <label class="block text-xs uppercase font-black text-white tracking-[2px] mb-2">{{ $doc['label'] }}</label>
-                                <p class="text-[10px] text-gray-500 font-bold uppercase leading-relaxed tracking-wider mb-6 opacity-70">{{ $doc['desc'] }}</p>
-                            </div>
-
-                            <div class="mt-auto space-y-4">
-                                <div class="relative group/input">
-                                    <input type="file" wire:model.live="{{ $doc['model'] }}" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                                    <div class="bg-gray-900 border border-white/10 px-4 py-3 text-[10px] text-gray-400 font-black uppercase tracking-widest flex items-center justify-between group-hover/input:bg-gray-800 transition-colors">
-                                        <span>{{ $this->{$doc['model']} ? 'Cambiar PDF' : 'Seleccionar PDF' }}</span>
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                        </svg>
+                            <div class="relative">
+                                @if(!$this->{$doc['model']})
+                                <label x-show="!isUploading" class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:bg-white hover:border-[#ff6600]/30 transition-all">
+                                    <span class="text-[9px] font-black text-slate-400 uppercase">Subir PDF</span>
+                                    <input type="file" wire:model.live="{{ $doc['model'] }}" class="hidden" accept=".pdf">
+                                </label>
+                                <div x-show="isUploading" x-cloak class="w-full h-24 flex flex-col items-center justify-center bg-white border border-orange-100 rounded-2xl">
+                                    <div class="w-1/2 h-1 bg-slate-100 rounded-full overflow-hidden mb-2">
+                                        <div class="h-full bg-[#ff6600]" :style="`width: ${progress}%`"></div>
                                     </div>
                                 </div>
-                                <div x-show="isUploading" class="w-full bg-gray-800 h-1 rounded-full overflow-hidden">
-                                    <div class="bg-brand-orange h-full transition-all duration-300" :style="'width: ' + progress + '%'"></div>
-                                </div>
-                                @if($this->{$doc['model']})
-                                <div class="flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/50 rounded-full w-max">
-                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                                    <span class="text-green-500 text-[8px] font-black uppercase tracking-widest">Cargado con éxito</span>
+                                @else
+                                <div class="bg-white border border-emerald-100 p-4 rounded-2xl flex items-center justify-between animate-fade-in shadow-sm">
+                                    <span class="text-[9px] font-bold text-slate-600 uppercase">Cargado</span>
+                                    {{-- AQUÍ ESTABA EL ERROR: Se cambió $index por el nombre del modelo --}}
+                                    <button type="button" @click="isUploading = false; progress = 0; $wire.limpiarDocumento('{{ $doc['model'] }}')" class="text-slate-300 hover:text-red-500"> ✕ </button>
                                 </div>
                                 @endif
-                                @error($doc['model']) <span class="text-red-500 text-[10px] block uppercase font-bold text-left tracking-tighter">{{ $message }}</span> @enderror
                             </div>
+                            @error($doc['model']) <span class="text-red-500 text-[9px] font-bold mt-2 block uppercase">{{ $message }}</span> @enderror
                         </div>
                         @endforeach
                     </div>
                 </section>
 
                 {{-- 3. FINANCIERO --}}
-                <section class="bg-brand-surface border border-brand-border p-8 md:p-10 space-y-8 text-left">
-                    <h2 class="font-bebas text-3xl text-brand-orange border-b border-brand-border pb-4 uppercase tracking-wider text-left">
-                        3. FINANCIERO Y TIEMPOS
-                    </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                <section class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="h-8 w-1 bg-[#ff6600] rounded-full"></div>
+                        <h2 class="font-outfit text-2xl font-800 text-slate-800 uppercase tracking-tight">3. Presupuesto y Cronograma (Excel)</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         @foreach([
-                        ['model' => 'presupuesto', 'label' => 'Presupuesto Detallado (XLSX)', 'file' => 'formato_presupuesto_2026.xlsx'],
-                        ['model' => 'cronograma', 'label' => 'Cronograma de Producción (XLSX)', 'file' => 'formato_cronograma_2026.xlsx']
-                        ] as $excel)
-                        <div class="p-8 border border-brand-border bg-black/40 group hover:border-brand-orange/30 transition-all duration-500 text-left"
-                            x-data="{ isUploading: false, progress: 0 }"
-                            x-on:livewire-upload-start="isUploading = true"
-                            x-on:livewire-upload-finish="isUploading = false"
-                            x-on:livewire-upload-progress="progress = $event.detail.progress">
-
-                            <label class="block text-xs uppercase font-black text-white tracking-[2px] mb-6">{{ $excel['label'] }}</label>
-
-                            <div class="flex flex-col gap-5 text-left">
-                                <a href="{{ asset('storage/formatos/'.$excel['file']) }}" target="_blank" class="block text-center py-3 bg-brand-orange text-black font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-all active:scale-95 shadow-lg no-underline">
-                                    Descargar Formato
-                                </a>
-
-                                <div class="relative group/input">
-                                    <input type="file" wire:model.live="{{ $excel['model'] }}" accept=".xlsx,.xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                                    <div class="bg-black/60 border border-white/10 px-4 py-3 text-[10px] text-gray-400 font-black uppercase tracking-widest flex items-center justify-between group-hover/input:bg-gray-800 transition-colors">
-                                        <span>{{ $this->{$excel['model']} ? 'Archivo cargado' : 'Seleccionar Excel' }}</span>
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                        </svg>
+                        ['model' => 'presupuesto', 'label' => 'Presupuesto Detallado', 'file' => 'formato_presupuesto_2026.xlsx'],
+                        ['model' => 'cronograma', 'label' => 'Cronograma de Producción', 'file' => 'formato_cronograma_2026.xlsx']
+                        ] as $xls)
+                        <div class="p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 group hover:border-orange-200 transition-all" x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true" x-on:livewire-upload-finish="isUploading = false" x-on:livewire-upload-error="isUploading = false" x-on:livewire-upload-progress="progress = $event.detail.progress">
+                            <label class="block text-sm font-800 text-slate-700 uppercase tracking-tight mb-6">{{ $xls['label'] }}</label>
+                            <div class="flex flex-col gap-4">
+                                <a href="{{ asset('storage/formatos/'.$xls['file']) }}" target="_blank" class="w-full py-3 bg-white border border-slate-200 rounded-xl text-[9px] font-black text-slate-500 uppercase tracking-widest hover:border-[#ff6600] transition-all text-center">Descargar Formato</a>
+                                <div class="relative">
+                                    @if(!$this->{$xls['model']})
+                                    <label x-show="!isUploading" class="flex items-center justify-between w-full px-5 py-4 bg-slate-800 text-white rounded-xl cursor-pointer hover:bg-[#ff6600] transition-all">
+                                        <span class="text-[9px] font-black uppercase">Subir Excel</span>
+                                        <input type="file" wire:model.live="{{ $xls['model'] }}" class="hidden" accept=".xlsx,.xls">
+                                    </label>
+                                    <div x-show="isUploading" x-cloak class="w-full h-12 bg-white rounded-xl flex items-center px-4 border border-orange-100">
+                                        <div class="h-1 bg-[#ff6600] rounded-full flex-1" :style="`width: ${progress}%`"></div>
                                     </div>
+                                    @else
+                                    <div class="bg-white border border-emerald-100 p-4 rounded-xl flex items-center justify-between animate-fade-in shadow-sm">
+                                        <span class="text-[9px] font-bold text-slate-600 uppercase">Excel Listo</span>
+                                        <button type="button" @click="isUploading = false; progress = 0; $wire.limpiarDocumento('{{ $xls['model'] }}')" class="text-slate-300 hover:text-red-500"> ✕ </button>
+                                    </div>
+                                    @endif
                                 </div>
-                                <div x-show="isUploading" class="w-full bg-gray-800 h-1 rounded-full overflow-hidden">
-                                    <div class="bg-brand-orange h-full transition-all duration-300" :style="'width: ' + progress + '%'"></div>
-                                </div>
-                                @if($this->{$excel['model']})
-                                <div class="flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/50 rounded-full w-max">
-                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                                    <span class="text-green-500 text-[8px] font-black uppercase tracking-widest">Documento listo</span>
-                                </div>
-                                @endif
-                                @error($excel['model']) <span class="text-red-500 text-[10px] block uppercase font-bold text-left">{{ $message }}</span> @enderror
                             </div>
+                            @error($xls['model']) <span class="text-red-500 text-[9px] font-bold mt-3 block uppercase">{{ $message }}</span> @enderror
                         </div>
                         @endforeach
                     </div>
                 </section>
 
-                {{-- FINALIZAR --}}
-
-                {{-- Alerta de Errores Críticos --}}
-                @if (session()->has('error'))
-                <div class="bg-red-600 text-white p-4 mb-6 font-bold uppercase text-xs tracking-widest border-l-4 border-white">
-                    {{ session('error') }}
-                </div>
-                @endif
-
-                @if ($errors->any())
-                <div class="bg-red-900/50 border border-red-500 p-6 mb-8 text-white">
-                    <h4 class="font-bebas text-2xl mb-4 text-red-500">Errores de validación:</h4>
-                    <ul class="space-y-2">
-                        @foreach ($errors->all() as $error)
-                        <li class="text-[10px] uppercase font-black tracking-tighter">• {{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-
-                <div class="text-center pt-10 pb-20 flex flex-col items-center">
-                    <button type="submit" wire:loading.attr="disabled" class="group relative inline-flex items-center justify-center bg-brand-orange text-white font-bebas text-4xl hover:bg-white hover:text-black transition-all active:scale-95 min-w-[450px] py-6 shadow-[0_0_40px_rgba(255,102,0,0.2)] disabled:opacity-50">
-                        <div class="flex items-center justify-center gap-4">
-                            <svg wire:loading wire:target="guardar" class="animate-spin h-8 w-8 text-current" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            <span wire:loading.remove wire:target="guardar">
-                                FINALIZAR E INSCRIBIR PROYECTO
-                            </span>
-                            <span wire:loading wire:target="guardar" class="tracking-widest">
-                                PROCESANDO...
-                            </span>
-                        </div>
+                {{-- BOTÓN FINALIZAR --}}
+                <div class="flex flex-col items-center pt-10">
+                    <button type="submit" wire:loading.attr="disabled" class="px-20 py-7 bg-[#ff6600] text-white rounded-[2.5rem] font-outfit text-2xl font-900 uppercase transition-all shadow-2xl active:scale-95 disabled:opacity-50">
+                        <span wire:loading.remove wire:target="guardar">FINALIZAR INSCRIPCIÓN</span>
+                        <span wire:loading wire:target="guardar">PROCESANDO...</span>
                     </button>
-                    <p class="text-gray-500 text-[10px] uppercase font-bold mt-6 tracking-[3px]">Verifique que todo el elenco haya sido validado antes de enviar</p>
                 </div>
             </form>
         </div>
     </main>
-
-    {{-- MODAL DE SALIDA --}}
-    <div x-show="showExitModal" class="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/90 backdrop-blur-md" x-transition x-cloak>
-        <div class="bg-brand-surface border border-brand-border max-w-md w-full p-10 text-center shadow-2xl relative" @click.away="showExitModal = false">
-            <h3 class="font-bebas text-4xl text-white mb-4 uppercase tracking-wider">¿Abandonar Registro?</h3>
-            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-[2px] mb-8">Los cambios no guardados se perderán permanentemente.</p>
-            <div class="flex flex-col gap-4">
-                <a href="/" class="w-full py-4 bg-red-600 text-white font-bebas text-2xl tracking-widest hover:bg-white hover:text-black transition-all no-underline">
-                    SÍ, SALIR
-                </a>
-                <button @click="showExitModal = false" class="w-full py-4 bg-transparent border border-brand-border text-gray-500 font-bebas text-2xl tracking-widest hover:text-white hover:border-white transition-all uppercase">
-                    Seguir Editando
-                </button>
-            </div>
-        </div>
-    </div>
 </div>

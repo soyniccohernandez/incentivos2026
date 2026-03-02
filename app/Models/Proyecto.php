@@ -56,16 +56,21 @@ class Proyecto extends Model
         });
     }
 
-    /* RELACIONES ACTUALIZADAS */
+    /* --- RELACIONES --- */
 
-    // El titular (Proponente)
+    /**
+     * El titular o proponente del proyecto
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // El elenco (Participantes) - Renombrado de socios a users
-    public function users(): BelongsToMany
+    /**
+     * Miembros del elenco (Socios participantes)
+     * Se usa 'user_id' como foreign key en la tabla pivote 'proyecto_socio'
+     */
+    public function elenco(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'proyecto_socio', 'proyecto_id', 'user_id')
             ->withPivot('archivo_autorizacion_path')
@@ -73,13 +78,22 @@ class Proyecto extends Model
     }
 
     public function director(): HasOne { return $this->hasOne(Director::class); }
+    
     public function documentos(): HasMany { return $this->hasMany(Documento::class); }
+    
     public function observaciones(): HasMany { return $this->hasMany(Observacion::class); }
+    
     public function estado(): BelongsTo { return $this->belongsTo(Estado::class, 'estado_id'); }
+    
     public function etapa(): BelongsTo { return $this->belongsTo(Etapa::class, 'etapa_id'); }
+    
     public function convocatoria(): BelongsTo { return $this->belongsTo(Convocatoria::class); }
 
-    // Lógica de máscara pública
+    /* --- ACCESSORS / LÓGICA DE NEGOCIO --- */
+
+    /**
+     * Máscara visual para el Dashboard del Socio
+     */
     public function getEstadoPublicoAttribute(): array
     {
         if (!$this->publicado) {
@@ -92,12 +106,42 @@ class Proyecto extends Model
         }
 
         return match ($this->estado_id) {
-            self::SUBSANACION_E1 => ['nombre' => 'Subsanación Requerida', 'color' => 'amber', 'requiere_accion' => true, 'mensaje' => 'Debes corregir documentos de la Etapa 1.'],
-            self::EN_ETAPA_2 => ['nombre' => 'Aprobado - Fase Técnica', 'color' => 'emerald', 'requiere_accion' => true, 'mensaje' => '¡Pasa a Etapa 2! Completa el formulario técnico.'],
-            self::REVISION_E2 => ['nombre' => 'Expediente Técnico Enviado', 'color' => 'blue', 'requiere_accion' => false, 'mensaje' => 'Documentación en revisión.'],
-            self::GANADOR => ['nombre' => '¡Seleccionado Ganador!', 'color' => 'emerald', 'requiere_accion' => false, 'mensaje' => '¡Felicitaciones!'],
-            self::ELIMINADO => ['nombre' => 'No Continúa', 'color' => 'rose', 'requiere_accion' => false, 'mensaje' => 'No superó la fase de validación.'],
-            default => ['nombre' => $this->estado->nombre ?? 'Inscrito', 'color' => 'gray', 'requiere_accion' => false, 'mensaje' => ''],
+            self::SUBSANACION_E1 => [
+                'nombre' => 'Subsanación Requerida', 
+                'color' => 'amber', 
+                'requiere_accion' => true, 
+                'mensaje' => 'Debes corregir documentos de la Etapa 1.'
+            ],
+            self::EN_ETAPA_2 => [
+                'nombre' => 'Aprobado - Fase Técnica', 
+                'color' => 'emerald', 
+                'requiere_accion' => true, 
+                'mensaje' => '¡Pasa a Etapa 2! Completa el formulario técnico.'
+            ],
+            self::REVISION_E2 => [
+                'nombre' => 'Expediente Técnico Enviado', 
+                'color' => 'blue', 
+                'requiere_accion' => false, 
+                'mensaje' => 'Documentación en revisión.'
+            ],
+            self::GANADOR => [
+                'nombre' => '¡Seleccionado Ganador!', 
+                'color' => 'emerald', 
+                'requiere_accion' => false, 
+                'mensaje' => '¡Felicitaciones!'
+            ],
+            self::ELIMINADO => [
+                'nombre' => 'No Continúa', 
+                'color' => 'rose', 
+                'requiere_accion' => false, 
+                'mensaje' => 'No superó la fase de validación.'
+            ],
+            default => [
+                'nombre' => $this->estado->nombre ?? 'Inscrito', 
+                'color' => 'gray', 
+                'requiere_accion' => false, 
+                'mensaje' => ''
+            ],
         };
     }
 }

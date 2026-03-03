@@ -38,7 +38,7 @@ class AdminDashboard extends Component
 
     public function irASocios()
     {
-        // Esta ruta debe apuntar a la vista donde listes los Users con rol 'socio'
+        // El nombre 'admin.socios.index' debe ser el mismo que pusiste en web.php
         return $this->redirect(route('admin.socios.index'), navigate: true);
     }
 

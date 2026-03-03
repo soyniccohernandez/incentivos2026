@@ -45,29 +45,68 @@ class InscripcionEtapa2 extends Component
         $this->agregarMiembro();
     }
 
-    public function agregarMiembro()
+    public function updated($propertyName)
     {
-        $hayErrores = false;
+        $rules = [
+            'guionFinal'        => 'mimes:pdf|max:20480',
+            'radicadoGuion'     => 'mimes:pdf|max:10240',
+            'propuestaCreativa' => 'mimes:pdf|max:20480',
+            'presupuesto'       => 'mimes:xlsx,xls|max:10240',
+            'cronograma'        => 'mimes:xlsx,xls|max:10240',
+            'elenco.*.archivo_autorizacion' => 'mimes:pdf|max:5120',
+        ];
+
+        try {
+            if (isset($rules[$propertyName]) || str_contains($propertyName, 'elenco.')) {
+                $this->validateOnly($propertyName, $rules);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if (str_contains($propertyName, 'elenco.')) {
+                $parts = explode('.', $propertyName);
+                $index = $parts[1];
+                $this->elenco[$index]['archivo_autorizacion'] = null;
+            } else {
+                $this->$propertyName = null;
+            }
+            throw $e;
+        }
+
+        if (str_contains($propertyName, 'elenco.')) {
+            $this->resetValidation('elenco_incompleto');
+        }
+    }
+
+    /**
+     * Valida que las filas actuales del elenco estén completas antes de permitir agregar más.
+     */
+    private function puedeProcederConElenco(): bool
+    {
         $this->resetValidation('elenco_incompleto');
 
         foreach ($this->elenco as $index => $miembro) {
-            if (empty($miembro['identificacion']) || !($miembro['archivo_autorizacion'] ?? false)) {
+            if (empty($miembro['identificacion']) || !($miembro['archivo_autorizacion'] ?? false) || !($miembro['encontrado'] ?? false)) {
+                
                 if (empty($miembro['identificacion'])) {
-                    $this->addError("elenco.$index.identificacion", 'Debe ingresar y validar una cédula.');
+                    $this->addError("elenco.$index.identificacion", 'Requerido.');
                 }
+                
                 if (!($miembro['archivo_autorizacion'] ?? false)) {
-                    $this->addError("elenco.$index.archivo_autorizacion", 'Debe cargar el documento de autorización para este miembro.');
+                    $this->addError("elenco.$index.archivo_autorizacion", 'Suba el archivo.');
                 }
-                $hayErrores = true;
+
+                if (!empty($miembro['identificacion']) && !($miembro['encontrado'] ?? false)) {
+                    $this->addError("elenco.$index.identificacion", 'Debe validar este socio.');
+                }
+
+                return false;
             }
         }
+        return true;
+    }
 
-        if ($hayErrores) {
-            $this->addError('elenco_incompleto', 'Faltan documentos por cargar en el elenco.');
-            return;
-        }
-
-        $this->resetValidation('elenco.*');
+    public function agregarMiembro()
+    {
+        if (!$this->puedeProcederConElenco()) return;
 
         $this->elenco[] = [
             'identificacion' => '',
@@ -83,16 +122,23 @@ class InscripcionEtapa2 extends Component
 
     public function agregarProponenteComoMiembro()
     {
-        if (collect($this->elenco)->contains('identificacion', $this->socio->identificacion)) {
+        $this->resetErrorBag();
+
+        // 1. Validar que no haya filas incompletas pendientes
+        if (!$this->puedeProcederConElenco()) return;
+
+        // 2. Evitar duplicados
+        if (collect($this->elenco)->contains('identificacion', $this->socio->identificacion)) return;
+
+        // 3. Validar Estado del Proponente
+        if (strtolower($this->socio->estado ?? '') !== 'activo') {
+            $this->addError('elenco_incompleto', 'Su cuenta no está activa para participar.');
             return;
         }
 
-        $incompletos = collect($this->elenco)->filter(function ($miembro) {
-            return !empty($miembro['identificacion']) && !($miembro['archivo_autorizacion'] ?? false);
-        });
-
-        if ($incompletos->isNotEmpty()) {
-            $this->addError('elenco_incompleto', 'Debes completar los documentos de los miembros actuales antes de agregarte.');
+        // 4. Validar Edad del Proponente
+        if ($this->socio->fecha_nacimiento && Carbon::parse($this->socio->fecha_nacimiento)->age < 18) {
+            $this->addError('elenco_incompleto', 'Debe ser mayor de edad.');
             return;
         }
 
@@ -107,63 +153,30 @@ class InscripcionEtapa2 extends Component
             'iniciales' => $this->iniciales
         ];
 
-        $indexVacio = collect($this->elenco)->search(function ($miembro) {
-            return empty($miembro['identificacion']) && !($miembro['encontrado'] ?? false);
-        });
+        // Reemplazar fila vacía si existe, o agregar nueva
+        $indexDisponible = collect($this->elenco)->search(fn($m) => empty($m['identificacion']));
 
-        if ($indexVacio !== false) {
-            $this->resetValidation("elenco.$indexVacio.identificacion");
-            $this->resetValidation("elenco.$indexVacio.archivo_autorizacion");
-            $this->elenco[$indexVacio] = $datosProponente;
+        if ($indexDisponible !== false) {
+            $this->elenco[$indexDisponible] = $datosProponente;
         } else {
-            $this->resetValidation('elenco.*');
             $this->elenco[] = $datosProponente;
         }
-
-        $this->resetValidation('elenco_incompleto');
-    }
-
-    public function removerMiembro($index)
-    {
-        unset($this->elenco[$index]);
-        $this->elenco = array_values($this->elenco);
-    }
-
-    public function limpiarSocio($index)
-    {
-        $this->elenco[$index]['identificacion'] = '';
-        $this->elenco[$index]['nombre'] = '';
-        $this->elenco[$index]['encontrado'] = false;
-        $this->elenco[$index]['user_id'] = null;
-        $this->elenco[$index]['foto_url'] = null;
-        $this->elenco[$index]['iniciales'] = '';
-
-        // Opcional: limpiar los errores específicos de este campo
-        $this->resetErrorBag("elenco.$index.identificacion");
-        $this->resetErrorBag("elenco.$index.encontrado");
+        
+        $this->resetValidation();
     }
 
     public function buscarSocio($index)
     {
         $identificacion = trim($this->elenco[$index]['identificacion'] ?? '');
-
-        // 1. Limpiar errores previos de este campo
         $this->resetValidation("elenco.$index.identificacion");
 
         if (empty($identificacion)) {
-            $this->addError("elenco.$index.identificacion", 'Debe ingresar y validar una cédula.');
-            $this->limpiarDatosMiembro($index);
+            $this->addError("elenco.$index.identificacion", 'Ingrese cédula.');
             return;
         }
 
-        // --- AJUSTE: VALIDACIÓN DE DUPLICADOS EN EL MISMO FORMULARIO ---
-        $duplicadoLocal = collect($this->elenco)
-            ->forget($index) // No compararse consigo mismo
-            ->contains('identificacion', $identificacion);
-
-        if ($duplicadoLocal) {
-            $this->addError("elenco.$index.identificacion", 'Este socio ya ha sido agregado en otra tarjeta de este elenco.');
-            $this->limpiarDatosMiembro($index);
+        if (collect($this->elenco)->forget($index)->contains('identificacion', $identificacion)) {
+            $this->addError("elenco.$index.identificacion", 'Ya agregado.');
             return;
         }
 
@@ -173,110 +186,113 @@ class InscripcionEtapa2 extends Component
             $user = User::where('identificacion', $identificacion)->first();
 
             if ($user) {
-                // --- VALIDACIONES DE REGLAS DE NEGOCIO ---
-
-                // A. ESTADO ACTIVO
-                if (isset($user->estado) && strtolower($user->estado) !== 'activo') {
-                    $this->addError("elenco.$index.identificacion", "El socio no está activo para participar en este proceso.");
+                // 1. Validar Estado
+                if (strtolower($user->estado ?? '') !== 'activo') {
+                    $this->addError("elenco.$index.identificacion", "Esta persona no está activa para participar.");
                     $this->limpiarDatosMiembro($index);
                     return;
                 }
 
-                // B. MAYORÍA DE EDAD (18 años)
-                if (!$user->fecha_nacimiento || \Carbon\Carbon::parse($user->fecha_nacimiento)->age < 18) {
-                    $this->addError("elenco.$index.identificacion", "El socio debe ser mayor de edad para ser parte del elenco.");
+                // 2. Validar Mayoría de Edad
+                if ($user->fecha_nacimiento && Carbon::parse($user->fecha_nacimiento)->age < 18) {
+                    $this->addError("elenco.$index.identificacion", "Solo se permiten personas mayores de edad.");
                     $this->limpiarDatosMiembro($index);
                     return;
                 }
 
-                // C. EXCLUSIVIDAD (No estar en otro proyecto)
-                // 1. Verificar si es el Director de otro proyecto
-                $esDirectorOtro = Proyecto::where('user_id', $user->id)
-                    ->where('id', '!=', $this->proyecto->id)
-                    ->exists();
-
-                // 2. Verificar si es Elenco de otro proyecto (Tabla 'proyecto_socio')
-                $esElencoOtro = DB::table('proyecto_socio')
-                    ->where('user_id', $user->id)
-                    ->where('proyecto_id', '!=', $this->proyecto->id)
-                    ->exists();
-
-                if ($esDirectorOtro || $esElencoOtro) {
-                    $this->addError("elenco.$index.identificacion", "Este socio ya está vinculado a otro proyecto (como director o elenco).");
+                // 3. Validar Exclusividad
+                if ($this->socioYaEstaOcupado($user)) {
+                    $this->addError("elenco.$index.identificacion", 'Esta persona ya pertenece a otro proyecto.');
                     $this->limpiarDatosMiembro($index);
                     return;
                 }
 
-                // --- CARGA DE DATOS EXITOSA ---
                 $this->elenco[$index]['nombre'] = strtoupper($user->name);
                 $this->elenco[$index]['user_id'] = $user->id;
                 $this->elenco[$index]['encontrado'] = true;
 
-                // Buscar foto
                 $archivos = Storage::disk('public')->files('socios');
                 $foto = collect($archivos)->first(fn($path) => str_contains(basename($path), (string)$user->identificacion));
                 $this->elenco[$index]['foto_url'] = $foto ? asset('storage/' . $foto) : null;
 
-                // Iniciales
                 $p = explode(' ', trim($user->name));
                 $this->elenco[$index]['iniciales'] = strtoupper(substr($p[0] ?? 'U', 0, 1) . (isset($p[1]) ? substr($p[1], 0, 1) : ''));
-
-                $this->resetValidation("elenco.$index.identificacion");
             } else {
-                $this->addError("elenco.$index.identificacion", 'El número de identificación no corresponde a un socio registrado.');
+                $this->addError("elenco.$index.identificacion", 'Socio no registrado.');
                 $this->limpiarDatosMiembro($index);
             }
         } catch (\Exception $e) {
-            Log::error("Error buscando socio: " . $e->getMessage());
-            $this->addError("elenco.$index.identificacion", 'Ocurrió un error al consultar el socio. Intente de nuevo.');
+            $this->addError("elenco.$index.identificacion", 'Error de consulta.');
         } finally {
             $this->elenco[$index]['buscando'] = false;
         }
     }
 
-
-
-    private function limpiarDatosMiembro($index)
+    private function socioYaEstaOcupado($user): bool
     {
-        $this->elenco[$index]['nombre'] = '';
-        $this->elenco[$index]['encontrado'] = false;
-        $this->elenco[$index]['user_id'] = null;
-        $this->elenco[$index]['foto_url'] = null;
-        $this->elenco[$index]['iniciales'] = '?';
+        $idActual = $this->proyecto->id;
+
+        $esProponente = DB::table('proyectos')
+            ->where('user_id', $user->id)
+            ->where('id', '!=', $idActual)
+            ->exists();
+        if ($esProponente) return true;
+
+        $esElenco = DB::table('proyecto_socio')
+            ->where('user_id', $user->id)
+            ->where('proyecto_id', '!=', $idActual)
+            ->exists();
+        if ($esElenco) return true;
+
+        $esDirector = DB::table('directores')
+            ->where('identificacion', $user->identificacion)
+            ->where('proyecto_id', '!=', $idActual)
+            ->exists();
+        
+        return $esDirector;
     }
 
     public function guardar()
     {
         $this->validate([
-            'guionFinal' => 'required|mimes:pdf|max:20480',
-            'radicadoGuion' => 'required|mimes:pdf|max:10240',
-            'propuestaCreativa' => 'required|mimes:pdf|max:20480',
-            'presupuesto' => 'required|mimes:xlsx,xls|max:10240',
-            'cronograma' => 'required|mimes:xlsx,xls|max:10240',
-
-            // VALIDACIÓN DEL ELENCO
-            'elenco.*.identificacion' => 'required', // Valida que el input no esté vacío
-            'elenco.*.encontrado' => 'accepted',     // Valida que se haya presionado "Validar" y el socio exista
+            'guionFinal'         => 'required|mimes:pdf|max:20480',
+            'radicadoGuion'      => 'required|mimes:pdf|max:10240',
+            'propuestaCreativa'  => 'required|mimes:pdf|max:20480',
+            'presupuesto'        => 'required|mimes:xlsx,xls|max:10240',
+            'cronograma'         => 'required|mimes:xlsx,xls|max:10240',
+            'elenco.*.identificacion'       => 'required',
+            'elenco.*.encontrado'           => 'accepted',
             'elenco.*.archivo_autorizacion' => 'required|mimes:pdf|max:5120',
         ], [
-            // MENSAJES PERSONALIZADOS
-            'elenco.*.identificacion.required' => 'Debe ingresar y validar una cédula.',
-            'elenco.*.encontrado.accepted' => 'Debe validar la cédula antes de finalizar.',
-            'elenco.*.archivo_autorizacion.required' => 'La autorización es obligatoria.',
+            'elenco.*.encontrado.accepted' => 'Debe validar la cédula.',
+            'required' => 'Obligatorio.',
         ]);
 
         try {
             DB::beginTransaction();
 
-            $this->upload($this->proyecto, $this->guionFinal, 7, 'GUION_FINAL');
-            $this->upload($this->proyecto, $this->radicadoGuion, 8, 'DNDA_RADICADO');
-            $this->upload($this->proyecto, $this->propuestaCreativa, 9, 'PROPUESTA_CREATIVA');
-            $this->upload($this->proyecto, $this->presupuesto, 10, 'PRESUPUESTO');
-            $this->upload($this->proyecto, $this->cronograma, 11, 'CRONOGRAMA');
+            $this->upload($this->proyecto, $this->guionFinal, 8, 'GUION');
+            $this->upload($this->proyecto, $this->radicadoGuion, 9, 'DNDA');
+            $this->upload($this->proyecto, $this->propuestaCreativa, 10, 'CREATIVA');
+            $this->upload($this->proyecto, $this->presupuesto, 11, 'PRESUPUESTO');
+            $this->upload($this->proyecto, $this->cronograma, 12, 'CRONOGRAMA');
+
+            $idCartaIntencion = 7;
+            $this->proyecto->elenco()->detach();
+            $this->proyecto->documentos()->where('tipo_documento_id', $idCartaIntencion)->delete();
 
             foreach ($this->elenco as $miembro) {
-                // Ya no necesitas el if aquí porque el validate de arriba asegura que esto se cumpla
-                $path = $miembro['archivo_autorizacion']->store('elenco/' . now()->year, 'public');
+                $filename = "CARTA_INTENCION_" . $miembro['identificacion'] . "_" . time() . ".pdf";
+                $path = $miembro['archivo_autorizacion']->storeAs('elenco/' . now()->year, $filename, 'public');
+
+                $this->proyecto->documentos()->create([
+                    'tipo_documento_id' => $idCartaIntencion,
+                    'ruta_archivo'      => $path,
+                    'fecha_carga'       => now(),
+                    'version'           => 1,
+                    'estado'            => 'pendiente',
+                ]);
+
                 $this->proyecto->elenco()->attach($miembro['user_id'], [
                     'archivo_autorizacion_path' => $path,
                     'created_at' => now(),
@@ -284,14 +300,18 @@ class InscripcionEtapa2 extends Component
                 ]);
             }
 
-            $this->proyecto->update(['estado_id' => 5, 'etapa_id' => 2]);
+            $this->proyecto->update([
+                'estado_id'           => 5, 
+                'etapa_id'            => 2,
+                'observacion_general' => "Su solicitud se encuentra en etapa de revisión por el comité técnico de incentivos."
+            ]);
 
             DB::commit();
-            return redirect()->route('dashboard')->with('success', 'Inscripción completada.');
+            return redirect()->route('dashboard')->with('success', 'Inscripción de Etapa 2 completada con éxito.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Error Etapa 2: " . $e->getMessage());
-            $this->addError('error', 'Ocurrió un error al guardar: ' . $e->getMessage());
+            Log::error("Error Crítico en Guardado Etapa 2: " . $e->getMessage());
+            $this->addError('error', 'Hubo un problema al guardar: ' . $e->getMessage());
         }
     }
 
@@ -308,38 +328,49 @@ class InscripcionEtapa2 extends Component
         }
     }
 
-    public function updated($propertyName)
+    public function limpiarSocio($index)
     {
-        if (str_contains($propertyName, 'elenco.') && str_contains($propertyName, '.archivo_autorizacion')) {
-            $this->resetValidation($propertyName);
-            $this->resetValidation('elenco_incompleto');
-        }
-
-        if (in_array($propertyName, ['guionFinal', 'radicadoGuion', 'propuestaCreativa', 'presupuesto', 'cronograma'])) {
-            $this->resetValidation($propertyName);
-        }
+        $this->limpiarDatosMiembro($index);
+        $this->elenco[$index]['identificacion'] = '';
+        $this->resetErrorBag("elenco.$index.identificacion");
     }
 
-    public function render()
+    private function limpiarDatosMiembro($index)
     {
-        return view('livewire.sitio.inscripcion-etapa2');
+        $this->elenco[$index]['nombre'] = '';
+        $this->elenco[$index]['encontrado'] = false;
+        $this->elenco[$index]['user_id'] = null;
+        $this->elenco[$index]['foto_url'] = null;
+        $this->elenco[$index]['iniciales'] = '?';
+    }
+
+    public function removerMiembro($index)
+    {
+        if (count($this->elenco) > 1) {
+            unset($this->elenco[$index]);
+            $this->elenco = array_values($this->elenco);
+        }
     }
 
     public function limpiarDocumento($propiedad, $index = null)
     {
         if ($index !== null && $propiedad === 'elenco') {
-            if (isset($this->elenco[$index]['archivo_autorizacion'])) {
-                $this->elenco[$index]['archivo_autorizacion'] = null;
-            }
+            $this->elenco[$index]['archivo_autorizacion'] = null;
             $this->resetValidation("elenco.$index.archivo_autorizacion");
         } else {
             $this->$propiedad = null;
             $this->resetValidation($propiedad);
         }
     }
+
     public function logout(Logout $logout): void
     {
         $logout();
         $this->redirect('/', navigate: true);
+    }
+
+    public function render()
+    {
+        return view('livewire.sitio.inscripcion-etapa2');
     }
 }

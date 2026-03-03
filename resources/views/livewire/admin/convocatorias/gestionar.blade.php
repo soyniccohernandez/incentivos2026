@@ -14,46 +14,51 @@
 
     <div class="max-w-7xl mx-auto px-6 space-y-12">
 
-      <div>
-                {{-- Navegación - Consistente con los demás --}}
-                <nav class="flex items-center gap-4 mb-8 text-[11px] font-bold uppercase tracking-[2px] text-slate-400">
-                    <a href="{{ route('dashboard') }}" wire:navigate class="hover:text-[#ff6600] transition-colors">
-                        INICIO
-                    </a>
-                    <span class="opacity-30">/</span>
-                    <a href="{{ route('admin.convocatorias.index') }}" wire:navigate class="hover:text-[#ff6600] transition-colors">
-                        CONVOCATORIAS
-                    </a>
-                    <span class="opacity-30">/</span>
-                    <span class="text-slate-600">
-                        POSTULACIONES
-                    </span>
-                </nav>
+        <div>
+            {{-- Navegación - Consistente con los demás --}}
+            <nav class="flex items-center gap-4 mb-8 text-[11px] font-bold uppercase tracking-[2px] text-slate-400">
+                <a href="{{ route('dashboard') }}" wire:navigate class="hover:text-[#ff6600] transition-colors">
+                    INICIO
+                </a>
+                <span class="opacity-30">/</span>
+                <a href="{{ route('admin.convocatorias.index') }}" wire:navigate class="hover:text-[#ff6600] transition-colors">
+                    CONVOCATORIAS
+                </a>
+                <span class="opacity-30">/</span>
+                <span class="text-slate-600">
+                    POSTULACIONES
+                </span>
+            </nav>
 
-                {{-- Cabecera Estilo Tech-Admin (Idéntica a la Base Aprobada) --}}
-                <div class="relative pl-8 py-2">
-                    {{-- Barra Lateral Negra --}}
-                    <div class="absolute left-0 top-0 h-full w-1.5 bg-slate-950 rounded-full"></div>
+            {{-- Cabecera Estilo Tech-Admin (Idéntica a la Base Aprobada) --}}
+            <div class="relative pl-8 py-2">
+                {{-- Barra Lateral Negra --}}
+                <div class="absolute left-0 top-0 h-full w-1.5 bg-slate-950 rounded-full"></div>
 
-                    <h2 class="font-outfit text-5xl md:text-6xl font-900 tracking-tight text-slate-950 leading-none uppercase">
-                        {{ $convocatoria->nombre }}
-                    </h2>
+                <h2 class="font-outfit text-5xl md:text-6xl font-900 tracking-tight text-slate-950 leading-none uppercase">
+                    {{ $convocatoria->nombre }}
+                </h2>
 
-                    <p class="font-inter text-[13px] font-semibold text-slate-500 uppercase tracking-[4px] mt-3 opacity-70">
-                        Gestión de Postulaciones <span class="mx-2 text-slate-300">/</span> Proyectos 2026
-                    </p>
-                </div>
+                <p class="font-inter text-[13px] font-semibold text-slate-500 uppercase tracking-[4px] mt-3 opacity-70">
+                    Gestión de Postulaciones <span class="mx-2 text-slate-300">/</span> Proyectos 2026
+                </p>
             </div>
+        </div>
         {{-- Cabecera con Breadcrumbs --}}
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 relative pl-8 py-2">
-            
-          
+
 
             <div class="flex flex-wrap gap-3">
                 @php
+                // Lógica para el botón de Publicar (Pendientes)
                 $queryPendientes = \App\Models\Proyecto::where('convocatoria_id', $this->convocatoria->id)->where('publicado', false);
                 if($estadoSelected) { $queryPendientes->where('estado_id', $estadoSelected); }
                 $totalPendientes = $queryPendientes->count();
+
+                // Lógica para el botón de Ocultar (Ya publicados)
+                $queryPublicados = \App\Models\Proyecto::where('convocatoria_id', $this->convocatoria->id)->where('publicado', true);
+                if($estadoSelected) { $queryPublicados->where('estado_id', $estadoSelected); }
+                $totalPublicados = $queryPublicados->count();
                 @endphp
 
                 <button wire:click="publicarResultados"
@@ -65,6 +70,16 @@
                         <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-width="2" />
                     </svg>
                     Publicar ({{ $totalPendientes }})
+                </button>
+
+                <button wire:click="ocultarResultados"
+                    @if($totalPublicados> 0) wire:confirm="¿Deseas ocultar {{ $totalPublicados }} resultados?" @endif
+                    @disabled($totalPublicados == 0)
+                    class="px-8 py-4 bg-slate-800 text-white font-inter text-xs font-bold tracking-widest hover:bg-red-700 disabled:bg-slate-200 transition-all shadow-xl shadow-slate-200 disabled:shadow-none uppercase rounded-2xl flex items-center gap-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88L4.22 4.22m15.56 15.56l-5.66-5.66m0 0a9.96 9.96 0 003.442-3.92C18.268 7.943 14.478 5 10 5a9.95 9.95 0 00-1.875.175" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Ocultar ({{ $totalPublicados }})
                 </button>
             </div>
         </div>

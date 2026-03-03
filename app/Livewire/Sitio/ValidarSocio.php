@@ -57,12 +57,18 @@ class ValidarSocio extends Component
         if ($user->tipo_socio === 'Administrador') {
             $this->nombreSocio = $user->name;
             $this->paso = empty($user->password) ? 'verificar' : 'login';
-            return; // Salimos aquí, el admin no necesita validar fechas ni convocatorias
+            return; 
         }
 
         // 2. Verificación de estado para socios normales
-        if (strtolower($user->estado) !== 'activo') {
+        if (strtolower($user->estado ?? '') !== 'activo') {
             $this->addError('identificacion', "Su cuenta no está activa para participar.");
+            return;
+        }
+
+        // --- NUEVA VALIDACIÓN: MAYORÍA DE EDAD ---
+        if (!$user->fecha_nacimiento || Carbon::parse($user->fecha_nacimiento)->age < 18) {
+            $this->addError('identificacion', "Debe ser mayor de edad para participar en la convocatoria.");
             return;
         }
 
@@ -90,7 +96,7 @@ class ValidarSocio extends Component
             }
         }
 
-        // 5. Si es socio y pasó los filtros (o no hay bloqueos de fecha según lo hablamos antes)
+        // 5. Preparar siguiente paso
         $this->nombreSocio = $user->name;
         $this->paso = empty($user->password) ? 'verificar' : 'login';
     }
@@ -136,6 +142,14 @@ class ValidarSocio extends Component
     {
         $this->validate(['password' => 'required']);
 
+        // Refuerzo de seguridad: solo permitir login si el usuario sigue activo
+        $user = User::where('identificacion', $this->identificacion)->first();
+        
+        if ($user && $user->tipo_socio !== 'Administrador' && strtolower($user->estado ?? '') !== 'activo') {
+            $this->addError('identificacion', 'Su cuenta ya no se encuentra activa.');
+            return;
+        }
+
         if (Auth::attempt(['identificacion' => $this->identificacion, 'password' => $this->password], true)) {
             session()->regenerate();
             return $this->redireccionar();
@@ -151,7 +165,6 @@ class ValidarSocio extends Component
             return redirect()->route('admin.dashboard');
         }
 
-        // Solo los socios normales son expulsados si no hay convocatoria activa
         $convocatoria = Convocatoria::where('estado', 'abierta')->first();
         if (!$convocatoria) {
             Auth::logout();

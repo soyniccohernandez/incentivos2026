@@ -34,13 +34,11 @@ class Gestionar extends Component
 
     public function render()
     {
-        // 1. Consulta apuntando a la relación 'user' (antes socio)
         $proyectos = Proyecto::where('convocatoria_id', $this->convocatoria->id)
-            ->with(['user', 'estado']) // CAMBIO: 'socio' -> 'user'
+            ->with(['user', 'estado'])
             ->where(function ($query) {
                 $query->where('titulo', 'like', '%' . $this->search . '%')
                     ->orWhere('codigo_radicado', 'like', '%' . $this->search . '%')
-                    // Búsqueda por nombre del usuario/postulante
                     ->orWhereHas('user', function($q) {
                         $q->where('name', 'like', '%' . $this->search . '%')
                           ->orWhere('identificacion', 'like', '%' . $this->search . '%');
@@ -82,7 +80,6 @@ class Gestionar extends Component
             }
 
             $ids = $baseQuery->pluck('id');
-
             if ($ids->isEmpty()) return 0;
 
             Proyecto::whereIn('id', $ids)->update(['publicado' => true]);
@@ -96,6 +93,39 @@ class Gestionar extends Component
             'message' => $totalProcesados > 0 
                 ? "Se han publicado $totalProcesados resultados exitosamente." 
                 : "No hay resultados pendientes por publicar."
+        ]);
+
+        $this->convocatoria->refresh();
+    }
+
+    /**
+     * FUNCIÓN NUEVA: Ocultar resultados publicados
+     */
+    public function ocultarResultados()
+    {
+        $totalProcesados = DB::transaction(function () {
+            $baseQuery = Proyecto::where('convocatoria_id', $this->convocatoria->id)
+                ->where('publicado', true); // Buscamos los que sí están publicados
+
+            if ($this->estadoSelected) {
+                $baseQuery->where('estado_id', $this->estadoSelected);
+            }
+
+            $ids = $baseQuery->pluck('id');
+            if ($ids->isEmpty()) return 0;
+
+            // Revertimos los valores
+            Proyecto::whereIn('id', $ids)->update(['publicado' => false]);
+            Observacion::whereIn('proyecto_id', $ids)->update(['visible_para_proponente' => false]);
+
+            return $ids->count();
+        });
+
+        $this->dispatch('notify', [
+            'type' => $totalProcesados > 0 ? 'success' : 'info',
+            'message' => $totalProcesados > 0 
+                ? "Se han ocultado $totalProcesados resultados exitosamente." 
+                : "No hay resultados publicados para ocultar."
         ]);
 
         $this->convocatoria->refresh();

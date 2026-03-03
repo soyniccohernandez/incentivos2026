@@ -209,16 +209,16 @@
                                                         wire:keydown.enter.prevent="buscarSocio({{ $index }})"
                                                         {{ $miembro['encontrado'] ? 'readonly' : '' }}
                                                         class="w-full border rounded-xl px-4 py-3 text-sm font-bold transition-all uppercase outline-none
-                {{ $miembro['encontrado'] 
-                    ? 'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed shadow-inner' 
-                    : ($errors->has('elenco.'.$index.'.identificacion') 
-                        ? 'bg-red-50 border-red-300 text-red-900 focus:border-red-400' 
-                        : 'bg-white border-slate-200 text-slate-700 focus:border-[#ff6600] shadow-sm') 
-                }}"
+                                                            {{ $miembro['encontrado'] 
+                                                                ? 'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed shadow-inner' 
+                                                                : ($errors->has('elenco.'.$index.'.identificacion') 
+                                                                    ? 'bg-red-50 border-red-300 text-red-900 focus:border-red-400' 
+                                                                    : 'bg-white border-slate-200 text-slate-700 focus:border-[#ff6600] shadow-sm') 
+                                                            }}"
                                                         placeholder="Presione Enter para validar">
 
-                                                    {{-- BOTÓN PARA LIMPIAR (Solo sale si ya se encontró) --}}
-                                                    @if($miembro['encontrado'])
+                                                    {{-- BOTÓN PARA LIMPIAR (Sale si hay algo escrito O si ya se encontró) --}}
+                                                    @if(!empty($miembro['identificacion']) || $miembro['encontrado'])
                                                     <button type="button"
                                                         wire:click="limpiarSocio({{ $index }})"
                                                         class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors p-1">
@@ -236,10 +236,10 @@
                                                     wire:target="buscarSocio({{ $index }})"
                                                     {{ $miembro['encontrado'] ? 'disabled' : '' }}
                                                     class="px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors min-w-[90px] flex items-center justify-center
-            {{ $miembro['encontrado'] 
-                ? 'bg-emerald-500 text-white cursor-default' 
-                : ($errors->has('elenco.'.$index.'.identificacion') ? 'bg-red-500 text-white' : 'bg-slate-800 text-white hover:bg-[#ff6600]') 
-            }}">
+                                                        {{ $miembro['encontrado'] 
+                                                            ? 'bg-emerald-500 text-white cursor-default' 
+                                                            : ($errors->has('elenco.'.$index.'.identificacion') ? 'bg-red-500 text-white' : 'bg-slate-800 text-white hover:bg-[#ff6600]') 
+                                                        }}">
 
                                                     <span wire:loading.remove wire:target="buscarSocio({{ $index }})">
                                                         {{ $miembro['encontrado'] ? 'Listo' : 'Validar' }}
@@ -379,6 +379,7 @@
                 </section>
 
                 {{-- 2. DOCUMENTACIÓN TÉCNICA (PDF) --}}
+                {{-- 2. DOCUMENTACIÓN TÉCNICA (PDF) --}}
                 <section class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
                     <div class="flex items-center gap-4 mb-10">
                         <div class="h-8 w-1 bg-[#ff6600] rounded-full"></div>
@@ -387,11 +388,11 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         @foreach([
-                        ['model' => 'guionFinal', 'label' => 'Guion Final', 'desc' => 'Versión Definitiva', 'formato' => 'formato_guion.pdf'],
-                        ['model' => 'radicadoGuion', 'label' => 'Radicado DNDA', 'desc' => 'Derechos de Autor', 'formato' => 'formato_dnda.pdf']
+                        ['model' => 'guionFinal', 'label' => 'Guion Final', 'desc' => 'Versión Definitiva', 'hasDownload' => false],
+                        ['model' => 'radicadoGuion', 'label' => 'Radicado DNDA', 'desc' => 'Derechos de Autor', 'hasDownload' => false]
                         ] as $doc)
 
-                        <div class="p-8 bg-white rounded-[2rem] border border-slate-100 flex flex-col justify-between group hover:border-orange-200 transition-all"
+                        <div class="p-6 bg-slate-50/50 rounded-[2rem] border border-slate-100 flex flex-col justify-between group hover:border-orange-200 transition-all"
                             x-data="{ isUploading: false, progress: 0 }"
                             x-on:livewire-upload-start="isUploading = true"
                             x-on:livewire-upload-finish="isUploading = false"
@@ -406,26 +407,25 @@
                             </div>
 
                             <div class="space-y-4">
-                                {{-- BOTÓN DE DESCARGA --}}
-                                <a href="{{ asset('storage/formatos/' . $doc['formato']) }}" target="_blank"
-                                    class="block w-full text-center py-3 bg-slate-50 text-slate-600 rounded-xl text-[9px] font-black uppercase tracking-widest border border-slate-100 hover:border-[#ff6600] hover:text-[#ff6600] transition-all">
-                                    Descargar Formato
-                                </a>
+                                {{-- Lógica de diseño: Estos no tienen formato de descarga según tu requerimiento --}}
+                                <div class="py-1 text-[9px] font-bold text-slate-300 uppercase tracking-widest text-center border border-transparent">
+                                    Documento Libre (Sin Formato)
+                                </div>
 
                                 <div class="relative" wire:key="wrap-doc-{{ $doc['model'] }}-{{ $this->{$doc['model']} ? 'filled' : 'empty' }}">
                                     @if(!$this->{$doc['model']})
                                     {{-- ESTADO: ESPERANDO ARCHIVO --}}
                                     <label x-show="!isUploading"
-                                        class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 hover:border-[#ff6600]/30 transition-all group/up animate-fade-in">
+                                        class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:bg-white hover:border-[#ff6600]/30 transition-all group/up animate-fade-in">
                                         <svg class="w-6 h-6 text-slate-300 group-hover/up:text-[#ff6600] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-width="2" stroke-linecap="round" />
                                         </svg>
-                                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Subir {{ $doc['label'] }}</span>
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Subir PDF</span>
                                         <input type="file" wire:model.live="{{ $doc['model'] }}" class="hidden" accept=".pdf" />
                                     </label>
 
                                     {{-- ESTADO: CARGANDO --}}
-                                    <div x-show="isUploading" x-cloak class="w-full h-28 flex flex-col items-center justify-center bg-white border-2 border-orange-100 rounded-2xl animate-pulse">
+                                    <div x-show="isUploading" x-cloak class="w-full h-24 flex flex-col items-center justify-center bg-white border-2 border-orange-100 rounded-2xl animate-pulse">
                                         <div class="w-3/4 h-1.5 bg-slate-100 rounded-full overflow-hidden mb-2">
                                             <div class="h-full bg-[#ff6600] transition-all duration-300" :style="'width: ' + progress + '%'"></div>
                                         </div>
@@ -433,14 +433,14 @@
                                     </div>
                                     @else
                                     {{-- ESTADO: CARGADO --}}
-                                    <div class="bg-slate-50 border border-emerald-100 p-5 rounded-2xl flex items-center justify-between shadow-sm animate-fade-in">
+                                    <div class="bg-white border border-emerald-100 p-4 rounded-2xl flex items-center justify-between shadow-sm animate-fade-in">
                                         <div class="flex items-center gap-3 truncate">
-                                            <div class="h-10 w-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-500">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div class="h-8 w-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-500">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" />
                                                 </svg>
                                             </div>
-                                            <span class="text-[10px] font-bold text-slate-600 truncate uppercase">
+                                            <span class="text-[9px] font-bold text-slate-600 truncate uppercase">
                                                 {{ is_object($this->{$doc['model']}) ? $this->{$doc['model']}->getClientOriginalName() : 'Archivo Cargado' }}
                                             </span>
                                         </div>
@@ -456,7 +456,7 @@
 
                             {{-- ERRORES --}}
                             @error($doc['model'])
-                            <span class="text-red-500 text-[9px] font-bold block uppercase animate-fade-in mt-3 ml-1">{{ $message }}</span>
+                            <span class="text-red-500 text-[9px] font-bold block uppercase animate-fade-in mt-2 ml-1">{{ $message }}</span>
                             @enderror
                         </div>
                         @endforeach
@@ -474,9 +474,9 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         @foreach([
-                        ['model' => 'propuestaCreativa', 'label' => 'Propuesta', 'desc' => 'Concepto Visual', 'file' => 'formato_propuesta.pdf'],
-                        ['model' => 'presupuesto', 'label' => 'Presupuesto Detallado', 'desc' => 'Formato Excel (.xlsx)', 'file' => 'formato_presupuesto_2026.xlsx'],
-                        ['model' => 'cronograma', 'label' => 'Cronograma de Producción', 'desc' => 'Formato Excel (.xlsx)', 'file' => 'formato_cronograma_2026.xlsx']
+                        ['model' => 'propuestaCreativa', 'label' => 'ANEXO 6. PROPUESTA CREATIVA', 'desc' => 'Concepto Visual', 'file' => 'etapa_02/ANEXO 6. PROPUESTA CREATIVA.docx'],
+                        ['model' => 'presupuesto', 'label' => 'ANEXO 7. PRESUPUESTO', 'desc' => 'Formato Excel (.xlsx)', 'file' => 'etapa_02/ANEXO 7. PRESUPUESTO.xlsx'],
+                        ['model' => 'cronograma', 'label' => 'ANEXO 8. CRONOGRAMA', 'desc' => 'Formato Excel (.xlsx)', 'file' => 'etapa_02/ANEXO 8. CRONOGRAMA.xlsx']
                         ] as $xls)
 
                         <div class="p-8 bg-white rounded-[2rem] border border-slate-100 group hover:border-orange-200 transition-all flex flex-col justify-between"
@@ -496,8 +496,13 @@
                             <div class="flex flex-col gap-4">
                                 {{-- BOTÓN DE DESCARGA (ESTILO ANEXO 4) --}}
                                 <a href="{{ asset('storage/formatos/'.$xls['file']) }}" target="_blank"
-                                    class="w-full text-center py-2.5 bg-slate-50 text-slate-600 rounded-xl text-[9px] font-black uppercase tracking-widest border border-slate-100 hover:border-[#ff6600] hover:text-[#ff6600] transition-all">
-                                    Descargar Formato
+                                    class="group flex items-center justify-center gap-2 w-full py-3 bg-white text-slate-600 rounded-xl text-[10px] font-bold uppercase tracking-[0.15em] border border-slate-200 shadow-sm hover:shadow-md hover:border-[#ff6600] hover:text-[#ff6600] transition-all duration-300">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+
+                                    <span>Descargar Formato</span>
                                 </a>
 
                                 <div class="relative" wire:key="wrap-xls-{{ $xls['model'] }}-{{ $this->{$xls['model']} ? 'filled' : 'empty' }}">

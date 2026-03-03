@@ -256,6 +256,116 @@ class InscripcionEtapa1 extends Component
         $this->redirect('/', navigate: true);
     }
 
+    // public function guardar()
+    // {
+    //     $this->validate();
+
+    //     $convocatoria = Convocatoria::where('estado', 'abierta')->first();
+    //     if (!$convocatoria) {
+    //         $this->addError('error', 'No hay convocatoria abierta.');
+    //         return;
+    //     }
+
+    //     // --- 1. VALIDACIÓN DE EXCLUSIVIDAD DEL DIRECTOR ---
+
+    //     // Identificamos la cédula a validar (del socio logueado o del tercero)
+    //     $idDirectorValidar = ($this->directorPropio === 'si')
+    //         ? $this->socio->identificacion
+    //         : $this->directorIdentificacion;
+
+    //     // A. ¿Ya es el dueño (user) de un proyecto? (Usando la relación correcta: 'user')
+    //     $existeComoProponente = \App\Models\Proyecto::where('convocatoria_id', $convocatoria->id)
+    //         ->whereHas('user', function ($q) use ($idDirectorValidar) {
+    //             $q->where('identificacion', $idDirectorValidar);
+    //         })->exists();
+
+    //     // B. ¿Ya figura como Director en otro proyecto?
+    //     $existeComoDirector = \App\Models\Director::whereHas('proyecto', function ($q) use ($convocatoria) {
+    //         $q->where('convocatoria_id', $convocatoria->id);
+    //     })
+    //         ->where('identificacion', $idDirectorValidar)
+    //         ->exists();
+
+    //     // C. ¿Figura en el elenco de otro proyecto? (Usando la relación: 'elenco')
+    //     $existeComoParticipante = \App\Models\Proyecto::where('convocatoria_id', $convocatoria->id)
+    //         ->whereHas('elenco', function ($q) use ($idDirectorValidar) {
+    //             $q->where('identificacion', $idDirectorValidar);
+    //         })->exists();
+
+    //     if ($existeComoProponente || $existeComoDirector || $existeComoParticipante) {
+    //         $this->addError('directorIdentificacion', "La persona con identificación $idDirectorValidar ya participa en un proyecto de esta convocatoria y no puede participar en más de uno.");
+    //         return;
+    //     }
+
+    //     // --- 2. TRANSACCIÓN DE GUARDADO ---
+
+    //     try {
+    //         DB::beginTransaction();
+
+    //         // 1. Creación del proyecto
+    //         // Aquí usamos la propiedad $this->socio que entiendo es el objeto User logueado
+    //         $proyecto = $this->socio->proyectos()->create([
+    //             'convocatoria_id'   => $convocatoria->id,
+    //             'titulo'            => strtoupper($this->titulo),
+    //             'guion_propio'      => ($this->autoria === 'si') ? 1 : 0,
+    //             'estado_id'         => 1,
+    //             'etapa_id'          => 1,
+    //             'fecha_postulacion' => now(),
+    //         ]);
+
+    //         // 2. Creación del registro del Director
+    //         $proyecto->director()->create([
+    //             'es_proponente'  => ($this->directorPropio === 'si') ? 1 : 0,
+    //             'identificacion' => $this->directorPropio === 'si' ? $this->socio->identificacion : $this->directorIdentificacion,
+    //             'nombre'         => $this->directorPropio === 'si' ? strtoupper($this->socio->name) : strtoupper($this->directorNombre),
+    //             'celular'        => $this->directorPropio === 'si' ? $this->socio->telefono : $this->directorCelular,
+    //             'correo'         => $this->directorPropio === 'si' ? strtolower($this->socio->email) : strtolower($this->directorCorreo),
+    //         ]);
+
+    //         // 3. Carga masiva de documentos
+    //         $this->upload($proyecto, $this->docDirectorCompromiso, 1, 'MANIFESTACION');
+    //         $this->upload($proyecto, $this->docDirectorExperiencia, 2, 'EXPERIENCIA');
+
+    //         if ($this->autoria === 'no' && $this->guionArchivo) {
+    //             $this->upload($proyecto, $this->guionArchivo, 3, 'AUTORIZACION_GUION');
+    //         }
+
+    //         $this->upload($proyecto, $this->docDirectorEvidencia1, 4, 'EVIDENCIA1');
+    //         $this->upload($proyecto, $this->docDirectorEvidencia2, 5, 'EVIDENCIA2');
+    //         $this->upload($proyecto, $this->formatoFirmado, 6, 'DECLARACIONES');
+
+    //         DB::commit();
+
+    //         // --- 3. NOTIFICACIONES ---
+    //         $configuracionPostulacion = ['autoria' => $this->autoria, 'directorPropio' => $this->directorPropio];
+
+    //         try {
+    //             Mail::to($this->socio->email)->send(new \App\Mail\InscripcionConfirmadaMail($proyecto, $this->socio));
+    //         } catch (\Exception $e) {
+    //             Log::error("Error Mail Socio: " . $e->getMessage());
+    //         }
+
+    //         try {
+    //             $emailRevision = 'nhernandez@actores.org.co';
+    //             Mail::to($emailRevision)->later(
+    //                 now()->addSeconds(15),
+    //                 new \App\Mail\NotificacionInternaInscripcionMail($proyecto, $this->socio, $configuracionPostulacion)
+    //             );
+    //         } catch (\Exception $e) {
+    //             Log::error("Error Mail Respaldo: " . $e->getMessage());
+    //         }
+
+    //         return redirect()->route('dashboard')->with([
+    //             'success' => 'Inscripción exitosa.',
+    //             'radicado' => $proyecto->codigo_radicado
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         Log::error("Error Crítico Inscripción: " . $e->getMessage());
+    //         $this->addError('error', 'Error al procesar el registro: ' . $e->getMessage());
+    //     }
+    // }
+
     public function guardar()
     {
         $this->validate();
@@ -267,43 +377,37 @@ class InscripcionEtapa1 extends Component
         }
 
         // --- 1. VALIDACIÓN DE EXCLUSIVIDAD DEL DIRECTOR ---
-
-        // Identificamos la cédula a validar (del socio logueado o del tercero)
         $idDirectorValidar = ($this->directorPropio === 'si')
             ? $this->socio->identificacion
             : $this->directorIdentificacion;
 
-        // A. ¿Ya es el dueño (user) de un proyecto? (Usando la relación correcta: 'user')
         $existeComoProponente = \App\Models\Proyecto::where('convocatoria_id', $convocatoria->id)
             ->whereHas('user', function ($q) use ($idDirectorValidar) {
                 $q->where('identificacion', $idDirectorValidar);
             })->exists();
 
-        // B. ¿Ya figura como Director en otro proyecto?
         $existeComoDirector = \App\Models\Director::whereHas('proyecto', function ($q) use ($convocatoria) {
             $q->where('convocatoria_id', $convocatoria->id);
-        })
-            ->where('identificacion', $idDirectorValidar)
-            ->exists();
+        })->where('identificacion', $idDirectorValidar)->exists();
 
-        // C. ¿Figura en el elenco de otro proyecto? (Usando la relación: 'elenco')
         $existeComoParticipante = \App\Models\Proyecto::where('convocatoria_id', $convocatoria->id)
             ->whereHas('elenco', function ($q) use ($idDirectorValidar) {
                 $q->where('identificacion', $idDirectorValidar);
             })->exists();
 
         if ($existeComoProponente || $existeComoDirector || $existeComoParticipante) {
-            $this->addError('directorIdentificacion', "La persona con identificación $idDirectorValidar ya participa en un proyecto de esta convocatoria y no puede participar en más de uno.");
+            $this->addError('directorIdentificacion', "La persona con identificación $idDirectorValidar ya participa en un proyecto.");
             return;
         }
 
         // --- 2. TRANSACCIÓN DE GUARDADO ---
-
         try {
             DB::beginTransaction();
 
+            // Mapeo dinámico de tipos de documento (Evita IDs quemados)
+            $tiposDoc = DB::table('tipos_documento')->pluck('id', 'nombre');
+
             // 1. Creación del proyecto
-            // Aquí usamos la propiedad $this->socio que entiendo es el objeto User logueado
             $proyecto = $this->socio->proyectos()->create([
                 'convocatoria_id'   => $convocatoria->id,
                 'titulo'            => strtoupper($this->titulo),
@@ -322,37 +426,31 @@ class InscripcionEtapa1 extends Component
                 'correo'         => $this->directorPropio === 'si' ? strtolower($this->socio->email) : strtolower($this->directorCorreo),
             ]);
 
-            // 3. Carga masiva de documentos
-            $this->upload($proyecto, $this->docDirectorCompromiso, 1, 'MANIFESTACION');
-            $this->upload($proyecto, $this->docDirectorExperiencia, 2, 'EXPERIENCIA');
+            // 3. Carga masiva usando nombres exactos de tu SQL
+            $this->upload($proyecto, $this->docDirectorCompromiso, $tiposDoc['ANEXO 1: MANIFESTACIÓN DEL DIRECTOR'], 'MANIFESTACION');
+            $this->upload($proyecto, $this->docDirectorExperiencia, $tiposDoc['ANEXO 2: EXPERIENCIA COMO DIRECTOR GENERAL'], 'EXPERIENCIA');
 
             if ($this->autoria === 'no' && $this->guionArchivo) {
-                $this->upload($proyecto, $this->guionArchivo, 3, 'AUTORIZACION_GUION');
+                $this->upload($proyecto, $this->guionArchivo, $tiposDoc['ANEXO 3: AUTORIZACIÓN USO DEL GUION'], 'AUTORIZACION_GUION');
             }
 
-            $this->upload($proyecto, $this->docDirectorEvidencia1, 4, 'EVIDENCIA1');
-            $this->upload($proyecto, $this->docDirectorEvidencia2, 5, 'EVIDENCIA2');
-            $this->upload($proyecto, $this->formatoFirmado, 6, 'DECLARACIONES');
+            $this->upload($proyecto, $this->docDirectorEvidencia1, $tiposDoc['CERTIFICADO Y EVIDENCIAS 1'], 'EVIDENCIA1');
+            $this->upload($proyecto, $this->docDirectorEvidencia2, $tiposDoc['CERTIFICADO Y EVIDENCIAS 2'], 'EVIDENCIA2');
+            $this->upload($proyecto, $this->formatoFirmado, $tiposDoc['ANEXO 4: CONSIDERACIONES Y DECLARACIONES GENERALES'], 'DECLARACIONES');
 
             DB::commit();
 
             // --- 3. NOTIFICACIONES ---
-            $configuracionPostulacion = ['autoria' => $this->autoria, 'directorPropio' => $this->directorPropio];
-
             try {
                 Mail::to($this->socio->email)->send(new \App\Mail\InscripcionConfirmadaMail($proyecto, $this->socio));
-            } catch (\Exception $e) {
-                Log::error("Error Mail Socio: " . $e->getMessage());
-            }
 
-            try {
                 $emailRevision = 'nhernandez@actores.org.co';
-                Mail::to($emailRevision)->later(
-                    now()->addSeconds(15),
-                    new \App\Mail\NotificacionInternaInscripcionMail($proyecto, $this->socio, $configuracionPostulacion)
-                );
+                Mail::to($emailRevision)->later(now()->addSeconds(15), new \App\Mail\NotificacionInternaInscripcionMail($proyecto, $this->socio, [
+                    'autoria' => $this->autoria,
+                    'directorPropio' => $this->directorPropio
+                ]));
             } catch (\Exception $e) {
-                Log::error("Error Mail Respaldo: " . $e->getMessage());
+                Log::error("Error en correos: " . $e->getMessage());
             }
 
             return redirect()->route('dashboard')->with([

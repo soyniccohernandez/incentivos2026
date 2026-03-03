@@ -13,6 +13,8 @@ use App\Livewire\Sitio\{
     RetroalimentacionProyecto
 };
 
+use App\Livewire\Admin\Socios\Index as SociosIndex;
+
 // Namespaces de los componentes Administrativos
 use App\Livewire\Admin\{
     AdminDashboard, 
@@ -20,6 +22,7 @@ use App\Livewire\Admin\{
     Convocatorias\Gestionar as ConvocatoriasGestionar, 
     Convocatorias\RevisarProyecto, 
     ConvocatoriaConfig
+    
 };
 
 /*
@@ -35,6 +38,7 @@ use App\Livewire\Admin\{
 
 // --- 1. RUTAS PÚBLICAS ---
 Route::view('/', 'welcome');
+Route::view('/e', 'welcome_ex');
 Route::get('/proyectos-inscritos', Inscritos::class)->name('inscritos.publico');
 
 // Ruta técnica para mantener la sesión activa durante cargas largas de archivos
@@ -84,6 +88,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // Ruta raíz del administrador
     Route::get('/dashboard', AdminDashboard::class)->name('admin.dashboard');
     
+    Route::get('/admin/socios', SociosIndex::class)->name('admin.socios.index');
     // Perfil de usuario administrativo
     Route::view('/perfil', 'profile')->name('profile');
 

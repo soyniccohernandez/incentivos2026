@@ -318,7 +318,8 @@
                                         </div> <button type="button" @click="isUploading = false; progress = 0; $wire.limpiarDocumento('{{ $doc['model'] }}')" class="text-slate-300 hover:text-red-500 transition-colors cursor-pointer">✕</button>
                                     </div> @endif
                                 </div> @error($doc['model']) <span class="text-red-500 text-[9px] font-bold block uppercase animate-fade-in mt-1">{{ $message }}</span> @enderror </div>
-                        </div> @endforeach </div>
+                        </div> @endforeach
+                    </div>
                 </section> {{-- 4. GUION --}}
                 <section class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm text-left">
                     <h2 class="font-outfit text-2xl font-800 text-slate-800 uppercase tracking-tight mb-8">4. Derechos de Guion</h2>
@@ -384,7 +385,28 @@
                         <div class="space-y-4 max-w-2xl mx-auto"> <label class="flex items-center gap-5 p-5 bg-white rounded-2xl border border-slate-100 cursor-pointer hover:border-[#ff6600]/30 transition-all group"> <input type="checkbox" wire:model.live="aceptaTerminos" class="w-6 h-6 accent-[#ff6600] cursor-pointer"> <span class="text-xs md:text-sm font-semibold text-slate-600 uppercase tracking-tight">Acepto, de manera voluntaria, previa, explícita e informada los términos y ondiciones establecidos en la presente convocatoria.</span> </label> @error('aceptaTerminos') <span class="text-red-500 text-[10px] font-bold ml-5 uppercase block animate-fade-in">{{ $message }}</span> @enderror <label class="flex items-center gap-5 p-5 bg-white rounded-2xl border border-slate-100 cursor-pointer hover:border-[#ff6600]/30 transition-all group"> <input type="checkbox" wire:model.live="aceptaDatos" class="w-6 h-6 accent-[#ff6600] cursor-pointer"> <span class="text-xs md:text-sm font-semibold text-slate-600 uppercase tracking-tight">Acepto y autorizo de manera voluntaria, previa, explícita e informada a ACTORES S.C.G. para el tratamiento de mis datos personales conforme a su Política de Tratamiento de Datos Personales y a lo establecido en la presente convocatoria. Declaro que la información suministrada es veraz y autorizo, en caso de resultar seleccionada la propuesta, la verificación de la información aportada y la consulta de antecedentes judiciales, disciplinarios o fiscales. Si se evidencian incumplimientos de las condiciones de participación, acepto la exclusión de la propuesta y la selección de la siguiente siempre y cuando cumpla con los requisitos establecidos.</span> </label> @error('aceptaDatos') <span class="text-red-500 text-[10px] font-bold ml-5 uppercase block animate-fade-in">{{ $message }}</span> @enderror </div>
                     </div>
                 </section> {{-- BOTÓN DE CIERRE --}}
-                <div class="text-center pt-10"> <button type="submit" wire:loading.attr="disabled" wire:target="guardar" class="w-full max-w-xl h-24 bg-[#ff6600] text-white rounded-[2rem] font-outfit shadow-2xl shadow-orange-100 hover:bg-slate-800 transition-all mx-auto cursor-pointer disabled:opacity-80 flex items-center justify-center overflow-hidden">
+                <div class="text-center pt-10">
+                    {{-- Mensajes de Error Globales --}}
+                    @if ($errors->has('directorIdentificacion') || $errors->has('error'))
+                    <div class="max-w-4xl mx-auto mb-6 animate-fade-in">
+                        <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-[2rem] shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-red-500 p-2 rounded-full text-white">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-red-800 font-900 uppercase text-xs tracking-widest">Atención: Error de Validación</h3>
+                                    <p class="text-red-600/80 text-[11px] font-bold uppercase mt-1">
+                                        {{ $errors->first('directorIdentificacion') ?: $errors->first('error') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    <button type="submit" wire:loading.attr="disabled" wire:target="guardar" class="w-full max-w-xl h-24 bg-[#ff6600] text-white rounded-[2rem] font-outfit shadow-2xl shadow-orange-100 hover:bg-slate-800 transition-all mx-auto cursor-pointer disabled:opacity-80 flex items-center justify-center overflow-hidden">
                         <div class="relative w-full h-full flex items-center justify-center">
                             <div wire:loading.remove wire:target="guardar" class="flex items-center justify-center gap-3 px-4"> <span class="text-2xl font-900 uppercase tracking-[2px] whitespace-nowrap"> Finalizar e Inscribir </span> <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="3" stroke-linecap="round" />
@@ -394,7 +416,8 @@
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg> <span class="text-xl font-900 uppercase tracking-[2px] whitespace-nowrap"> Enviando Registro... </span> </div>
                         </div>
-                    </button> </div>
+                    </button>
+                </div>
             </form>
             @endif
 

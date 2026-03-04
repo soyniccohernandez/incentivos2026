@@ -114,7 +114,7 @@
                         </span>
                         <p class="text-white/70 font-mono text-[9px] md:text-[11px] leading-tight uppercase tracking-wider">
                             Este sitio utiliza cookies técnicas para garantizar la integridad de su postulación.
-                            Al continuar, acepta nuestro <a href="https://actores.org.co/storage/app/media/documentos/socios/politica_proteccion_datos.pdf" target="_blank class="text-white underline hover:text-brand-orange transition-colors">Tratamiento de Datos Personales</a>.
+                            Al continuar, acepta nuestro <a href="https://actores.org.co/storage/app/media/documentos/socios/politica_proteccion_datos.pdf" target="_blank class=" text-white underline hover:text-brand-orange transition-colors">Tratamiento de Datos Personales</a>.
                         </p>
                     </div>
                 </div>
@@ -162,43 +162,45 @@
     </style>
 
     {{-- NAVEGACIÓN CINEMATOGRÁFICA: THE MASTER CUT --}}
-    <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-6 md:px-16 bg-black/90 border-b-2 border-white/5 backdrop-blur-xl transition-all duration-500">
+    <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-4 md:px-16 bg-black/95 border-b-2 border-white/5 backdrop-blur-xl transition-all duration-500">
 
         {{-- MARCAS DE ENCUADRE DECORATIVAS (ESQUINAS) --}}
         <div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-brand-orange/20 opacity-0 md:opacity-100"></div>
         <div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-brand-orange/20 opacity-0 md:opacity-100"></div>
 
-        {{-- LOGO Y BRANDING: IMPACTO VISUAL --}}
-        <a href="{{ url('/') }}" class="flex items-center gap-4 md:gap-6 group no-underline shrink-0">
+        {{-- LOGO Y BRANDING --}}
+        <a href="{{ url('/') }}" class="flex items-center gap-4 md:gap-6 group no-underline shrink-0 z-[1101]">
             <div class="relative py-1">
-                <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo Actores SCG" class="h-[50px] md:h-[70px] w-auto object-contain transition-all duration-700 group-hover:rotate-[-5deg] group-hover:scale-110">
-                {{-- Indicador de señal activa --}}
+                <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo Actores SCG" class="h-[45px] md:h-[70px] w-auto object-contain transition-all duration-700 group-hover:rotate-[-5deg] group-hover:scale-110">
                 <div class="absolute -top-1 -right-1 w-2 h-2 bg-brand-orange rounded-full animate-ping opacity-75"></div>
             </div>
 
-            <div class="h-12 w-[2px] bg-gradient-to-b from-transparent via-brand-orange/40 to-transparent hidden sm:block"></div>
+            <div class="h-10 w-[2px] bg-gradient-to-b from-transparent via-brand-orange/40 to-transparent hidden sm:block"></div>
 
             <div class="flex flex-col justify-center">
-                <span class="font-bebas text-2xl md:text-4xl text-brand-orange tracking-[2px] leading-none transition-colors group-hover:text-white">
+                <span class="font-bebas text-xl md:text-4xl text-brand-orange tracking-[2px] leading-none transition-colors group-hover:text-white">
                     ACTORES S.C.G.
                 </span>
-                <span class="text-[9px] md:text-[10px] font-black text-gray-500 tracking-[4px] uppercase leading-tight hidden sm:block">
+                <span class="text-[8px] md:text-[10px] font-black text-gray-500 tracking-[4px] uppercase leading-tight hidden sm:block">
                     Sociedad de Gestión
                 </span>
             </div>
         </a>
 
-        {{-- BOTÓN MENÚ MÓVIL: ESTILO OSD --}}
-        <div class="flex flex-col gap-[8px] cursor-pointer lg:hidden z-[1100] group" id="mobile-menu">
-            <span class="w-[35px] h-[3px] bg-brand-orange transition-all duration-300"></span>
-            <span class="w-[25px] h-[3px] bg-white ml-auto transition-all duration-300 group-hover:w-[35px]"></span>
-            <span class="w-[35px] h-[3px] bg-brand-orange transition-all duration-300"></span>
+        {{-- BOTÓN MENÚ MÓVIL: ESTILO OSD (Z-INDEX SUPERIOR) --}}
+        <div class="flex flex-col gap-[8px] cursor-pointer lg:hidden z-[1101] group" id="mobile-menu-btn">
+            <span class="w-[30px] h-[3px] bg-brand-orange transition-all duration-300 origin-left border-none"></span>
+            <span class="w-[20px] h-[3px] bg-white ml-auto transition-all duration-300 group-hover:w-[30px] border-none"></span>
+            <span class="w-[30px] h-[3px] bg-brand-orange transition-all duration-300 origin-left border-none"></span>
         </div>
 
-        {{-- ENLACES: CRÉDITOS DE CABECERA --}}
-        <ul class="nav-links fixed lg:static top-0 -right-full lg:right-0 w-full lg:w-auto h-screen lg:h-auto bg-black/98 lg:bg-transparent flex flex-col lg:flex-row justify-center lg:justify-end items-center gap-10 lg:gap-8 xl:gap-12 transition-all duration-700 z-[1000] list-none px-10">
+        {{-- ENLACES: MODIFICADO EL FONDO EN MÓVIL --}}
+        {{-- He cambiado bg-black/98 por bg-[#0a0a0a] para que sea sólido y no deje ver el hero detrás --}}
+        <ul id="nav-links" class="fixed lg:static top-0 -right-full lg:right-0 w-full lg:w-auto h-screen lg:h-auto bg-[#0a0a0a] lg:bg-transparent flex flex-col lg:flex-row justify-center lg:justify-end items-center gap-8 lg:gap-8 xl:gap-12 transition-all duration-500 z-[1100] list-none px-10 overflow-y-auto">
 
-            {{-- LINKS CON EFECTO DE LENTE --}}
+            {{-- DECORACIÓN INTERNA DEL MENÚ MÓVIL (Solo visible en móvil) --}}
+            <div class="absolute top-10 left-10 opacity-10 font-bebas text-6xl text-white pointer-events-none lg:hidden uppercase tracking-widest">MENU_OSD</div>
+
             @php
             $navItems = [
             ['url' => '#inicio', 'label' => 'INICIO'],
@@ -210,58 +212,37 @@
             @endphp
 
             @foreach($navItems as $item)
-            <li class="relative overflow-hidden group">
-                <a href="{{ $item['url'] }}" class="nav-link-scroll no-underline text-white font-bebas text-[2.5rem] lg:text-xl xl:text-2xl tracking-[2px] hover:text-brand-orange transition-all duration-300 block">
+            <li class="relative overflow-hidden group w-full lg:w-auto text-center">
+                <a href="{{ $item['url'] }}" class="nav-link-scroll no-underline text-white font-bebas text-[2.2rem] lg:text-xl xl:text-2xl tracking-[4px] lg:tracking-[2px] hover:text-brand-orange transition-all duration-300 block py-2">
                     {{ $item['label'] }}
                 </a>
-                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-brand-orange -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></span>
+                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-brand-orange -translate-x-full lg:group-hover:translate-x-0 transition-transform duration-500"></span>
             </li>
             @endforeach
 
-            {{-- RUTA FIJA: VER INSCRITOS --}}
-            <li class="lg:border-l lg:border-white/10 lg:pl-8">
+            <li class="lg:border-l lg:border-white/10 lg:pl-8 w-full lg:w-auto text-center">
                 <a href="{{ route('inscritos.publico') }}"
-                    class="no-underline font-bebas text-[2.5rem] lg:text-xl xl:text-2xl tracking-[2px] transition-all duration-300 
-                {{ request()->routeIs('inscritos.publico') ? 'text-brand-orange underline underline-offset-8 decoration-2' : 'text-white hover:text-brand-orange' }}">
+                    class="no-underline font-bebas text-[2.2rem] lg:text-xl xl:text-2xl tracking-[4px] lg:tracking-[2px] transition-all duration-300 
+            {{ request()->routeIs('inscritos.publico') ? 'text-brand-orange' : 'text-white hover:text-brand-orange' }}">
                     VER INSCRITOS
                 </a>
             </li>
 
-            {{-- BOTÓN DE ACCIÓN: THE CALL TO ACTION --}}
-            <li class="lg:ml-6 mt-10 lg:mt-0">
+            {{-- BOTÓN DE ACCIÓN: MÁS VISIBLE EN MÓVIL --}}
+            <li class="lg:ml-6 mt-6 lg:mt-0 w-full lg:w-auto flex justify-center">
                 @auth
-                <a href="{{ route('dashboard') }}" class="no-underline text-black font-bebas text-[2.2rem] lg:text-lg xl:text-xl tracking-[2px] bg-white lg:bg-brand-orange px-10 py-4 lg:px-6 lg:py-2.5 transition-all duration-500 flex items-center gap-4 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-white group">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-10 h-10 lg:w-5 lg:h-5 transition-transform group-hover:scale-125">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M6 21l12 -9" />
-                        <path d="M6 12l12 9" />
-                        <path d="M5 12h14" />
-                        <path d="M6 3v9" />
-                        <path d="M18 3v9" />
-                        <path d="M6 8h12" />
-                        <path d="M6 5h12" />
-                    </svg>
+                <a href="{{ route('dashboard') }}" class="no-underline text-black font-bebas text-[1.8rem] lg:text-lg xl:text-xl tracking-[2px] bg-brand-orange px-10 py-4 lg:px-6 lg:py-2.5 transition-all duration-500 flex items-center gap-4 hover:bg-white w-fit">
                     <span class="uppercase">VER MI ESTADO</span>
                 </a>
                 @else
-                <a href="{{ route('validar-socio') }}" class="no-underline text-black font-bebas text-[2.2rem] lg:text-lg xl:text-xl tracking-[2px] bg-white lg:bg-brand-orange px-10 py-4 lg:px-6 lg:py-2.5 transition-all duration-500 flex items-center gap-4 shadow-[0_0_20px_rgba(255,100,0,0.3)] hover:bg-white group">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-10 h-10 lg:w-5 lg:h-5 transition-transform group-hover:rotate-12">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M6 21l12 -9" />
-                        <path d="M6 12l12 9" />
-                        <path d="M5 12h14" />
-                        <path d="M6 3v9" />
-                        <path d="M18 3v9" />
-                        <path d="M6 8h12" />
-                        <path d="M6 5h12" />
-                    </svg>
+                <a href="{{ route('validar-socio') }}" class="no-underline text-black font-bebas text-[1.8rem] lg:text-lg xl:text-xl tracking-[2px] bg-brand-orange px-10 py-4 lg:px-6 lg:py-2.5 transition-all duration-500 flex items-center gap-4 hover:bg-white w-fit shadow-[0_0_30px_rgba(255,100,0,0.4)]">
                     <span class="uppercase">POSTÚLATE AQUÍ</span>
                 </a>
                 @endauth
             </li>
         </ul>
 
-        {{-- ELEMENTO DECORATIVO: ESCALA DE NIVELES (DERECHA) --}}
+        {{-- ELEMENTO DECORATIVO DERECHA --}}
         <div class="hidden xl:flex absolute right-4 top-1/2 -translate-y-1/2 flex-col gap-1 opacity-20">
             @for ($i = 0; $i < 5; $i++)
                 <div class="w-4 h-[2px] bg-white">
@@ -271,12 +252,21 @@
         </div>
     </nav>
 
+    {{-- SCRIPT PARA ABRIR/CERRAR (Asegúrate de tenerlo) --}}
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const links = document.getElementById('nav-links');
+            links.classList.toggle('-right-full');
+            links.classList.toggle('right-0');
+        });
+    </script>
+
 
 
     {{-- HERO: CINEMATIC ENGINE // 100VH // INFOGRAFÍA TÉCNICA --}}
     <section id="hero-cine-master" class="relative h-screen w-full flex items-center justify-center bg-[#000] overflow-hidden border-b-8 border-black">
 
-        {{-- 1. FONDO CON MOVIMIENTO (SLOW ZOOM) --}}
+        {{-- 1. FONDO CON MOVIMIENTO --}}
         <div class="absolute inset-0 z-0">
             <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=2400"
                 class="w-full h-full object-cover opacity-40 grayscale contrast-125 brightness-50 animate-[slowzoom_20s_linear_infinite]" alt="Cine Set">
@@ -287,7 +277,7 @@
         <div class="absolute inset-0 z-10 pointer-events-none p-6 md:p-10">
             <div class="absolute top-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/60 backdrop-blur-sm px-4 py-1.5 border border-white/10">
                 <span class="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_10px_red]"></span>
-                <span class="font-mono text-[10px] text-white tracking-[4px] font-bold uppercase">REC_MASTER_2026</span>
+                <span class="font-mono text-[10px] text-white tracking-[4px] font-bold uppercase whitespace-nowrap">REC_MASTER_2026</span>
             </div>
             <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
                 <span class="font-mono text-xs text-brand-orange tracking-[6px] font-bold animate-[blink_2s_infinite]">TC: 00:20:26:03</span>
@@ -295,59 +285,60 @@
         </div>
 
         {{-- 3. CONTENIDO CENTRAL --}}
-        <div class="relative z-20 w-full max-w-7xl mx-auto px-6 h-full flex flex-col items-center justify-center">
+        <div class="relative z-20 w-full max-w-7xl mx-auto px-6 h-full flex flex-col items-center justify-center pt-10">
 
-            {{-- TÍTULO: BLANCO Y NARANJA --}}
-            <div class="mb-10 text-center">
-                <span class="font-mono text-[10px] text-brand-orange tracking-[10px] uppercase block mb-3 opacity-80 italic">// Fomento a la Creación //</span>
-                <h1 class="font-bebas text-[5.5rem] md:text-[8rem] lg:text-[10rem] leading-[0.85] tracking-tighter uppercase select-none">
+            {{-- TÍTULO: PROTAGONISTA --}}
+            <div class="mb-6 md:mb-10 text-center order-1">
+                <span class="font-mono text-[9px] md:text-[10px] text-brand-orange tracking-[6px] md:tracking-[10px] uppercase block mb-3 opacity-80 italic">// Fomento a la Creación //</span>
+                <h1 class="font-bebas text-[4.2rem] md:text-[8rem] lg:text-[10rem] leading-[0.85] tracking-tighter uppercase select-none">
                     <span class="text-white">INCEN</span><span class="text-brand-orange">TIVOS</span><br>
                     <span class="text-brand-orange">AUDIO</span><span class="text-white">VISUALES</span>
                 </h1>
             </div>
 
-            {{-- BLOQUE DE DATOS CLAROS (ESTILO DOCUMENTACIÓN) --}}
-            <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 mb-12">
+            {{-- 4. BOTÓN DE ACCIÓN: PROTAGONISTA EN MÓVIL (ORDER-2) --}}
+            <div class="relative inline-block group order-2 md:order-3 mb-10 md:mb-0">
+                <div class="absolute inset-0 bg-brand-orange translate-x-2 translate-y-2 md:translate-x-3 md:translate-y-3 transition-transform group-hover:translate-x-0 group-hover:translate-y-0 shadow-[0_0_40px_rgba(255,102,0,0.4)]"></div>
+                <a href="#pasos" class="relative flex items-center gap-6 md:gap-10 bg-white text-black px-8 py-5 md:px-14 md:py-7 no-underline font-bebas text-[1.8rem] md:text-[3.2rem] tracking-[4px] md:tracking-[8px] border-[3px] md:border-[4px] border-black transition-all">
+                    POSTÚLATE AQUÍ
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 md:w-12 md:h-12 transition-transform group-hover:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+            </div>
+
+            {{-- BLOQUE DE DATOS: LAS 3 TARJETAS VISIBLES --}}
+            <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-12 order-3 md:order-2 scale-90 md:scale-100">
 
                 {{-- Tarjeta 1: Cupos --}}
-                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-6 md:p-8 transform transition-transform hover:scale-105">
-                    <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-4 block italic">Capacidad_Máxima</span>
-                    <h4 class="font-bebas text-7xl text-white mb-2 leading-none uppercase">03 <span class="text-2xl">Cupos</span></h4>
-                    <p class="text-white/60 text-[10px] font-bold leading-tight uppercase tracking-[2px]">
+                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-4 md:p-8 transform md:transition-transform md:hover:scale-105">
+                    <span class="text-brand-orange text-[9px] font-black uppercase tracking-[3px] mb-1 md:mb-4 block italic leading-none">Capacidad_Máxima</span>
+                    <h4 class="font-bebas text-4xl md:text-7xl text-white mb-1 leading-none uppercase">03 <span class="text-xl md:text-2xl">Cupos</span></h4>
+                    <p class="text-white/60 text-[10px] font-bold leading-tight uppercase tracking-[2px] hidden md:block">
                         Seleccionados mediante <span class="bg-white text-black px-1 italic">comité evaluador</span> externo especializado.
                     </p>
                 </div>
 
                 {{-- Tarjeta 2: Bolsa (Destacada) --}}
-                <div class="bg-brand-orange/10 backdrop-blur-md border-l-4 border-brand-orange p-6 md:p-8 transform scale-105 shadow-2xl">
-                    <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-4 block italic">Bolsa_Global_COP</span>
-                    <h4 class="font-bebas text-7xl text-white mb-2 leading-none uppercase">$135<span class="text-brand-orange italic">M</span></h4>
-                    <p class="text-white/80 text-[10px] font-bold leading-tight uppercase tracking-[2px]">
+                <div class="bg-brand-orange/10 backdrop-blur-md border-l-4 border-brand-orange p-4 md:p-8 transform scale-100 md:scale-105 shadow-2xl">
+                    <span class="text-brand-orange text-[9px] font-black uppercase tracking-[3px] mb-1 md:mb-4 block italic leading-none">Bolsa_Global_COP</span>
+                    <h4 class="font-bebas text-4xl md:text-7xl text-white mb-1 leading-none uppercase">$135<span class="text-brand-orange italic">M</span></h4>
+                    <p class="text-white/80 text-[10px] font-bold leading-tight uppercase tracking-[2px] hidden md:block">
                         Recurso total destinado para <span class="bg-brand-orange text-black px-1">fomento audiovisual</span> en la edición 2026.
                     </p>
                 </div>
 
                 {{-- Tarjeta 3: Asignación --}}
-                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-6 md:p-8 transform transition-transform hover:scale-105">
-                    <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-4 block italic">Asignación_X_Obra</span>
-                    <h4 class="font-bebas text-7xl text-white mb-2 leading-none uppercase">$45<span class="text-2xl">Millones</span></h4>
-                    <p class="text-white/60 text-[10px] font-bold leading-tight uppercase tracking-[2px]">
+                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-4 md:p-8 transform md:transition-transform md:hover:scale-105">
+                    <span class="text-brand-orange text-[9px] font-black uppercase tracking-[3px] mb-1 md:mb-4 block italic leading-none">Asignación_X_Obra</span>
+                    <h4 class="font-bebas text-4xl md:text-7xl text-white mb-1 leading-none uppercase">$45<span class="text-xl md:text-2xl">Millones</span></h4>
+                    <p class="text-white/60 text-[10px] font-bold leading-tight uppercase tracking-[2px] hidden md:block">
                         Monto fijo entregado a cada <span class="bg-white text-black px-1 italic">ganador</span> para el desarrollo de su obra.
                     </p>
                 </div>
 
             </div>
 
-            {{-- 4. BOTÓN DE ACCIÓN --}}
-            <div class="relative inline-block group">
-                <div class="absolute inset-0 bg-brand-orange translate-x-3 translate-y-3 transition-transform group-hover:translate-x-0 group-hover:translate-y-0 shadow-[0_0_40px_rgba(255,102,0,0.4)]"></div>
-                <a href="#pasos" class="relative flex items-center gap-10 bg-white text-black px-14 py-7 no-underline font-bebas text-[2.5rem] md:text-[3.2rem] tracking-[8px] border-[4px] border-black transition-all">
-                    POSTÚLATE AQUÍ
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 transition-transform group-hover:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                </a>
-            </div>
         </div>
 
         {{-- TEXTURAS --}}
@@ -1240,13 +1231,19 @@
                     <span class="underline decoration-4 underline-offset-8">INSCRIPCIÓN VIRTUAL PARA SOCIOS</span>
                 </p>
 
-                {{-- Botón de Acción con Sombra Sólida --}}
-                <div class="relative inline-block group">
-                    <div class="absolute inset-0 bg-black translate-x-3 translate-y-3 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></div>
+                {{-- Botón de Acción con Sombra Sólida - Optimizado para que no se desborde --}}
+                <div class="relative inline-block group w-full max-w-fit mx-auto">
+                    {{-- Sombra (ajustada para que en móvil no sea tan exagerada y ayude al espacio) --}}
+                    <div class="absolute inset-0 bg-black translate-x-2 translate-y-2 md:translate-x-3 md:translate-y-3 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></div>
 
-                    <a href="{{ route('validar-socio') }}" class="relative flex items-center gap-10 bg-white text-black px-12 md:px-20 py-8 no-underline font-bebas text-[2.5rem] md:text-[3.5rem] tracking-[6px] border-4 border-black transition-all">
-                        POSTULARME AHORA
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 transition-transform group-hover:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <a href="{{ route('validar-socio') }}"
+                        class="relative flex items-center justify-center gap-4 md:gap-10 bg-white text-black px-6 sm:px-12 md:px-20 py-5 md:py-8 no-underline font-bebas text-[1.8rem] sm:text-[2.2rem] md:text-[3.5rem] tracking-[3px] md:tracking-[6px] border-4 border-black transition-all">
+
+                        <span class="whitespace-nowrap">POSTULARME AHORA</span>
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="w-8 h-8 md:w-12 md:h-12 shrink-0 transition-transform group-hover:rotate-45"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
                     </a>

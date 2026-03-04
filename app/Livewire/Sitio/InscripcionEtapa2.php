@@ -85,11 +85,11 @@ class InscripcionEtapa2 extends Component
 
         foreach ($this->elenco as $index => $miembro) {
             if (empty($miembro['identificacion']) || !($miembro['archivo_autorizacion'] ?? false) || !($miembro['encontrado'] ?? false)) {
-                
+
                 if (empty($miembro['identificacion'])) {
                     $this->addError("elenco.$index.identificacion", 'Requerido.');
                 }
-                
+
                 if (!($miembro['archivo_autorizacion'] ?? false)) {
                     $this->addError("elenco.$index.archivo_autorizacion", 'Suba el archivo.');
                 }
@@ -161,7 +161,7 @@ class InscripcionEtapa2 extends Component
         } else {
             $this->elenco[] = $datosProponente;
         }
-        
+
         $this->resetValidation();
     }
 
@@ -248,7 +248,7 @@ class InscripcionEtapa2 extends Component
             ->where('identificacion', $user->identificacion)
             ->where('proyecto_id', '!=', $idActual)
             ->exists();
-        
+
         return $esDirector;
     }
 
@@ -301,12 +301,29 @@ class InscripcionEtapa2 extends Component
             }
 
             $this->proyecto->update([
-                'estado_id'           => 5, 
+                'estado_id'           => 5,
                 'etapa_id'            => 2,
                 'observacion_general' => "Su solicitud se encuentra en etapa de revisión por el comité técnico de incentivos."
             ]);
 
             DB::commit();
+
+            // --- INICIO LÓGICA DE CORREOS ETAPA 2 ---
+            try {
+                // 1. Notificación al Usuario
+                \Mail::to($this->proyecto->socio->email)
+                    ->send(new \App\Mail\NotificacionUsuarioEtapa2($this->proyecto));
+
+                // 2. Notificación al Equipo Interno (Santiago / Auditoría)
+                // Se recomienda usar el correo de Santiago o el de auditoría técnica
+                \Mail::to('santiago@actores.org.co')
+                    ->send(new \App\Mail\NotificacionInternaEtapa2($this->proyecto));
+            } catch (\Exception $e) {
+                // Logueamos el error pero no interrumpimos la experiencia del usuario
+                Log::error("Error enviando correos Etapa 2 [" . $this->proyecto->codigo_radicado . "]: " . $e->getMessage());
+            }
+            // --- FIN LÓGICA DE CORREOS ETAPA 2 ---
+
             return redirect()->route('dashboard')->with('success', 'Inscripción de Etapa 2 completada con éxito.');
         } catch (\Exception $e) {
             DB::rollBack();

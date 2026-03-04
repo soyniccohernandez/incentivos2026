@@ -11,17 +11,21 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        
-        // 1. A dónde enviar a los que NO tienen sesión (GUESTS)
+
+        // 1. Redirigir invitados al acceso de socio
         $middleware->redirectGuestsTo(fn() => route('validar-socio'));
 
-        // 2. A dónde enviar a los que SÍ tienen sesión (USERS)
-        // ESTO ES LO QUE FALTA: Cuando Laravel quiera mandar a alguien a "home", usará esto.
+        // 2. Redirigir usuarios ya autenticados a su panel principal
         $middleware->redirectUsersTo(fn() => route('dashboard'));
 
-        // 3. Tu alias actual
+        // 3. Configuración de Alias
         $middleware->alias([
             'check.socio' => \App\Http\Middleware\CheckSocio::class,
+
+            // SOBREESCRITURA TÉCNICA: 
+            // Reemplazamos el middleware de verificación original por el tuyo.
+            // Esto anula cualquier intento de Laravel de pedir confirmación de email.
+            'verified' => \App\Http\Middleware\CheckSocio::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -71,7 +71,7 @@
                         <div x-show="dropdownOpen" @click.away="dropdownOpen = false" x-transition class="absolute right-0 mt-3 w-64 bg-[#0a0a0a] border border-white/10 shadow-2xl rounded-xl overflow-hidden z-[1100]">
                             <div class="px-5 py-4 bg-white/[0.02] border-b border-white/5">
                                 <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Usuario Conectado</p>
-                                <p class="text-xs font-medium text-gray-300 truncate">{{ $this->maskEmail($socio->email) }}</p>
+                                <p class="text-xs font-medium text-gray-300 truncate">{{ $this->maskEmail($this->socio->email) }}</p>
                             </div>
                             <div class="p-2">
                                 <button wire:click="logout" class="w-full flex items-center gap-3 text-left px-4 py-3 text-[13px] font-bold text-red-500/80 hover:text-red-500 hover:bg-red-500/5 rounded-lg transition-all">
@@ -182,7 +182,7 @@
                             <p class="text-slate-500 text-lg md:text-xl font-medium max-w-2xl mx-auto mb-12">Enviaremos un código de seguridad <span class="text-[#ff6600] font-800 underline decoration-orange-200">únicamente a tu correo</span> registrado.</p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-4xl mx-auto text-left">
                                 <div class="bg-slate-50 border border-slate-100 p-8 rounded-[2.5rem]"> <label class="block text-[10px] uppercase font-black text-slate-400 tracking-[3px] mb-2">Correo de destino</label>
-                                    <p class="text-slate-700 font-outfit text-xl md:text-2xl font-800 truncate">{{ $this->maskEmail($socio->email) }}</p>
+                                    <p class="text-slate-700 font-outfit text-xl md:text-2xl font-800 truncate">{{ $this->maskEmail($this->socio->email) }}</p>
                                 </div>
                                 <div class="bg-slate-50 border border-slate-100 p-8 rounded-[2.5rem]"> <label class="block text-[10px] uppercase font-black text-slate-400 tracking-[3px] mb-2">Referencia Celular</label>
                                     <p class="text-slate-700 font-outfit text-xl md:text-2xl font-800">{{ $this->maskPhone($socio->telefono) }}</p>
@@ -209,7 +209,7 @@
                             </div>
 
                             <h2 class="font-outfit text-4xl font-900 text-slate-800 uppercase mb-4">Ingresa el Código</h2>
-                            <p class="text-slate-500 mb-10 text-lg">Revisa tu bandeja de entrada en:<br><span class="font-bold text-slate-800">{{ $this->maskEmail($socio->email) }}</span></p>
+                            <p class="text-slate-500 mb-10 text-lg">Revisa tu bandeja de entrada en:<br><span class="font-bold text-slate-800">{{ $this->maskEmail($this->socio->email) }}</span></p>
 
                             <div class="space-y-6 text-center">
                                 <div class="relative">

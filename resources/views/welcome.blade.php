@@ -41,7 +41,125 @@
 </head>
 
 <body class="bg-black text-white font-montserrat antialiased leading-relaxed">
+    {{-- TOOLBAR LATERAL: SINGLE COMMS LINK // INTERFAZ DE CONTACTO UNIFICADA --}}
+    <div class="fixed right-6 top-1/2 -translate-y-1/2 z-[100] flex flex-col items-center gap-6">
 
+        {{-- Etiqueta de señal vertical --}}
+        <div class="flex flex-col items-center gap-2 mb-4">
+            <span class="font-mono text-[8px] text-brand-orange tracking-[4px] uppercase rotate-180 [writing-mode:vertical-lr] font-bold animate-pulse">
+                Signal_Stable
+            </span>
+            <div class="w-[2px] h-12 bg-gradient-to-t from-brand-orange to-transparent"></div>
+        </div>
+
+        {{-- BOTÓN: WHATSAPP & LLAMADA (UNIFICADO) --}}
+        <div class="group relative flex flex-col items-center">
+            <a href="https://wa.me/573156896774" target="_blank"
+                class="relative flex items-center justify-center w-14 h-14 bg-black/90 backdrop-blur-xl border-2 border-white/10 text-white hover:text-brand-orange hover:border-brand-orange hover:scale-110 transition-all duration-500 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+
+                {{-- Tooltip técnico --}}
+                <span class="absolute right-16 bg-black border border-brand-orange/40 text-white font-mono text-[10px] px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 tracking-[2px]">
+                    [ LINK_WA: +57 315 689 6774 ]
+                </span>
+
+                <i class="fa-brands fa-whatsapp text-2xl"></i>
+            </a>
+            <span class="font-mono text-[8px] text-white/30 uppercase mt-2 tracking-[2px]">Comms</span>
+        </div>
+
+        {{-- BOTÓN: CORREO ELECTRÓNICO --}}
+        <div class="group relative flex flex-col items-center">
+            <a href="mailto:incentivos@actores.org.co"
+                class="relative flex items-center justify-center w-14 h-14 bg-black/90 backdrop-blur-xl border-2 border-white/10 text-white hover:text-brand-orange hover:border-brand-orange hover:scale-110 transition-all duration-500 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+
+                {{-- Tooltip técnico --}}
+                <span class="absolute right-16 bg-black border border-brand-orange/40 text-white font-mono text-[10px] px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 tracking-[2px]">
+                    [ MAIL: INCENTIVOS@ACTORES ]
+                </span>
+
+                <i class="fa-regular fa-envelope text-2xl"></i>
+            </a>
+            <span class="font-mono text-[8px] text-white/30 uppercase mt-2 tracking-[2px]">Email</span>
+        </div>
+
+        {{-- Decoración inferior: Pulso de datos --}}
+        <div class="mt-4 flex flex-col items-center gap-1">
+            <div class="w-1 h-1 bg-brand-orange rounded-full animate-ping"></div>
+            <div class="w-1 h-1 bg-brand-orange/40 rounded-full"></div>
+            <div class="w-1 h-1 bg-brand-orange/10 rounded-full"></div>
+        </div>
+    </div>
+
+    {{-- FontAwesome para los iconos (si no lo tienes ya) --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {{-- BANNER DE PRIVACIDAD Y CONFIANZA: SEGURIDAD DE DATOS --}}
+    <div id="legal-banner" class="fixed bottom-0 left-0 w-full z-[100] transform translate-y-full transition-transform duration-700 ease-out">
+
+        {{-- Contenedor Principal --}}
+        <div class="bg-black/95 backdrop-blur-xl border-t-4 border-brand-orange px-6 py-6 md:py-4 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+
+                {{-- Lado Izquierdo: Icono y Texto --}}
+                <div class="flex items-center gap-5">
+                    <div class="hidden md:flex items-center justify-center w-12 h-12 border border-brand-orange/30 rounded-full animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+
+                    <div class="text-center md:text-left">
+                        <span class="block font-mono text-[10px] text-brand-orange tracking-[3px] uppercase font-black mb-1">
+                            Protocolo de Protección de Datos // Ley 1581
+                        </span>
+                        <p class="text-white/70 font-mono text-[9px] md:text-[11px] leading-tight uppercase tracking-wider">
+                            Este sitio utiliza cookies técnicas para garantizar la integridad de su postulación.
+                            Al continuar, acepta nuestro <a href="https://actores.org.co/storage/app/media/documentos/socios/politica_proteccion_datos.pdf" target="_blank class="text-white underline hover:text-brand-orange transition-colors">Tratamiento de Datos Personales</a>.
+                        </p>
+                    </div>
+                </div>
+
+                {{-- Lado Derecho: Botones de Acción --}}
+                <div class="flex items-center gap-4 w-full md:w-auto">
+                    <button onclick="acceptLegal()" class="flex-1 md:flex-none bg-white text-black font-bebas text-xl px-8 py-2 border-2 border-white hover:bg-brand-orange hover:border-brand-orange transition-all duration-300 tracking-widest">
+                        ACEPTAR_CONTINUAR
+                    </button>
+                    <button onclick="acceptLegal()" class="hidden md:block text-white/40 hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        {{-- Decoración: Código de barras sutil --}}
+        <div class="absolute top-0 right-10 h-full w-20 bg-[repeating-linear-gradient(90deg,transparent,transparent_2px,rgba(255,255,255,0.05)_2px,rgba(255,255,255,0.05)_4px)] pointer-events-none"></div>
+    </div>
+
+    <script>
+        // Mostrar el banner con un pequeño delay después de que cargue la página
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const banner = document.getElementById('legal-banner');
+                banner.style.transform = 'translateY(0)';
+            }, 2000);
+        });
+
+        function acceptLegal() {
+            const banner = document.getElementById('legal-banner');
+            banner.style.transform = 'translateY(100%)';
+            // Aquí podrías guardar en localStorage para que no vuelva a aparecer
+            localStorage.setItem('legal_accepted', 'true');
+        }
+    </script>
+
+    <style>
+        .font-bebas {
+            font-family: 'Bebas Neue', sans-serif;
+        }
+    </style>
 
     {{-- NAVEGACIÓN CINEMATOGRÁFICA: THE MASTER CUT --}}
     <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-6 md:px-16 bg-black/90 border-b-2 border-white/5 backdrop-blur-xl transition-all duration-500">
@@ -152,168 +270,240 @@
         <div class="w-4 h-[2px] bg-brand-orange"></div>
         </div>
     </nav>
-    {{-- 1. BLOQUE DE PODER: CONDICIONES DE PARTICIPACIÓN --}}
-    <div id="requisitos" class="relative z-[10] bg-brand-orange mt-[90px] md:mt-[100px] pt-20 pb-20 px-6 border-b-[15px] border-black shadow-[0_15px_50px_rgba(0,0,0,0.5)] overflow-hidden">
 
-        {{-- Marca de agua --}}
-        <div class="absolute inset-0 opacity-10 pointer-events-none select-none flex items-center justify-center">
-            <span class="font-bebas text-[18vw] leading-none text-black tracking-tighter uppercase">AUDIOVISUALES</span>
+
+
+    {{-- HERO: CINEMATIC ENGINE // 100VH // INFOGRAFÍA TÉCNICA --}}
+    <section id="hero-cine-master" class="relative h-screen w-full flex items-center justify-center bg-[#000] overflow-hidden border-b-8 border-black">
+
+        {{-- 1. FONDO CON MOVIMIENTO (SLOW ZOOM) --}}
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=2400"
+                class="w-full h-full object-cover opacity-40 grayscale contrast-125 brightness-50 animate-[slowzoom_20s_linear_infinite]" alt="Cine Set">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)] opacity-90"></div>
         </div>
 
-        {{-- IMÁGENES DE APOYO --}}
-        <img src="{{ asset('resources/imagenes/claqueta.svg') }}" class="hidden xl:block absolute left-[-100px] top-1/2 -translate-y-1/2 w-[25rem] opacity-30 pointer-events-none" alt="">
-        <img src="{{ asset('resources/imagenes/camara.svg') }}" class="hidden xl:block absolute right-[-100px] top-1/2 -translate-y-1/2 w-[25rem] opacity-30 pointer-events-none" alt="">
+        {{-- 2. HUD DE CÁMARA --}}
+        <div class="absolute inset-0 z-10 pointer-events-none p-6 md:p-10">
+            <div class="absolute top-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/60 backdrop-blur-sm px-4 py-1.5 border border-white/10">
+                <span class="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_10px_red]"></span>
+                <span class="font-mono text-[10px] text-white tracking-[4px] font-bold uppercase">REC_MASTER_2026</span>
+            </div>
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
+                <span class="font-mono text-xs text-brand-orange tracking-[6px] font-bold animate-[blink_2s_infinite]">TC: 00:20:26:03</span>
+            </div>
+        </div>
 
-        <div class="relative z-10 max-w-5xl mx-auto text-center">
-            <h2 class="font-bebas text-[4.5rem] md:text-[7.5rem] text-black leading-[0.8] tracking-tighter">
-                CONDICIONES DE <br>
-                <span class="bg-black text-brand-orange px-6 py-2 inline-block mt-4">PARTICIPACIÓN</span>
-            </h2>
+        {{-- 3. CONTENIDO CENTRAL --}}
+        <div class="relative z-20 w-full max-w-7xl mx-auto px-6 h-full flex flex-col items-center justify-center">
 
-            <p class="text-black font-black uppercase text-lg md:text-2xl tracking-tighter leading-none mt-8">
-                CONVOCATORIA DE INCENTIVOS AUDIOVISUALES 2026
-            </p>
+            {{-- TÍTULO: BLANCO Y NARANJA --}}
+            <div class="mb-10 text-center">
+                <span class="font-mono text-[10px] text-brand-orange tracking-[10px] uppercase block mb-3 opacity-80 italic">// Fomento a la Creación //</span>
+                <h1 class="font-bebas text-[5.5rem] md:text-[8rem] lg:text-[10rem] leading-[0.85] tracking-tighter uppercase select-none">
+                    <span class="text-white">INCEN</span><span class="text-brand-orange">TIVOS</span><br>
+                    <span class="text-brand-orange">AUDIO</span><span class="text-white">VISUALES</span>
+                </h1>
+            </div>
 
-            <div class="w-full max-w-md mx-auto mt-12">
-                <a href="{{ asset('storage/formatos/condiciones-de-participacion.pdf') }}"
-                    target="_blank"
-                    class="group relative flex items-center justify-center gap-5 bg-black text-white px-10 py-8 no-underline font-bebas text-[2.2rem] tracking-[2px] transition-all duration-300 hover:bg-white hover:text-black shadow-[0_30px_60px_rgba(0,0,0,0.4)] transform hover:-translate-y-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 group-hover:animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            {{-- BLOQUE DE DATOS CLAROS (ESTILO DOCUMENTACIÓN) --}}
+            <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 mb-12">
+
+                {{-- Tarjeta 1: Cupos --}}
+                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-6 md:p-8 transform transition-transform hover:scale-105">
+                    <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-4 block italic">Capacidad_Máxima</span>
+                    <h4 class="font-bebas text-7xl text-white mb-2 leading-none uppercase">03 <span class="text-2xl">Cupos</span></h4>
+                    <p class="text-white/60 text-[10px] font-bold leading-tight uppercase tracking-[2px]">
+                        Seleccionados mediante <span class="bg-white text-black px-1 italic">comité evaluador</span> externo especializado.
+                    </p>
+                </div>
+
+                {{-- Tarjeta 2: Bolsa (Destacada) --}}
+                <div class="bg-brand-orange/10 backdrop-blur-md border-l-4 border-brand-orange p-6 md:p-8 transform scale-105 shadow-2xl">
+                    <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-4 block italic">Bolsa_Global_COP</span>
+                    <h4 class="font-bebas text-7xl text-white mb-2 leading-none uppercase">$135<span class="text-brand-orange italic">M</span></h4>
+                    <p class="text-white/80 text-[10px] font-bold leading-tight uppercase tracking-[2px]">
+                        Recurso total destinado para <span class="bg-brand-orange text-black px-1">fomento audiovisual</span> en la edición 2026.
+                    </p>
+                </div>
+
+                {{-- Tarjeta 3: Asignación --}}
+                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-6 md:p-8 transform transition-transform hover:scale-105">
+                    <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-4 block italic">Asignación_X_Obra</span>
+                    <h4 class="font-bebas text-7xl text-white mb-2 leading-none uppercase">$45<span class="text-2xl">Millones</span></h4>
+                    <p class="text-white/60 text-[10px] font-bold leading-tight uppercase tracking-[2px]">
+                        Monto fijo entregado a cada <span class="bg-white text-black px-1 italic">ganador</span> para el desarrollo de su obra.
+                    </p>
+                </div>
+
+            </div>
+
+            {{-- 4. BOTÓN DE ACCIÓN --}}
+            <div class="relative inline-block group">
+                <div class="absolute inset-0 bg-brand-orange translate-x-3 translate-y-3 transition-transform group-hover:translate-x-0 group-hover:translate-y-0 shadow-[0_0_40px_rgba(255,102,0,0.4)]"></div>
+                <a href="#pasos" class="relative flex items-center gap-10 bg-white text-black px-14 py-7 no-underline font-bebas text-[2.5rem] md:text-[3.2rem] tracking-[8px] border-[4px] border-black transition-all">
+                    POSTÚLATE AQUÍ
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 transition-transform group-hover:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
-                    DESCARGAR AQUÍ
                 </a>
             </div>
         </div>
-    </div>
 
+        {{-- TEXTURAS --}}
+        <div class="absolute inset-0 pointer-events-none z-30 opacity-[0.04] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] animate-[filmgrain_10s_linear_infinite]"></div>
+    </section>
+    {{-- 2. BLOQUE DE PODER: ESPECIFICACIONES TÉCNICAS (CONDICIONES) --}}
+    <section id="requisitos" class="relative z-[10] bg-brand-orange pt-24 pb-24 px-6 border-y-[15px] border-black overflow-hidden">
 
-{{-- HERO: CINEMATIC MASTER // EDICIÓN FINAL RECTIFICADA // ACTORES S.C.G. --}}
-<section id="hero-audiovisual" class="relative min-h-screen flex items-center justify-center bg-[#000] overflow-hidden border-b-[12px] border-black shadow-[0_20px_100px_rgba(0,0,0,0.8)]">
+        {{-- MARCA DE AGUA: ESTILO CLAQUETA --}}
+        <div class="absolute inset-0 opacity-[0.07] pointer-events-none select-none flex items-center justify-center overflow-hidden">
+            <span class="font-bebas text-[25vw] leading-none text-black tracking-[ -0.05em] uppercase whitespace-nowrap">
+                INCENTIVOS
+            </span>
+        </div>
 
-    {{-- 1. FONDO: IMAGEN DE RODAJE TOTALMENTE VISIBLE --}}
-    <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1492691523567-6170c3295db5?auto=format&fit=crop&q=80&w=2400" 
-             class="w-full h-full object-cover opacity-70 grayscale contrast-125 brightness-75 scale-110 animate-[slowzoom_20s_linear_infinite]" alt="Set de Cine Master">
-        {{-- Viñeta profunda para legibilidad del texto --}}
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)] opacity-80"></div>
-    </div>
+        {{-- ELEMENTOS DE SET (SVG DE APOYO) --}}
+        <div class="hidden xl:block absolute left-[-50px] top-1/2 -translate-y-1/2 opacity-20 transform -rotate-12 transition-transform hover:rotate-0 duration-700">
+            <img src="{{ asset('resources/imagenes/claqueta.svg') }}" class="w-[30rem]" alt="Claqueta">
+        </div>
+        <div class="hidden xl:block absolute right-[-50px] top-1/2 -translate-y-1/2 opacity-20 transform rotate-12 transition-transform hover:rotate-0 duration-700">
+            <img src="{{ asset('resources/imagenes/camara.svg') }}" class="w-[30rem]" alt="Cámara">
+        </div>
 
-    {{-- 2. UI DE CÁMARA PROFESIONAL (HUD) --}}
-    <div class="absolute inset-0 z-10 pointer-events-none p-6 md:p-12">
-        {{-- Marcas de Encuadre finas --}}
-        <div class="absolute top-10 left-10 w-20 h-20 border-t border-l border-white/20 animate-[pulse_4s_infinite]"></div>
-        <div class="absolute top-10 right-10 w-20 h-20 border-t border-r border-white/20 animate-[pulse_4s_infinite]"></div>
-        <div class="absolute bottom-10 left-10 w-20 h-20 border-b border-l border-white/20 animate-[pulse_4s_infinite]"></div>
-        <div class="absolute bottom-10 right-10 w-20 h-20 border-b border-r border-white/20 animate-[pulse_4s_infinite]"></div>
+        <div class="relative z-10 max-w-6xl mx-auto text-center">
 
-        {{-- Estado de Grabación Superior --}}
-        <div class="absolute top-8 left-1/2 -translate-x-1/2 flex items-center gap-6 bg-black/80 backdrop-blur-xl px-8 py-3 border border-white/10 shadow-2xl">
-            <div class="flex items-center gap-3">
-                <span class="w-3 h-3 bg-red-600 rounded-full animate-pulse shadow-[0_0_10px_red]"></span>
-                <span class="font-mono text-xs text-white tracking-[6px] font-black uppercase">REC_ACTIVE</span>
+            {{-- ETIQUETA DE CATEGORÍA --}}
+            <div class="inline-block bg-black text-brand-orange px-4 py-1 font-mono text-xs tracking-[5px] uppercase mb-6 font-bold shadow-xl">
+                Technical_Specifications // Vol_01
             </div>
-            <div class="h-4 w-px bg-white/20"></div>
-            <span class="font-mono text-[10px] text-brand-orange tracking-[3px] uppercase animate-[blink_2s_infinite]">4K_RAW_SOURCE</span>
-        </div>
 
-        {{-- Barra de Niveles de Audio Derecha --}}
-        <div class="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col gap-1 items-end">
-            @for ($i = 0; $i < 15; $i++)
-                <div class="w-8 h-1 {{ $i < 3 ? 'bg-red-600/60' : ($i < 6 ? 'bg-brand-orange/60' : 'bg-white/10') }} animate-[audio_peak_{{ rand(1,4) }}s_infinite] origin-right"></div>
-            @endfor
-            <span class="font-mono text-[8px] text-white/30 mt-4 uppercase tracking-[4px] rotate-90 origin-right translate-x-4">AUDIO_IN</span>
-        </div>
-    </div>
+            {{-- TÍTULO PRINCIPAL: IMPACTO TOTAL --}}
+            <h2 class="font-bebas text-[5rem] md:text-[8rem] lg:text-[10rem] text-black leading-[0.8] tracking-tighter uppercase mb-8">
+                CONDICIONES DE <br>
+                <span class="relative">
+                    PARTICIPACIÓN
+                    {{-- Subrayado tipo marcador --}}
+                    <div class="absolute -bottom-2 left-0 w-full h-4 bg-black/10 -z-10"></div>
+                </span>
+            </h2>
 
-    {{-- 3. CONTENIDO CENTRAL (ESPACIADO PARA QUE NADA SE PISE) --}}
-    <div class="relative z-20 w-full max-w-[1500px] mx-auto px-6 flex flex-col items-center text-center">
-        
-        {{-- TÍTULO: LEGIBILIDAD TOTAL Y SOLIDO --}}
-        <div class="mb-12 md:mb-16 transform transition-transform hover:scale-[1.02] duration-500">
-            <h1 class="font-bebas text-[5.5rem] md:text-[10rem] lg:text-[12rem] leading-[0.8] uppercase tracking-tighter text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.1)] select-none">
-                INCENTIVOS <br>
-                AUDIO<span class="text-brand-orange">V</span>ISUALES
-            </h1>
-            <p class="font-mono text-[9px] md:text-xs text-white/40 tracking-[12px] uppercase mt-6 italic">
-                // EL MOMENTO DE TU OBRA ES AHORA //
-            </p>
-        </div>
+            {{-- DESCRIPCIÓN TÉCNICA --}}
+            <div class="max-w-2xl mx-auto border-t-4 border-black pt-8 mb-16">
+                <p class="text-black font-black uppercase text-xl md:text-2xl tracking-tighter leading-tight">
+                    Lee detenidamente los lineamientos legales <br class="hidden md:block">
+                    y técnicos para la postulación de tu obra.
+                </p>
+                <p class="font-mono text-[10px] text-black/60 tracking-[4px] mt-4 uppercase font-bold">
+                    Actualizado: Marzo 2026 // Bogotá, Col
+                </p>
+            </div>
 
-        {{-- BLOQUE DE NÚMEROS: MÁXIMO PROTAGONISMO Y AIRE --}}
-        <div class="w-full max-w-6xl mb-16 md:mb-20 relative bg-black/20 backdrop-blur-sm border-y border-white/10 py-10 md:py-16">
-            {{-- Línea de escaneo láser --}}
-            <div class="absolute top-0 left-0 w-full h-[1px] bg-brand-orange shadow-[0_0_15px_#ff6600] animate-[scan_6s_linear_infinite]"></div>
+            {{-- BOTÓN DE DESCARGA: ESTILO INDUSTRIAL --}}
+            <div class="w-full max-w-lg mx-auto relative group">
+                {{-- Sombra de profundidad --}}
+                <div class="absolute inset-0 bg-black translate-x-4 translate-y-4 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-0 items-center">
-                
-                {{-- Cupos --}}
-                <div class="flex flex-col items-center md:border-r border-white/10">
-                    <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase mb-4 font-bold">Seleccionados</span>
-                    <div class="flex items-baseline gap-2 group">
-                        <span class="font-bebas text-[9rem] md:text-[10rem] text-white leading-none tracking-tighter group-hover:scale-105 transition-transform">03</span>
-                        <span class="font-bebas text-2xl text-white/40 tracking-widest uppercase italic">EST.</span>
+                <a href="{{ asset('storage/formatos/condiciones-de-participacion.pdf') }}"
+                    target="_blank"
+                    class="relative flex items-center justify-center gap-6 bg-white text-black px-8 py-10 no-underline border-[5px] border-black transition-all duration-300">
+
+                    {{-- Icono animado --}}
+                    <div class="bg-black p-4 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
                     </div>
-                </div>
 
-                {{-- BOLSA TOTAL (EL PROTAGONISTA) --}}
-                <div class="flex flex-col items-center scale-110 lg:scale-[1.25] z-10 py-10 md:py-0">
-                    <span class="font-mono text-[11px] text-brand-orange tracking-[8px] uppercase mb-1 font-black leading-none">Bolsa Global COP</span>
-                    <h2 class="font-bebas text-[10rem] md:text-[11rem] lg:text-[12rem] text-white leading-none tracking-tighter drop-shadow-[0_0_30px_rgba(255,102,0,0.3)]">
-                        $135<span class="text-brand-orange italic drop-shadow-[0_0_20px_rgba(255,102,0,0.5)]">M</span>
-                    </h2>
-                </div>
-
-                {{-- Valor Unitario --}}
-                <div class="flex flex-col items-center md:border-l border-white/10">
-                    <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase mb-4 font-bold">Asignación_Obra</span>
-                    <div class="flex items-baseline gap-2 group">
-                        <span class="font-bebas text-[9rem] md:text-[10rem] text-white leading-none tracking-tighter group-hover:scale-105 transition-transform">$45M</span>
+                    <div class="text-left">
+                        <span class="block font-bebas text-[2.5rem] leading-none tracking-[2px]">DESCARGAR PDF</span>
+                        <span class="block font-mono text-[10px] font-bold tracking-[2px] opacity-60">LINEAMIENTOS_OFICIALES.EXE</span>
                     </div>
-                    <span class="font-bebas text-xl text-white/40 tracking-widest uppercase italic leading-none">Por Proyecto</span>
-                </div>
+                </a>
+            </div>
 
+            {{-- NOTA AL PIE TIPO SCRIPT --}}
+            <div class="mt-20 flex justify-center gap-12 opacity-40 grayscale">
+                <div class="flex flex-col items-center">
+                    <span class="font-mono text-[9px] font-bold tracking-[3px]">FORMATO</span>
+                    <span class="font-bebas text-2xl uppercase">Digital_PDF</span>
+                </div>
+                <div class="w-px h-12 bg-black/20"></div>
+                <div class="flex flex-col items-center">
+                    <span class="font-mono text-[9px] font-bold tracking-[3px]">PESO</span>
+                    <span class="font-bebas text-2xl uppercase">2.4_MB</span>
+                </div>
+                <div class="w-px h-12 bg-black/20"></div>
+                <div class="flex flex-col items-center">
+                    <span class="font-mono text-[9px] font-bold tracking-[3px]">ACCESO</span>
+                    <span class="font-bebas text-2xl uppercase">Public_Doc</span>
+                </div>
             </div>
         </div>
+    </section>
 
-        {{-- 4. BOTÓN DE ACCIÓN: IMPACTO BRUTALISTA --}}
-        <div class="relative inline-block group mb-10">
-            {{-- Sombra Sólida --}}
-            <div class="absolute inset-0 bg-brand-orange translate-x-3 translate-y-3 transition-transform group-hover:translate-x-0 group-hover:translate-y-0 shadow-[0_0_50px_rgba(255,102,0,0.4)]"></div>
+    <style>
+        /* Efecto de grano sutil también en la sección naranja para coherencia */
+        #requisitos::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.15;
+            pointer-events: none;
+        }
+    </style>
+    <style>
+        #hero-cine-master {
+            height: 100vh;
+        }
 
-            <a href="#postulate" class="relative flex items-center gap-10 bg-white text-black px-12 md:px-20 py-8 no-underline font-bebas text-[2.2rem] md:text-[3.5rem] tracking-[8px] border-[5px] border-black transition-all">
-                POSTÚLATE AQUÍ
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 transition-transform group-hover:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-            </a>
-        </div>
+        @keyframes slowzoom {
+            0% {
+                transform: scale(1);
+            }
 
-        {{-- Data Inferior --}}
-        <div class="mt-12 flex flex-wrap justify-center gap-10 font-mono text-[10px] text-white/20 tracking-[6px] uppercase relative">
-             <div class="absolute -left-10 top-1/2 -translate-y-1/2 h-8 w-[1px] bg-white/20"></div>
-            <span>TC: 00:20:26:03</span>
-            <span>Loc: BOG_COL</span>
-            <span>Cam: A_RAW</span>
-            <div class="absolute -right-10 top-1/2 -translate-y-1/2 h-8 w-[1px] bg-white/20"></div>
-        </div>
-    </div>
+            100% {
+                transform: scale(1.15);
+            }
+        }
 
-    {{-- 5. TEXTURAS FINALES --}}
-    <div class="absolute inset-0 pointer-events-none z-30 opacity-[0.04] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
-    <div class="absolute inset-0 pointer-events-none z-[31] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[length:100%_4px]"></div>
-</section>
+        @keyframes blink {
 
-<style>
-    @keyframes slowzoom { 0% { transform: scale(1.1); } 100% { transform: scale(1.3); } }
-    @keyframes scan { 0% { top: 0%; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
-    @keyframes audio_peak {
-        0%, 100% { transform: scaleX(1); }
-        50% { transform: scaleX(0.4); }
-    }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .font-bebas { font-family: 'Bebas Neue', sans-serif; }
-</style>
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes filmgrain {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            10% {
+                transform: translate(-2%, -1%);
+            }
+
+            30% {
+                transform: translate(1%, 2%);
+            }
+
+            50% {
+                transform: translate(-1%, -2%);
+            }
+        }
+
+        .font-bebas {
+            font-family: 'Bebas Neue', sans-serif;
+        }
+    </style>
 
 
     {{-- Contenido Principal --}}
@@ -764,7 +954,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                         {{-- Anexo 01 --}}
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-01.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40">
+                        <a href="{{ asset('storage/formatos/etapa_01/anexo-01-manifestacion-del-director.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40">
                             <div class="absolute top-0 right-0 p-4 font-bebas text-5xl text-white/5 group-hover/item:text-brand-orange/20 transition-colors italic">01</div>
                             <div class="relative z-10">
                                 <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-6 block border-b border-brand-orange/20 pb-2 w-fit">Formato Descargable</span>
@@ -777,7 +967,7 @@
                         </a>
 
                         {{-- Anexo 02 --}}
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-02.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40">
+                        <a href="{{ asset('storage/formatos/etapa_01/anexo-02-experiencia-director-general.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40">
                             <div class="absolute top-0 right-0 p-4 font-bebas text-5xl text-white/5 group-hover/item:text-brand-orange/20 italic">02</div>
                             <div class="relative z-10">
                                 <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-6 block border-b border-brand-orange/20 pb-2 w-fit">Formato Descargable</span>
@@ -809,7 +999,7 @@
                         </div>
 
                         {{-- Anexo 03 (Homogeneizado con descarga) --}}
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-03.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40">
+                        <a href="{{ asset('storage/formatos/etapa_01/anexo-03-autorizacion-uso-de-guion.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40">
                             <div class="absolute top-0 right-0 p-4 font-bebas text-5xl text-white/5 group-hover/item:text-brand-orange/20 italic">03</div>
                             <div class="relative z-10">
                                 <span class="text-gray-500 text-[10px] font-black uppercase tracking-[4px] mb-1 block">Requisito Opcional</span>
@@ -825,7 +1015,7 @@
                         </a>
 
                         {{-- Anexo 04 --}}
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-04.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40 lg:col-span-2">
+                        <a href="{{ asset('storage/formatos/etapa_01/anexo-04-consideraciones-y-declaraciones.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40 lg:col-span-2">
                             <div class="absolute top-0 right-0 p-4 font-bebas text-5xl text-white/5 group-hover/item:text-brand-orange/20 italic">04</div>
                             <div class="relative z-10">
                                 <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-6 block border-b border-brand-orange/20 pb-2 w-fit">Formato Obligatorio</span>
@@ -1126,11 +1316,11 @@
 
                     {{-- Redes como "Channels" --}}
                     <div class="mt-12 flex items-center gap-8">
-                        <a href="#" class="group">
+                        <a href="https://www.instagram.com/actoresscg/" target="_blank" class="group">
                             <span class="font-mono text-[10px] block opacity-30 group-hover:opacity-100 transition-opacity">FOLLOW_01</span>
                             <span class="font-bebas text-2xl text-white group-hover:text-brand-orange">INSTAGRAM</span>
                         </a>
-                        <a href="#" class="group">
+                        <a href="https://www.facebook.com/ActoresSCG" target="_blank" class="group">
                             <span class="font-mono text-[10px] block opacity-30 group-hover:opacity-100 transition-opacity">FOLLOW_02</span>
                             <span class="font-bebas text-2xl text-white group-hover:text-brand-orange">FACEBOOK</span>
                         </a>
@@ -1140,15 +1330,45 @@
                 {{-- Columna: Enlaces (The Crew) --}}
                 <div class="md:col-span-3">
                     <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase block mb-6">// INDEX</span>
-                    <ul class="space-y-4">
-                        @foreach(['Transparencia', 'Estatutos', 'Tratamiento de Datos', 'Contacto'] as $link)
+                    <ul class="space-y-4 list-none p-0">
+                        @php
+                        $navItems = [
+                        ['url' => '#inicio', 'label' => 'INICIO'],
+                        ['url' => '#convocatoria', 'label' => 'CONVOCATORIA'],
+                        ['url' => '#cronograma', 'label' => 'CRONOGRAMA'],
+                        ['url' => '#anexos', 'label' => 'PREPÁRATE'],
+                        ['url' => '#pasos', 'label' => 'POSTULACIÓN']
+                        ];
+                        @endphp
+
+                        @foreach($navItems as $item)
                         <li class="group overflow-hidden">
-                            <a href="#" class="font-bebas text-3xl text-white flex items-center gap-4 transition-transform group-hover:translate-x-2">
-                                <span class="text-brand-orange text-sm opacity-50 font-mono">/</span>
-                                {{ strtoupper($link) }}
+                            <a href="{{ $item['url'] }}" class="nav-link-scroll font-bebas text-3xl md:text-4xl text-white flex items-center gap-4 transition-all duration-300 group-hover:translate-x-3 no-underline">
+                                {{-- Separador estilo Telemetría --}}
+                                <span class="text-brand-orange text-sm opacity-50 font-mono group-hover:opacity-100 transition-opacity">/</span>
+
+                                <span class="group-hover:text-brand-orange transition-colors tracking-[1px]">
+                                    {{ $item['label'] }}
+                                </span>
+
+                                {{-- Indicador visual de selección sutil --}}
+                                <span class="w-0 h-[2px] bg-brand-orange group-hover:w-8 transition-all duration-500"></span>
                             </a>
                         </li>
                         @endforeach
+
+                        {{-- Separador visual antes del botón especial --}}
+                        <li class="py-2 opacity-20">
+                            <div class="w-full h-px bg-gradient-to-r from-brand-orange to-transparent"></div>
+                        </li>
+
+                        {{-- Link Externo: Ver Inscritos --}}
+                        <li class="group">
+                            <a href="{{ route('inscritos.publico') }}" class="font-bebas text-3xl text-white/70 flex items-center gap-4 transition-all hover:text-brand-orange no-underline">
+                                <span class="text-brand-orange text-sm opacity-50 font-mono">/</span>
+                                VER INSCRITOS
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
@@ -1158,15 +1378,15 @@
                     <div class="space-y-8">
                         <div class="group">
                             <p class="font-mono text-[10px] opacity-30 uppercase mb-1">Office_Headquarters</p>
-                            <p class="font-bebas text-2xl text-white group-hover:text-brand-orange transition-colors">Calle 93A No. 13 - 24, Of. 402</p>
+                            <p class="font-bebas text-2xl text-white group-hover:text-brand-orange transition-colors">Ak 15 #103 - 37, Bogotá, Of. 103</p>
                         </div>
                         <div class="group">
                             <p class="font-mono text-[10px] opacity-30 uppercase mb-1">Voice_Comm</p>
-                            <p class="font-bebas text-2xl text-white group-hover:text-brand-orange transition-colors">+57 (601) 743 0045</p>
+                            <p class="font-bebas text-2xl text-white group-hover:text-brand-orange transition-colors">3156896774</p>
                         </div>
                         <div class="group">
                             <p class="font-mono text-[10px] opacity-30 uppercase mb-1">Encrypted_Mail</p>
-                            <p class="font-bebas text-2xl text-white group-hover:text-brand-orange transition-colors">contacto@actores.org.co</p>
+                            <p class="font-bebas text-2xl text-white group-hover:text-brand-orange transition-colors">incentivos@actores.org.co</p>
                         </div>
                     </div>
                 </div>

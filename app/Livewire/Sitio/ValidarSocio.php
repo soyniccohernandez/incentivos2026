@@ -85,6 +85,12 @@ class ValidarSocio extends Component
             return $ahora->between($etapa->fecha_inicio, $etapa->fecha_fin);
         });
 
+        // --- VALIDACIÓN DE ETAPA ACTIVA ---
+        if (!$etapaActiva) {
+            $this->addError('identificacion', "El sistema no se encuentra en una etapa activa de la convocatoria.");
+            return;
+        }
+
         // 4. Validación de Subsanación para socios
         if ($etapaActiva && str_contains(strtolower($etapaActiva->nombre), 'subsanación')) {
             $tieneProyecto = Proyecto::where('user_id', $user->id)
@@ -145,9 +151,22 @@ class ValidarSocio extends Component
         // Refuerzo de seguridad: solo permitir login si el usuario sigue activo
         $user = User::where('identificacion', $this->identificacion)->first();
         
-        if ($user && $user->tipo_socio !== 'Administrador' && strtolower($user->estado ?? '') !== 'activo') {
-            $this->addError('identificacion', 'Su cuenta ya no se encuentra activa.');
-            return;
+        if ($user && $user->tipo_socio !== 'Administrador') {
+            // Validar estado
+            if (strtolower($user->estado ?? '') !== 'activo') {
+                $this->addError('identificacion', 'Su cuenta ya no se encuentra activa.');
+                return;
+            }
+
+            // Validar si la etapa sigue abierta al momento de intentar el login
+            $convocatoria = Convocatoria::where('estado', 'abierta')->with('etapas')->first();
+            $ahora = now();
+            $etapaActiva = $convocatoria ? $convocatoria->etapas->first(fn($e) => $ahora->between($e->fecha_inicio, $e->fecha_fin)) : null;
+
+            if (!$etapaActiva) {
+                $this->addError('identificacion', 'La convocatoria o etapa actual ha finalizado.');
+                return;
+            }
         }
 
         if (Auth::attempt(['identificacion' => $this->identificacion, 'password' => $this->password], true)) {

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Livewire\Actions\Logout;
+use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
 class InscripcionEtapa2 extends Component
@@ -311,13 +312,13 @@ class InscripcionEtapa2 extends Component
             // --- INICIO LÓGICA DE CORREOS ETAPA 2 ---
             try {
                 // 1. Notificación al Usuario
-                \Mail::to($this->proyecto->socio->email)
-                    ->send(new \App\Mail\NotificacionUsuarioEtapa2($this->proyecto));
+                Mail::to($this->proyecto->socio->email)
+                    ->send(new \App\Mail\ConfirmacionEtapaDosMail($this->proyecto));
 
                 // 2. Notificación al Equipo Interno (Santiago / Auditoría)
                 // Se recomienda usar el correo de Santiago o el de auditoría técnica
-                \Mail::to('santiago@actores.org.co')
-                    ->send(new \App\Mail\NotificacionInternaEtapa2($this->proyecto));
+                Mail::to('sistemas@actores.org.co')
+                    ->send(new \App\Mail\InternoEtapaDosMail($this->proyecto));
             } catch (\Exception $e) {
                 // Logueamos el error pero no interrumpimos la experiencia del usuario
                 Log::error("Error enviando correos Etapa 2 [" . $this->proyecto->codigo_radicado . "]: " . $e->getMessage());

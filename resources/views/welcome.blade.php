@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('resources/imagenes/favicon.svg') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Incentivos 2026 | ACTORES S.C.G.</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -40,7 +41,7 @@
     </style>
 </head>
 
-<body class="bg-black text-white font-montserrat antialiased leading-relaxed">
+<body class="bg-black text-white font-montserrat antialiased leading-relaxed" id="inicio">
     {{-- TOOLBAR LATERAL: SINGLE COMMS LINK // INTERFAZ DE CONTACTO UNIFICADA --}}
     <div class="fixed right-6 top-1/2 -translate-y-1/2 z-[100] flex flex-col items-center gap-6">
 
@@ -162,181 +163,207 @@
     </style>
 
     {{-- NAVEGACIÓN CINEMATOGRÁFICA: THE MASTER CUT --}}
-    <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-4 md:px-16 bg-black/95 border-b-2 border-white/5 backdrop-blur-xl transition-all duration-500">
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
 
-        {{-- MARCAS DE ENCUADRE DECORATIVAS (ESQUINAS) --}}
-        <div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-brand-orange/20 opacity-0 md:opacity-100"></div>
-        <div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-brand-orange/20 opacity-0 md:opacity-100"></div>
+        /* Tipografía fluida y más grande */
+        .nav-link-item {
+            font-size: clamp(2.2rem, 5vw, 2.5rem);
+            /* Móvil */
+        }
 
-        {{-- LOGO Y BRANDING --}}
-        <a href="{{ url('/') }}" class="flex items-center gap-4 md:gap-6 group no-underline shrink-0 z-[1101]">
+        @media (min-width: 1024px) {
+            .nav-link-item {
+                font-size: clamp(1.1rem, 1.2vw, 1.4rem);
+                /* Escritorio: un poco más grande que antes */
+            }
+        }
+    </style>
+
+    @php
+    // Lógica de fecha para el bloqueo (9 de Marzo de 2026, 00:00)
+    $fechaApertura = \Carbon\Carbon::create(2026, 3, 4, 0, 0, 0);
+    $estaAbierto = \Carbon\Carbon::now()->greaterThanOrEqualTo($fechaApertura);
+    @endphp
+    <nav class="sticky top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-4 md:px-16 bg-black/95 border-b-2 border-white/5 backdrop-blur-xl transition-all duration-500 transform-gpu">
+
+        {{-- MARCAS DE ENCUADRE DECORATIVAS --}}
+        <div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-brand-orange/20 hidden md:block"></div>
+        <div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-brand-orange/20 hidden md:block"></div>
+
+        {{-- LOGO Y BRANDING: TOTALMENTE ESTÁTICO --}}
+        <a href="#inicio" class="flex items-center gap-4 md:gap-6 group no-underline shrink-0 z-[1101]">
             <div class="relative py-1">
-                <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo Actores SCG" class="h-[45px] md:h-[70px] w-auto object-contain transition-all duration-700 group-hover:rotate-[-5deg] group-hover:scale-110">
-                <div class="absolute -top-1 -right-1 w-2 h-2 bg-brand-orange rounded-full animate-ping opacity-75"></div>
+                <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo Actores SCG"
+                    class="h-[45px] md:h-[65px] lg:h-[75px] w-auto object-contain transition-none select-none pointer-events-none">
             </div>
 
             <div class="h-10 w-[2px] bg-gradient-to-b from-transparent via-brand-orange/40 to-transparent hidden sm:block"></div>
 
             <div class="flex flex-col justify-center">
-                <span class="font-bebas text-xl md:text-4xl text-brand-orange tracking-[2px] leading-none transition-colors group-hover:text-white">
+                <span class="font-bebas text-xl md:text-3xl lg:text-4xl text-brand-orange tracking-[2px] leading-none">
                     ACTORES S.C.G.
-                </span>
-                <span class="text-[8px] md:text-[10px] font-black text-gray-500 tracking-[4px] uppercase leading-tight hidden sm:block">
-                    Sociedad de Gestión
                 </span>
             </div>
         </a>
 
-        {{-- BOTÓN MENÚ MÓVIL: ESTILO OSD (Z-INDEX SUPERIOR) --}}
+        {{-- BOTÓN MENÚ MÓVIL --}}
         <div class="flex flex-col gap-[8px] cursor-pointer lg:hidden z-[1101] group" id="mobile-menu-btn">
-            <span class="w-[30px] h-[3px] bg-brand-orange transition-all duration-300 origin-left border-none"></span>
-            <span class="w-[20px] h-[3px] bg-white ml-auto transition-all duration-300 group-hover:w-[30px] border-none"></span>
-            <span class="w-[30px] h-[3px] bg-brand-orange transition-all duration-300 origin-left border-none"></span>
+            <span class="w-[30px] h-[3px] bg-brand-orange transition-all duration-300"></span>
+            <span class="w-[20px] h-[3px] bg-white ml-auto transition-all duration-300 group-hover:w-[30px]"></span>
+            <span class="w-[30px] h-[3px] bg-brand-orange transition-all duration-300"></span>
         </div>
 
-        {{-- ENLACES: MODIFICADO EL FONDO EN MÓVIL --}}
-        {{-- He cambiado bg-black/98 por bg-[#0a0a0a] para que sea sólido y no deje ver el hero detrás --}}
-        <ul id="nav-links" class="fixed lg:static top-0 -right-full lg:right-0 w-full lg:w-auto h-screen lg:h-auto bg-[#0a0a0a] lg:bg-transparent flex flex-col lg:flex-row justify-center lg:justify-end items-center gap-8 lg:gap-8 xl:gap-12 transition-all duration-500 z-[1100] list-none px-10 overflow-y-auto">
+        {{-- ENLACES --}}
+        <ul id="nav-links" class="fixed lg:static top-0 -right-full lg:right-0 w-full lg:w-auto h-screen lg:h-auto bg-[#0a0a0a] lg:bg-transparent flex flex-col lg:flex-row justify-center lg:justify-end items-center gap-8 lg:gap-6 xl:gap-10 transition-all duration-500 z-[1100] list-none px-10 lg:px-0 overflow-y-auto lg:overflow-visible">
 
-            {{-- DECORACIÓN INTERNA DEL MENÚ MÓVIL (Solo visible en móvil) --}}
-            <div class="absolute top-10 left-10 opacity-10 font-bebas text-6xl text-white pointer-events-none lg:hidden uppercase tracking-widest">MENU_OSD</div>
+            <div class="absolute top-10 left-10 opacity-5 font-bebas text-7xl text-white pointer-events-none lg:hidden uppercase tracking-tighter">SCENE_01</div>
 
             @php
             $navItems = [
             ['url' => '#inicio', 'label' => 'INICIO'],
-            ['url' => '#convocatoria', 'label' => 'CONVOCATORIA'],
-            ['url' => '#cronograma', 'label' => 'CRONOGRAMA'],
+            ['url' => '#requisitos', 'label' => 'CONDICIONES'],
+            ['url' => '#convocatoria', 'label' => 'PARÁMETROS'],
+            ['url' => '#cronograma', 'label' => 'CALENDARIO'],
             ['url' => '#anexos', 'label' => 'PREPÁRATE'],
-            ['url' => '#pasos', 'label' => 'POSTULACIÓN']
+            ['url' => '#pasos', 'label' => '¿CÓMO POSTULARSE?'],
             ];
             @endphp
 
             @foreach($navItems as $item)
-            <li class="relative overflow-hidden group w-full lg:w-auto text-center">
-                <a href="{{ $item['url'] }}" class="nav-link-scroll no-underline text-white font-bebas text-[2.2rem] lg:text-xl xl:text-2xl tracking-[4px] lg:tracking-[2px] hover:text-brand-orange transition-all duration-300 block py-2">
+            <li class="relative group w-full lg:w-auto text-center">
+                <a href="{{ $item['url'] }}" class="nav-link-item no-underline text-white font-bebas tracking-[3px] lg:tracking-[1px] hover:text-brand-orange transition-all duration-300 block py-2 uppercase">
                     {{ $item['label'] }}
                 </a>
-                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-brand-orange -translate-x-full lg:group-hover:translate-x-0 transition-transform duration-500"></span>
+                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-brand-orange scale-x-0 lg:group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
             </li>
             @endforeach
 
-            <li class="lg:border-l lg:border-white/10 lg:pl-8 w-full lg:w-auto text-center">
+            {{-- BOTÓN VER INSCRITOS: NARANJA ACTIVO --}}
+            <li class="lg:border-l lg:border-white/20 lg:pl-6 w-full lg:w-auto text-center">
                 <a href="{{ route('inscritos.publico') }}"
-                    class="no-underline font-bebas text-[2.2rem] lg:text-xl xl:text-2xl tracking-[4px] lg:tracking-[2px] transition-all duration-300 
-            {{ request()->routeIs('inscritos.publico') ? 'text-brand-orange' : 'text-white hover:text-brand-orange' }}">
+                    class="nav-link-item no-underline font-bebas text-xl lg:text-lg xl:text-xl tracking-[2px] lg:tracking-[1px] transition-all duration-300 px-6 py-2 border-2 border-brand-orange bg-brand-orange text-black hover:bg-transparent hover:text-brand-orange rounded-sm flex items-center justify-center gap-3 group/btn">
+                    <i class="fas fa-user-check text-sm transition-transform group-hover/btn:scale-110"></i>
                     VER INSCRITOS
                 </a>
             </li>
-
-            {{-- BOTÓN DE ACCIÓN: MÁS VISIBLE EN MÓVIL --}}
-            <li class="lg:ml-6 mt-6 lg:mt-0 w-full lg:w-auto flex justify-center">
-                @auth
-                <a href="{{ route('dashboard') }}" class="no-underline text-black font-bebas text-[1.8rem] lg:text-lg xl:text-xl tracking-[2px] bg-brand-orange px-10 py-4 lg:px-6 lg:py-2.5 transition-all duration-500 flex items-center gap-4 hover:bg-white w-fit">
-                    <span class="uppercase">VER MI ESTADO</span>
-                </a>
-                @else
-                <a href="{{ route('validar-socio') }}" class="no-underline text-black font-bebas text-[1.8rem] lg:text-lg xl:text-xl tracking-[2px] bg-brand-orange px-10 py-4 lg:px-6 lg:py-2.5 transition-all duration-500 flex items-center gap-4 hover:bg-white w-fit shadow-[0_0_30px_rgba(255,100,0,0.4)]">
-                    <span class="uppercase">POSTÚLATE AQUÍ</span>
-                </a>
-                @endauth
-            </li>
         </ul>
-
-        {{-- ELEMENTO DECORATIVO DERECHA --}}
-        <div class="hidden xl:flex absolute right-4 top-1/2 -translate-y-1/2 flex-col gap-1 opacity-20">
-            @for ($i = 0; $i < 5; $i++)
-                <div class="w-4 h-[2px] bg-white">
-        </div>
-        @endfor
-        <div class="w-4 h-[2px] bg-brand-orange"></div>
-        </div>
     </nav>
 
-    {{-- SCRIPT PARA ABRIR/CERRAR (Asegúrate de tenerlo) --}}
     <script>
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            const links = document.getElementById('nav-links');
-            links.classList.toggle('-right-full');
-            links.classList.toggle('right-0');
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+        const body = document.body;
+
+        function toggleMenu() {
+            navLinks.classList.toggle('-right-full');
+            navLinks.classList.toggle('right-0');
+            body.style.overflow = navLinks.classList.contains('right-0') ? 'hidden' : 'auto';
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+
+        document.querySelectorAll('.nav-link-item').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) toggleMenu();
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.replace('py-4', 'py-2');
+                nav.classList.replace('bg-black/95', 'bg-black');
+            } else {
+                nav.classList.replace('py-2', 'py-4');
+                nav.classList.replace('bg-black', 'bg-black/95');
+            }
         });
     </script>
 
 
+    {{-- HERO: CINEMATIC ENGINE // HUD FIXED COLLISION // 13" TO 27" --}}
+    {{-- HERO: CINEMATIC ENGINE // MOBILE-TOP ADJUSTED // FULL CONTENT // 13" TO 27" --}}
+    <section id="hero-cine-master" class="relative min-h-screen w-full flex flex-col items-center bg-[#000] overflow-hidden border-b-8 border-black pt-24 md:pt-40 2xl:pt-48 pb-16">
 
-    {{-- HERO: CINEMATIC ENGINE // 100VH // INFOGRAFÍA TÉCNICA --}}
-    <section id="hero-cine-master" class="relative h-screen w-full flex items-center justify-center bg-[#000] overflow-hidden border-b-8 border-black">
-
-        {{-- 1. FONDO CON MOVIMIENTO --}}
+        {{-- 1. FONDO --}}
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=2400"
+            <img src="{{ asset('resources/imagenes/hero.jpg') }}"
                 class="w-full h-full object-cover opacity-40 grayscale contrast-125 brightness-50 animate-[slowzoom_20s_linear_infinite]" alt="Cine Set">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)] opacity-90"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)] opacity-30"></div>
         </div>
 
-        {{-- 2. HUD DE CÁMARA --}}
-        <div class="absolute inset-0 z-10 pointer-events-none p-6 md:p-10">
-            <div class="absolute top-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/60 backdrop-blur-sm px-4 py-1.5 border border-white/10">
+        {{-- 2. CONTENIDO CENTRAL --}}
+        <div class="relative z-20 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto px-6 flex flex-col items-center justify-start h-full">
+
+            {{-- HUD SUPERIOR: REC (Ajustado mb-6 para compactar más) --}}
+            <div class="mb-6 md:mb-12 2xl:mb-16 flex items-center gap-4 bg-black/60 backdrop-blur-sm px-4 py-1.5 border border-white/10 rounded-full">
                 <span class="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_10px_red]"></span>
-                <span class="font-mono text-[10px] text-white tracking-[4px] font-bold uppercase whitespace-nowrap">REC_MASTER_2026</span>
-            </div>
-            <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
-                <span class="font-mono text-xs text-brand-orange tracking-[6px] font-bold animate-[blink_2s_infinite]">TC: 00:20:26:03</span>
-            </div>
-        </div>
-
-        {{-- 3. CONTENIDO CENTRAL --}}
-        <div class="relative z-20 w-full max-w-7xl mx-auto px-6 h-full flex flex-col items-center justify-center pt-10">
-
-            {{-- TÍTULO: PROTAGONISTA --}}
-            <div class="mb-6 md:mb-10 text-center order-1">
-                <span class="font-mono text-[9px] md:text-[10px] text-brand-orange tracking-[6px] md:tracking-[10px] uppercase block mb-3 opacity-80 italic">// Fomento a la Creación //</span>
-                <h1 class="font-bebas text-[4.2rem] md:text-[8rem] lg:text-[10rem] leading-[0.85] tracking-tighter uppercase select-none">
-                    <span class="text-white">INCEN</span><span class="text-brand-orange">TIVOS</span><br>
-                    <span class="text-brand-orange">AUDIO</span><span class="text-white">VISUALES</span>
-                </h1>
+                <span class="font-mono text-[10px] 2xl:text-xs text-white tracking-[4px] font-bold uppercase whitespace-nowrap">REC_MASTER_2026</span>
             </div>
 
-            {{-- 4. BOTÓN DE ACCIÓN: PROTAGONISTA EN MÓVIL (ORDER-2) --}}
-            <div class="relative inline-block group order-2 md:order-3 mb-10 md:mb-0">
-                <div class="absolute inset-0 bg-brand-orange translate-x-2 translate-y-2 md:translate-x-3 md:translate-y-3 transition-transform group-hover:translate-x-0 group-hover:translate-y-0 shadow-[0_0_40px_rgba(255,102,0,0.4)]"></div>
-                <a href="#pasos" class="relative flex items-center gap-6 md:gap-10 bg-white text-black px-8 py-5 md:px-14 md:py-7 no-underline font-bebas text-[1.8rem] md:text-[3.2rem] tracking-[4px] md:tracking-[8px] border-[3px] md:border-[4px] border-black transition-all">
-                    POSTÚLATE AQUÍ
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 md:w-12 md:h-12 transition-transform group-hover:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                </a>
+            {{-- TÍTULO: LOGO RESPONSIVO --}}
+            <div class="mb-8 md:mb-16 2xl:mb-24 text-center w-full flex justify-center items-center">
+                {{-- Logo Móvil Compacto --}}
+                <img src="{{ asset('resources/imagenes/logo_incentivos_m.svg') }}"
+                    alt="Incentivos 2026"
+                    class="block md:hidden h-auto w-auto max-w-[120px] select-none pointer-events-none drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+
+                {{-- Logo Desktop Progresivo --}}
+                <img src="{{ asset('resources/imagenes/logo_incentivos.svg') }}"
+                    alt="Incentivos 2026"
+                    class="hidden md:block h-auto w-auto max-w-[420px] lg:max-w-[520px] 2xl:max-w-[750px] max-h-[25vh] 2xl:max-h-[35vh] object-contain select-none pointer-events-none drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]">
             </div>
 
-            {{-- BLOQUE DE DATOS: LAS 3 TARJETAS VISIBLES --}}
-            <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-12 order-3 md:order-2 scale-90 md:scale-100">
+            {{-- BLOQUE DE DATOS: LAS 3 TARJETAS (Completas en móvil) --}}
+            <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 2xl:gap-10 mb-10 lg:mb-16 2xl:mb-24">
 
                 {{-- Tarjeta 1: Cupos --}}
-                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-4 md:p-8 transform md:transition-transform md:hover:scale-105">
-                    <span class="text-brand-orange text-[9px] font-black uppercase tracking-[3px] mb-1 md:mb-4 block italic leading-none">Capacidad_Máxima</span>
-                    <h4 class="font-bebas text-4xl md:text-7xl text-white mb-1 leading-none uppercase">03 <span class="text-xl md:text-2xl">Cupos</span></h4>
-                    <p class="text-white/60 text-[10px] font-bold leading-tight uppercase tracking-[2px] hidden md:block">
-                        Seleccionados mediante <span class="bg-white text-black px-1 italic">comité evaluador</span> externo especializado.
+                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-4 md:p-8 flex flex-col justify-center transition-transform hover:scale-[1.02]">
+                    <h4 class="font-bebas text-3xl md:text-5xl lg:text-7xl 2xl:text-8xl text-white mb-1 leading-none uppercase">
+                        03 <span class="text-lg md:text-2xl 2xl:text-3xl text-white/40">Seleccionados</span>
+                    </h4>
+                    <p class="text-white/60 text-[9px] md:text-[10px] 2xl:text-xs font-bold uppercase tracking-[1px] md:tracking-[2px] leading-tight">
+                        Evaluados por <span class="bg-white text-black px-1 italic">jurados</span> externos.
                     </p>
                 </div>
 
-                {{-- Tarjeta 2: Bolsa (Destacada) --}}
-                <div class="bg-brand-orange/10 backdrop-blur-md border-l-4 border-brand-orange p-4 md:p-8 transform scale-100 md:scale-105 shadow-2xl">
-                    <span class="text-brand-orange text-[9px] font-black uppercase tracking-[3px] mb-1 md:mb-4 block italic leading-none">Bolsa_Global_COP</span>
-                    <h4 class="font-bebas text-4xl md:text-7xl text-white mb-1 leading-none uppercase">$135<span class="text-brand-orange italic">M</span></h4>
-                    <p class="text-white/80 text-[10px] font-bold leading-tight uppercase tracking-[2px] hidden md:block">
-                        Recurso total destinado para <span class="bg-brand-orange text-black px-1">fomento audiovisual</span> en la edición 2026.
+                {{-- Tarjeta 2: Asignación (Destacada) --}}
+                <div class="bg-brand-orange/10 backdrop-blur-md border-l-4 border-brand-orange p-4 md:p-8 relative overflow-hidden shadow-[0_0_30px_rgba(255,100,0,0.1)] transition-transform hover:scale-[1.02]">
+                    <h4 class="font-bebas text-3xl md:text-5xl lg:text-7xl 2xl:text-8xl text-white mb-1 leading-none uppercase">
+                        $45<span class="text-brand-orange italic">Millones</span>
+                    </h4>
+                    <p class="text-white/80 text-[9px] md:text-[10px] 2xl:text-xs font-bold uppercase tracking-[1px] md:tracking-[2px] leading-tight">
+                        apoyo para cada <span class="bg-brand-orange text-black px-1 italic text-black">seleccionado</span>.
                     </p>
+                    <div class="absolute top-2 right-2 w-1.5 h-1.5 bg-brand-orange rounded-full animate-pulse shadow-[0_0_8px_#ff6600]"></div>
                 </div>
 
-                {{-- Tarjeta 3: Asignación --}}
-                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-4 md:p-8 transform md:transition-transform md:hover:scale-105">
-                    <span class="text-brand-orange text-[9px] font-black uppercase tracking-[3px] mb-1 md:mb-4 block italic leading-none">Asignación_X_Obra</span>
-                    <h4 class="font-bebas text-4xl md:text-7xl text-white mb-1 leading-none uppercase">$45<span class="text-xl md:text-2xl">Millones</span></h4>
-                    <p class="text-white/60 text-[10px] font-bold leading-tight uppercase tracking-[2px] hidden md:block">
-                        Monto fijo entregado a cada <span class="bg-white text-black px-1 italic">ganador</span> para el desarrollo de su obra.
+                {{-- Tarjeta 3: Bolsa --}}
+                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-4 md:p-8 flex flex-col justify-center transition-transform hover:scale-[1.02]">
+                    <h4 class="font-bebas text-3xl md:text-5xl lg:text-7xl 2xl:text-8xl text-white mb-1 leading-none uppercase">
+                        $135<span class="text-lg md:text-2xl 2xl:text-3xl text-white/40">M</span>
+                    </h4>
+                    <p class="text-white/60 text-[9px] md:text-[10px] 2xl:text-xs font-bold uppercase tracking-[1px] md:tracking-[2px] leading-tight">
+                        Recurso total <span class="bg-white text-black px-1">incentivos</span> 2026.
                     </p>
                 </div>
+            </div>
 
+            {{-- NOTA ACLARATORIA --}}
+            <div class="w-full max-w-4xl 2xl:max-w-6xl mx-auto border-t border-white/20 pt-6 md:pt-10 mb-10">
+                <p class="text-[0.85rem] md:text-lg lg:text-xl 2xl:text-2xl text-center text-white/80 italic font-medium leading-relaxed px-2 md:px-4">
+                    <span class="font-mono text-[9px] 2xl:text-[11px] block not-italic tracking-[4px] text-brand-orange mb-1 md:mb-2 uppercase font-black">Nota Aclaratoria:</span>
+                    "El incentivo constituye un <span class="text-brand-orange font-bold uppercase">apoyo económico exclusivo</span> para la ejecución del proyecto seleccionado."
+                </p>
+            </div>
+
+            {{-- HUD INFERIOR: TIMECODE --}}
+            <div class="mt-auto pb-4 md:pb-8">
+                <span class="font-mono text-[10px] md:text-sm text-brand-orange tracking-[4px] md:tracking-[6px] font-bold animate-[blink_2s_infinite]">TC: 00:20:26:03</span>
             </div>
 
         </div>
@@ -362,73 +389,83 @@
             <img src="{{ asset('resources/imagenes/camara.svg') }}" class="w-[30rem]" alt="Cámara">
         </div>
 
-        <div class="relative z-10 max-w-6xl mx-auto text-center">
+        <div class="relative z-10 max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-            {{-- ETIQUETA DE CATEGORÍA --}}
-            <div class="inline-block bg-black text-brand-orange px-4 py-1 font-mono text-xs tracking-[5px] uppercase mb-6 font-bold shadow-xl">
-                Technical_Specifications // Vol_01
-            </div>
-
-            {{-- TÍTULO PRINCIPAL: IMPACTO TOTAL --}}
-            <h2 class="font-bebas text-[5rem] md:text-[8rem] lg:text-[10rem] text-black leading-[0.8] tracking-tighter uppercase mb-8">
-                CONDICIONES DE <br>
-                <span class="relative">
-                    PARTICIPACIÓN
-                    {{-- Subrayado tipo marcador --}}
-                    <div class="absolute -bottom-2 left-0 w-full h-4 bg-black/10 -z-10"></div>
-                </span>
-            </h2>
-
-            {{-- DESCRIPCIÓN TÉCNICA --}}
-            <div class="max-w-2xl mx-auto border-t-4 border-black pt-8 mb-16">
-                <p class="text-black font-black uppercase text-xl md:text-2xl tracking-tighter leading-tight">
-                    Lee detenidamente los lineamientos legales <br class="hidden md:block">
-                    y técnicos para la postulación de tu obra.
-                </p>
-                <p class="font-mono text-[10px] text-black/60 tracking-[4px] mt-4 uppercase font-bold">
-                    Actualizado: Marzo 2026 // Bogotá, Col
-                </p>
-            </div>
-
-            {{-- BOTÓN DE DESCARGA: ESTILO INDUSTRIAL --}}
-            <div class="w-full max-w-lg mx-auto relative group">
-                {{-- Sombra de profundidad --}}
-                <div class="absolute inset-0 bg-black translate-x-4 translate-y-4 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></div>
-
-                <a href="{{ asset('storage/formatos/condiciones-de-participacion.pdf') }}"
-                    target="_blank"
-                    class="relative flex items-center justify-center gap-6 bg-white text-black px-8 py-10 no-underline border-[5px] border-black transition-all duration-300">
-
-                    {{-- Icono animado --}}
-                    <div class="bg-black p-4 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
+                {{-- COLUMNA IZQUIERDA: TEXTOS --}}
+                <div class="text-center lg:text-left">
+                    {{-- ETIQUETA DE CATEGORÍA --}}
+                    <div class="inline-block bg-black text-brand-orange px-4 py-1 font-mono text-xs tracking-[5px] uppercase mb-6 font-bold shadow-xl">
+                        Technical_Specifications // Vol_01
                     </div>
 
-                    <div class="text-left">
-                        <span class="block font-bebas text-[2.5rem] leading-none tracking-[2px]">DESCARGAR PDF</span>
-                        <span class="block font-mono text-[10px] font-bold tracking-[2px] opacity-60">LINEAMIENTOS_OFICIALES.EXE</span>
-                    </div>
-                </a>
-            </div>
+                    {{-- TÍTULO PRINCIPAL: IMPACTO TOTAL --}}
+                    <h2 class="font-bebas text-[5rem] md:text-[8rem] lg:text-[7rem] xl:text-[8rem] text-black leading-[0.8] tracking-tighter uppercase mb-8">
+                        CONDICIONES DE <br>
+                        <span class="relative">
+                            PARTICIPACIÓN
+                            {{-- Subrayado tipo marcador --}}
+                            <div class="absolute -bottom-2 left-0 w-full h-4 bg-black/10 -z-10"></div>
+                        </span>
+                    </h2>
 
-            {{-- NOTA AL PIE TIPO SCRIPT --}}
-            <div class="mt-20 flex justify-center gap-12 opacity-40 grayscale">
-                <div class="flex flex-col items-center">
-                    <span class="font-mono text-[9px] font-bold tracking-[3px]">FORMATO</span>
-                    <span class="font-bebas text-2xl uppercase">Digital_PDF</span>
+                    {{-- DESCRIPCIÓN TÉCNICA --}}
+                    <div class="max-w-2xl mx-auto lg:mx-0 border-t-4 border-black pt-8">
+                        <p class="text-black font-black uppercase text-xl md:text-2xl tracking-tighter leading-tight">
+                            Conoce los lineamientos y requisitos generales para
+                            la postulación de tu proyecto.
+                        </p>
+                        <p class="font-mono text-[10px] text-black/60 tracking-[4px] mt-4 uppercase font-bold">
+                            Actualizado: Marzo 2026 // Bogotá, Col
+                        </p>
+                    </div>
                 </div>
-                <div class="w-px h-12 bg-black/20"></div>
-                <div class="flex flex-col items-center">
-                    <span class="font-mono text-[9px] font-bold tracking-[3px]">PESO</span>
-                    <span class="font-bebas text-2xl uppercase">2.4_MB</span>
+
+                {{-- COLUMNA DERECHA: BOTÓN Y METADATOS --}}
+                <div class="flex flex-col items-center justify-center">
+
+                    {{-- BOTÓN DE DESCARGA: ESTILO INDUSTRIAL --}}
+                    <div class="w-full max-w-lg mx-auto relative group">
+                        {{-- Sombra de profundidad --}}
+                        <div class="absolute inset-0 bg-black translate-x-4 translate-y-4 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></div>
+
+                        <a href="{{ asset('storage/formatos/condiciones-de-participacion.pdf') }}"
+                            target="_blank"
+                            class="relative flex items-center justify-center gap-6 bg-white text-black px-8 py-10 no-underline border-[5px] border-black transition-all duration-300">
+
+                            {{-- Icono animado --}}
+                            <div class="bg-black p-4 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </div>
+
+                            <div class="text-left">
+                                <span class="block font-bebas text-[2.5rem] leading-none tracking-[2px]">DESCARGAR PDF</span>
+                                <span class="block font-mono text-[10px] font-bold tracking-[2px] opacity-60">LINEAMIENTOS_OFICIALES.EXE</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    {{-- NOTA AL PIE TIPO SCRIPT --}}
+                    <div class="mt-16 flex justify-center gap-8 opacity-40 grayscale">
+                        <div class="flex flex-col items-center">
+                            <span class="font-mono text-[9px] font-bold tracking-[3px]">FORMATO</span>
+                            <span class="font-bebas text-2xl uppercase">Digital_PDF</span>
+                        </div>
+                        <div class="w-px h-12 bg-black/20"></div>
+                        <div class="flex flex-col items-center">
+                            <span class="font-mono text-[9px] font-bold tracking-[3px]">PESO</span>
+                            <span class="font-bebas text-2xl uppercase">2.4_MB</span>
+                        </div>
+                        <div class="w-px h-12 bg-black/20"></div>
+                        <div class="flex flex-col items-center">
+                            <span class="font-mono text-[9px] font-bold tracking-[3px]">ACCESO</span>
+                            <span class="font-bebas text-2xl uppercase">Public_Doc</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="w-px h-12 bg-black/20"></div>
-                <div class="flex flex-col items-center">
-                    <span class="font-mono text-[9px] font-bold tracking-[3px]">ACCESO</span>
-                    <span class="font-bebas text-2xl uppercase">Public_Doc</span>
-                </div>
+
             </div>
         </div>
     </section>
@@ -514,8 +551,8 @@
                         <span class="font-mono text-xs text-red-600 tracking-[4px] uppercase font-bold">Recording_Live</span>
                     </div>
                     <h2 class="font-bebas text-[4.5rem] md:text-[7rem] text-white leading-[0.8] uppercase tracking-tighter">
-                        SINOPSIS <br>
-                        <span class="text-brand-orange italic">CONVOCATORIA</span>
+                        PARÁMETROS <br>
+                        <span class="text-brand-orange italic">GENERALES</span>
                     </h2>
                 </div>
                 <div class="text-right font-mono">
@@ -524,40 +561,81 @@
                 </div>
             </div>
 
-            {{-- Grid de Datos Rápidos (Estilo Monitor de Referencia) --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
-                {{-- Tarjeta: Bolsa Económica --}}
-                <div class="bg-[#111] border border-white/10 p-8 relative overflow-hidden group">
-                    <svg class="absolute -right-2 -bottom-2 w-24 h-24 text-white/5 rotate-12" fill="currentColor" viewBox="0 0 24 24">
+            {{-- Grid de Datos Rápidos: Edición Master Cut --}}
+            {{-- Grid de Datos Rápidos: Edición Master Cut (Versión en Español) --}}
+            <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-24 font-montserrat">
+
+                {{-- 1. BOLSA TOTAL --}}
+                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 relative overflow-hidden group min-h-[220px] flex flex-col justify-center">
+                    <div class="absolute top-0 right-0 p-4">
+                        <div class="flex gap-1">
+                            <div class="w-1 h-4 bg-brand-orange animate-pulse"></div>
+                            <div class="w-1 h-4 bg-brand-orange/40"></div>
+                            <div class="w-1 h-4 bg-brand-orange/10"></div>
+                        </div>
+                    </div>
+                    <span class="font-mono text-[10px] text-brand-orange tracking-[4px] uppercase mb-4 block">FINANCIAMIENTO</span>
+                    <h3 class="font-bebas text-3xl text-gray-500 leading-none">BOLSA TOTAL DE INCENTIVOS</h3>
+                    <p class="font-bebas text-7xl text-white tracking-tighter">$135<span class="text-brand-orange">M</span></p>
+                    <p class="text-[10px] text-brand-orange/60 font-bold tracking-[3px] mt-2 uppercase">3 x $45,000,000 COP</p>
+
+                    <svg class="absolute -right-6 -bottom-6 w-44 h-44 text-white/[0.02] -rotate-12" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.82v-1.91c-1.84-.42-3.32-1.57-3.41-3.41h2.18c.08.76.61 1.48 1.46 1.48.89 0 1.46-.51 1.46-1.15 0-1.74-4.27-1.32-4.27-4.14 0-1.19.89-2.22 2.22-2.61V7h2.82v1.94c1.55.31 2.58 1.34 2.76 2.81h-2.2c-.11-.59-.51-1.07-1.35-1.07-.76 0-1.38.37-1.38 1.05 0 1.55 4.27 1.13 4.27 4.09 0 1.1-.87 2.01-2.18 2.22z" />
                     </svg>
-                    <span class="font-mono text-[10px] text-brand-orange tracking-widest uppercase mb-4 block underline decoration-brand-orange/40 underline-offset-4">Financiamiento</span>
-                    <h3 class="font-bebas text-4xl text-white mb-2 leading-none">BOLSA TOTAL</h3>
-                    <p class="font-bebas text-5xl text-brand-orange">$135M</p>
-                    <p class="text-[10px] text-gray-500 mt-2 font-bold tracking-widest">3 INCENTIVOS DE $45M COP</p>
                 </div>
 
-                {{-- Tarjeta: Requisitos --}}
-                <div class="bg-[#111] border border-white/10 p-8 relative overflow-hidden">
-                    <span class="font-mono text-[10px] text-brand-orange tracking-widest uppercase mb-4 block underline decoration-brand-orange/40 underline-offset-4">Casting</span>
-                    <h3 class="font-bebas text-4xl text-white mb-2 leading-none">REQUISITOS</h3>
-                    <p class="text-gray-300 font-bold italic leading-snug">Socio Activo ACTORES S.C.G. + Datos Actualizados.</p>
-                    <div class="mt-4 flex gap-1">
-                        <div class="w-4 h-1 bg-brand-orange"></div>
-                        <div class="w-4 h-1 bg-white/20"></div>
-                        <div class="w-4 h-1 bg-white/20"></div>
+                {{-- 2. GÉNERO --}}
+                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
+                    <span class="font-mono text-[10px] text-brand-orange tracking-[4px] uppercase mb-4 block">TIPO_DE_GENERO</span>
+                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">PRODUCCIÓN DE <br><span class="text-brand-orange text-3xl sm:text-5xl">CORTOMETRAJES DE FICCIÓN</span></h3>
+                    <p class="text-[10px] text-gray-500 font-bold tracking-[2px] mt-2 uppercase italic">Narrativa Cinematográfica Original</p>
+                    <div class="absolute bottom-4 right-4 flex items-center gap-2">
+                        <span class="text-[10px] text-white/20 font-mono italic underline decoration-brand-orange/20">GRABANDO ●</span>
                     </div>
                 </div>
 
-                {{-- Tarjeta: Formato --}}
-                <div class="bg-[#111] border border-white/10 p-8 relative overflow-hidden">
-                    <span class="font-mono text-[10px] text-brand-orange tracking-widest uppercase mb-4 block underline decoration-brand-orange/40 underline-offset-4">Especificaciones</span>
-                    <h3 class="font-bebas text-4xl text-white mb-2 leading-none">GÉNERO Y DURACIÓN</h3>
-                    <p class="text-gray-300 font-bold italic leading-snug">Ficción Narrativa <br>7 a 15 Minutos.</p>
-                    <span class="absolute top-4 right-4 font-mono text-[10px] text-white/20">4K_RAW_LOG</span>
+                {{-- 3. TIEMPO --}}
+                <div class="md:col-span-2 lg:col-span-2 bg-[#111] border border-white/10 p-6 flex flex-col justify-between group hover:border-white/30 transition-all">
+                    <h4 class="font-mono text-[10px] text-gray-500 tracking-widest uppercase">Límite_Duración</h4>
+                    <div class="my-4">
+                        <p class="font-bebas text-5xl text-white">07<span class="text-brand-orange">:</span>15</p>
+                        <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest italic">Tiempo: Entre 7 a 15 minutos (máximo)</p>
+                    </div>
+                    <div class="w-full h-1 bg-white/5 relative">
+                        <div class="absolute inset-y-0 left-0 w-2/3 bg-brand-orange"></div>
+                    </div>
+                </div>
+
+                {{-- 4. IDIOMA Y TEMÁTICA --}}
+                <div class="md:col-span-2 lg:col-span-2 bg-[#111] border border-white/10 p-6 flex flex-col justify-between">
+                    <h4 class="font-mono text-[10px] text-gray-500 tracking-widest uppercase">Ficha_Técnica</h4>
+                    <div class="space-y-3 my-2">
+                        <div>
+                            <p class="text-[10px] text-brand-orange uppercase font-bold">Temática</p>
+                            <p class="font-bebas text-2xl text-white uppercase tracking-wider">Libre</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-brand-orange uppercase font-bold">Idioma</p>
+                            <p class="text-white font-bebas text-lg leading-tight">EL PROYECTO DEBE SER PRESENTADO EN ESPAÑOL</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- 5. AUDIENCIA --}}
+                <div class="md:col-span-4 lg:col-span-2 bg-brand-orange p-6 flex flex-col justify-between relative overflow-hidden group">
+                    <h4 class="font-mono text-[10px] text-black/60 tracking-widest uppercase font-bold">Público_Objetivo</h4>
+                    <div class="my-2 text-black">
+                        <p class="font-bebas text-4xl leading-none">APTO PARA TODO PÚBLICO</p>
+                        <p class="text-[9px] font-bold uppercase tracking-[2px] mt-1 opacity-70 italic">Clasificación Universal</p>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <span class="border-2 border-black px-2 py-0.5 text-xs font-black text-black uppercase">G</span>
+                        <span class="border-2 border-black px-2 py-0.5 text-xs font-black text-black uppercase">TP</span>
+                    </div>
+                    {{-- Decoración: líneas de escaneo --}}
+                    <div class="absolute inset-0 opacity-10 pointer-events-none bg-[linear-gradient(rgba(0,0,0,0.1)_1px,transparent_1px)] bg-[size:100%_4px]"></div>
                 </div>
             </div>
-
             {{-- Contenido Principal con Estética de Guion --}}
             <div class="max-w-5xl mx-auto relative px-6 md:px-0">
 
@@ -570,12 +648,6 @@
             </div>
 
             <div class="space-y-16">
-                {{-- Párrafo 1 --}}
-                <div class="relative group">
-                    <p class="text-[1.4rem] md:text-2xl lg:text-3xl text-gray-300 leading-relaxed font-light">
-                        La <strong class="text-white">Convocatoria de Incentivos para Creación y Producción Audiovisual 2026</strong> tiene como finalidad otorgar <strong class="text-brand-orange">tres (3) incentivos económicos</strong> destinados a la creación y producción de cortometrajes de ficción liderados por socios activos de <span class="text-white font-bold border-b-2 border-brand-orange">ACTORES S.C.G.</span>
-                    </p>
-                </div>
 
                 {{-- Bloque Cita: Estética de Claqueta --}}
                 <div class="relative bg-white/5 p-10 border-y-2 border-brand-orange group">
@@ -585,7 +657,8 @@
                     </svg>
 
                     <p class="text-[1.2rem] md:text-2xl text-center text-white italic font-medium leading-relaxed max-w-3xl mx-auto">
-                        "El incentivo constituye un <span class="text-brand-orange">apoyo económico exclusivo</span> para la ejecución del proyecto seleccionado y no genera vínculo laboral, contractual o asociativo."
+                        La duración del contenido audiovisual no modificará en ninguna circunstancia el plazo de
+                        entrega del producto final.
                     </p>
                 </div>
 
@@ -615,19 +688,7 @@
             </div>
 
             {{-- Footer de sección: La fecha con estética de "End Card" --}}
-            <div class="mt-24 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-[2px] bg-brand-orange"></div>
-                    <span class="font-mono text-[10px] tracking-[5px] text-gray-500 uppercase">Ready_to_upload</span>
-                </div>
-                <p class="font-bebas text-3xl md:text-5xl text-white tracking-widest">
-                    APERTURA: <span class="text-brand-orange">09 MARZO</span>
-                </p>
-                <div class="font-mono text-[10px] text-right opacity-30">
-                    SCENE: 01 <br>
-                    DATE: FEB_2026
-                </div>
-            </div>
+
     </div>
 
     {{-- Elementos Decorativos: Esquinas inferiores --}}
@@ -654,7 +715,7 @@
             </div>
             <div class="flex flex-col items-end">
                 <div class="bg-brand-orange text-black px-8 py-3 font-bebas text-3xl skew-x-[-12deg] mb-2 shadow-[4px_4px_0px_rgba(255,255,255,0.2)]">
-                    FECHAS DE RODAJE
+                    FECHAS
                 </div>
                 <p class="text-gray-500 font-mono tracking-[2px] uppercase text-[10px]">VERSIÓN: 2.0_MARZO_2026</p>
             </div>
@@ -664,181 +725,115 @@
         <div class="w-full bg-[#050505] text-white font-sans border-x border-t border-white/10 overflow-hidden shadow-2xl">
 
             {{-- Encabezado de la Tabla --}}
-            <div class="bg-white/5 border-b border-white/20 py-8 text-center relative">
+            <!-- <div class="bg-white/5 border-b border-white/20 py-8 text-center relative">
                 <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                 <h2 class="text-brand-orange font-bebas uppercase tracking-[0.3em] text-3xl md:text-4xl px-4 relative z-10">
                     LÍNEA DE TIEMPO: PROYECTOS SELECCIONADOS
                 </h2>
-            </div>
+            </div> -->
 
             {{-- Cabecera Desktop --}}
             <div class="hidden md:grid grid-cols-12 bg-white/10 border-b-2 border-brand-orange/50">
-                <div class="col-span-8 py-4 px-8 border-r border-white/10">
-                    <span class="text-brand-orange font-black uppercase tracking-widest text-[11px] flex items-center gap-2">
-                        <span class="w-2 h-2 bg-brand-orange rounded-full"></span> DESARROLLO DEL PROCESO
+                <div class="col-span-8 py-6 px-8 border-r border-white/10 flex items-center">
+                    <span class="text-brand-orange font-bebas uppercase tracking-[0.3em] text-3xl md:text-4xl flex items-center gap-4 relative z-10">
+                        <span class="w-3 h-3 bg-brand-orange rounded-full animate-pulse"></span>
+                        Desarrollo del proceso
                     </span>
                 </div>
-                <div class="col-span-4 py-4 px-8 text-right">
-                    <span class="text-brand-orange font-black uppercase tracking-widest text-[11px]">VENTANA DE TIEMPO</span>
+
+                <div class="col-span-4 py-6 px-8 text-right flex items-center justify-end">
+                    <span class="text-brand-orange font-bebas uppercase tracking-[0.3em] text-3xl md:text-4xl relative z-10">
+                        Fechas
+                    </span>
                 </div>
             </div>
 
-            <div class="divide-y divide-white/10">
+            <div class="divide-y divide-white/10 bg-black">
 
                 {{-- ETAPA I --}}
                 <div class="grid grid-cols-1 md:grid-cols-12 group">
-                    <div class="md:col-span-2 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/10 bg-white/[0.01] py-8 group-hover:bg-brand-orange/5 transition-colors">
-                        <span class="font-bebas text-5xl text-brand-orange tracking-tighter leading-none">ETAPA I</span>
-                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest mt-2">Inscripción</span>
+                    <div class="md:col-span-2 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/10 bg-white/[0.02] py-8">
+                        <span class="font-bebas text-5xl text-white tracking-tighter leading-none">ETAPA I</span>
+                        <span class="font-mono text-[10px] text-brand-orange uppercase tracking-[3px] mt-2 font-bold">Inscripción</span>
                     </div>
-                    <div class="md:col-span-10 divide-y divide-white/5">
+                    <div class="md:col-span-10 divide-y divide-white/10">
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
-                            <div class="md:col-span-6 text-xl md:text-2xl font-bold uppercase tracking-tight text-gray-200">Inscripción de los proponentes</div>
-                            <div class="md:col-span-4 md:text-right text-3xl md:text-4xl font-bebas text-white tracking-wider italic">9 al 23 de marzo</div>
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Inscripción de los proponentes</div>
+                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">
+                                9 al 24 de marzo <span class="block font-mono text-[10px] text-white/30 tracking-[2px] mt-1 uppercase font-normal">Cierre: 1:00 PM</span>
+                            </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-6 px-8 hover:bg-white/[0.03] transition-colors gap-2 opacity-70">
-                            <div class="md:col-span-6 text-lg text-gray-400 italic">Publicación proponentes que deben subsanar Etapa I</div>
-                            <div class="md:col-span-4 md:text-right text-2xl font-mono font-bold text-gray-300">15 de abril</div>
+                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Publicación proponentes para subsanar</div>
+                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">15 de abril</div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-6 px-8 hover:bg-white/[0.03] transition-colors gap-2">
-                            <div class="md:col-span-6 text-lg text-gray-300">Recepción de subsanaciones Etapa I</div>
-                            <div class="md:col-span-4 md:text-right text-2xl font-mono font-bold text-brand-orange/80">16 al 24 de abril</div>
+                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Recepción de subsanaciones</div>
+                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">16 al 24 de abril</div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-6 px-8 hover:bg-white/[0.03] transition-colors gap-2">
-                            <div class="md:col-span-6 text-lg text-gray-300">Publicación de proponentes que pasan a la Etapa II</div>
-                            <div class="md:col-span-4 md:text-right text-2xl font-mono font-bold text-white border-b border-brand-orange/30 w-fit md:ml-auto">11 de mayo</div>
+                        {{-- HITO DE CIERRE ETAPA I --}}
+                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-10 px-8 bg-white/[0.04] border-l-2 md:border-l-0 md:border-r-4 border-brand-orange/50 transition-colors gap-4">
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white tracking-wider">Publicación de habilitados Etapa II</div>
+                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-[4px]">11 de mayo</div>
                         </div>
                     </div>
                 </div>
 
                 {{-- ETAPA II --}}
                 <div class="grid grid-cols-1 md:grid-cols-12 group">
-                    <div class="md:col-span-2 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/10 bg-white/[0.01] py-8 group-hover:bg-brand-orange/5 transition-colors">
-                        <span class="font-bebas text-5xl text-brand-orange tracking-tighter leading-none">ETAPA II</span>
-                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest mt-2">Técnica</span>
+                    <div class="md:col-span-2 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/10 bg-white/[0.02] py-8">
+                        <span class="font-bebas text-5xl text-white tracking-tighter leading-none">ETAPA II</span>
+                        <span class="font-mono text-[10px] text-brand-orange uppercase tracking-[3px] mt-2 font-bold">Técnica</span>
                     </div>
-                    <div class="md:col-span-10 divide-y divide-white/5">
-                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-10 px-8 hover:bg-white/[0.03] transition-colors gap-4">
-                            <div class="md:col-span-6 text-xl md:text-2xl font-bold uppercase tracking-tight text-gray-200">Recepciones de guiones y documentos de la Etapa II</div>
-                            <div class="md:col-span-4 md:text-right text-3xl md:text-4xl font-bebas text-white tracking-wider italic leading-none">
-                                13 de mayo <br> <span class="text-xs text-brand-orange tracking-[4px] uppercase font-mono">(único día)</span>
+                    <div class="md:col-span-10 divide-y divide-white/10">
+                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Recepción de guiones y documentos</div>
+                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">
+                                13 de mayo <span class="block font-mono text-[10px] text-white/30 tracking-[2px] mt-1 uppercase font-normal">Único día</span>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-2">
-                            <div class="md:col-span-6 text-lg text-gray-400 italic">Publicación de proponentes que pasan a la Etapa III</div>
-                            <div class="md:col-span-4 md:text-right text-2xl font-mono font-bold text-white">4 de junio</div>
+                        {{-- HITO DE CIERRE ETAPA II --}}
+                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-10 px-8 bg-white/[0.04] border-l-2 md:border-l-0 md:border-r-4 border-brand-orange/50 transition-colors gap-4">
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white tracking-wider">Publicación seleccionados Etapa III</div>
+                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-[4px]">4 de junio</div>
                         </div>
                     </div>
                 </div>
 
-                {{-- ETAPA III --}}
-                <div class="grid grid-cols-1 md:grid-cols-12 items-center py-12 px-8 hover:bg-white/[0.03] transition-colors gap-4">
-                    <div class="md:col-span-2 md:border-r border-white/10 md:pr-4 flex flex-col items-center md:items-start">
-                        <span class="font-bebas text-5xl text-brand-orange tracking-tighter leading-none">ETAPA III</span>
-                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest mt-1">Jurados</span>
+                {{-- ETAPA III: JURADOS (Hito Único) --}}
+                <div class="grid grid-cols-1 md:grid-cols-12 items-center py-12 px-8 bg-white/[0.01] hover:bg-white/[0.03] transition-colors gap-4">
+                    <div class="md:col-span-2 md:border-r border-white/10 flex flex-col items-center md:items-start">
+                        <span class="font-bebas text-5xl text-white tracking-tighter leading-none">ETAPA III</span>
+                        <span class="font-mono text-[10px] text-brand-orange uppercase tracking-[3px] mt-1 font-bold">Jurados</span>
                     </div>
-                    <div class="md:col-span-6 md:px-6 text-xl md:text-2xl font-bold uppercase tracking-tight text-center md:text-left text-gray-200">Revisión de guiones y documentación por jurados externos</div>
-                    <div class="md:col-span-4 md:text-right text-center text-3xl md:text-4xl font-bebas text-white tracking-wider italic">6 al 24 de junio</div>
+                    <div class="md:col-span-6 md:px-6 font-bebas text-3xl uppercase text-white/60">Revisión de guiones por jurados externos</div>
+                    <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">6 al 24 de junio</div>
                 </div>
 
-                {{-- ETAPA IV --}}
-                <div class="grid grid-cols-1 md:grid-cols-12 items-center py-12 px-8 hover:bg-white/[0.03] transition-colors gap-4">
-                    <div class="md:col-span-2 md:border-r border-white/10 md:pr-4 flex flex-col items-center md:items-start">
-                        <span class="font-bebas text-5xl text-brand-orange tracking-tighter leading-none">ETAPA IV</span>
-                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest mt-1">Selección</span>
+                {{-- ETAPA IV: SELECCIÓN (Hito Crítico) --}}
+                <div class="grid grid-cols-1 md:grid-cols-12 items-center py-14 px-8 bg-brand-orange/[0.03] border-y border-brand-orange/10 transition-colors gap-4">
+                    <div class="md:col-span-2 md:border-r border-brand-orange/20 flex flex-col items-center md:items-start">
+                        <span class="font-bebas text-5xl text-white tracking-tighter leading-none">ETAPA IV</span>
+                        <span class="font-mono text-[10px] text-brand-orange uppercase tracking-[3px] mt-1 font-bold">Selección</span>
                     </div>
-                    <div class="md:col-span-6 md:px-6 text-xl md:text-2xl font-bold uppercase tracking-tight text-center md:text-left text-gray-200">Publicación de proponentes seleccionados</div>
-                    <div class="md:col-span-4 md:text-right text-center text-4xl md:text-5xl font-bebas text-brand-orange tracking-widest border-b-2 border-brand-orange w-fit md:ml-auto">30 de junio</div>
+                    <div class="md:col-span-6 md:px-6 font-bebas text-4xl uppercase text-white tracking-widest">Publicación de seleccionados finales</div>
+                    <div class="md:col-span-4 md:text-right text-6xl font-bebas text-brand-orange tracking-[6px] drop-shadow-[0_0_15px_rgba(255,100,0,0.3)]">30 de junio</div>
                 </div>
 
                 {{-- PRODUCCIÓN --}}
-                <div class="grid grid-cols-1 md:grid-cols-12 items-center py-14 px-8 bg-brand-orange/5 border-y border-brand-orange/20 hover:bg-brand-orange/10 transition-colors gap-4">
-                    <div class="md:col-span-8 md:px-6 text-2xl md:text-4xl font-bebas uppercase tracking-[2px] text-center md:text-left text-brand-orange">Producción del contenido audiovisual</div>
-                    <div class="md:col-span-4 md:text-right text-center text-3xl md:text-4xl font-bebas text-white tracking-widest italic">1 de julio al 29 de septiembre</div>
+                <div class="grid grid-cols-1 md:grid-cols-12 items-center py-14 px-8 border-y border-white/10 hover:bg-white/[0.03] transition-colors gap-4">
+                    <div class="md:col-span-8 md:px-6 font-bebas text-4xl uppercase text-white/60 tracking-[2px]">Producción del contenido audiovisual</div>
+                    <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest text-center md:text-right">1 de julio al 29 de sep</div>
                 </div>
 
-                {{-- ENTREGA --}}
-                <div class="grid grid-cols-1 md:grid-cols-12 items-center py-14 px-8 hover:bg-white/[0.03] transition-colors gap-4">
-                    <div class="md:col-span-8 md:px-6 text-xl md:text-2xl font-bold uppercase tracking-tight text-center md:text-left text-gray-300">Entrega del contenido audiovisual y documentación adicional</div>
-                    <div class="md:col-span-4 md:text-right text-center text-3xl md:text-4xl font-bebas text-white tracking-wider italic leading-none">
-                        30 de septiembre <br> <span class="text-[10px] text-brand-orange tracking-[4px] uppercase font-mono">(único día)</span>
+                {{-- ENTREGA FINAL --}}
+                <div class="grid grid-cols-1 md:grid-cols-12 items-center py-14 px-8 bg-white/[0.05] border-t-2 border-white/20 transition-colors gap-4">
+                    <div class="md:col-span-8 md:px-6 font-bebas text-4xl uppercase text-white tracking-tight leading-tight">Entrega de contenido y documentación</div>
+                    <div class="md:col-span-4 md:text-right text-5xl font-bebas text-brand-orange tracking-widest">
+                        30 de sep <span class="block font-mono text-[10px] text-white/40 tracking-[2px] mt-1 uppercase font-normal">Cierre definitivo</span>
                     </div>
                 </div>
 
-
-                {{-- PREMIER: PROPUESTA "POSTER DE CIERRE" - ANTI-COLISIÓN TOTAL --}}
-                <div class="w-full bg-white text-black p-8 md:p-16 relative overflow-hidden shadow-2xl border-t-8 border-black">
-
-                    {{-- Marca de Agua Superior (Estilo Cinta de Película) --}}
-                    <div class="absolute top-0 left-0 w-full h-12 bg-black flex items-center justify-around opacity-[0.03] pointer-events-none select-none">
-                        @for ($i = 0; $i < 10; $i++)
-                            <span class="font-bebas text-2xl italic tracking-widest">ACTORES SCG // INCENTIVOS 2026</span>
-                            @endfor
-                    </div>
-
-                    <div class="relative z-10 flex flex-col items-center text-center">
-
-                        {{-- 1. Encabezado Técnico --}}
-                        <div class="mb-6">
-                            <span class="inline-block border-2 border-black px-4 py-1 font-mono text-[10px] md:text-xs font-black uppercase tracking-[5px]">
-                                Evento de Clausura • Temporada 2026
-                            </span>
-                        </div>
-
-                        {{-- 2. Título con Subrayado Cinematográfico --}}
-                        <h2 class="font-bebas text-8xl md:text-[10rem] lg:text-[12rem] leading-[0.8] tracking-tighter mb-4">
-                            PREMIER
-                        </h2>
-
-                        {{-- 3. Línea Divisoria Estilo "Corte de Película" --}}
-                        <div class="w-full max-w-2xl flex items-center gap-4 mb-8">
-                            <div class="flex-grow h-[2px] bg-black/10"></div>
-                            <div class="flex-shrink-0">
-                                <svg class="w-8 h-8 opacity-20" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z" />
-                                </svg>
-                            </div>
-                            <div class="flex-grow h-[2px] bg-black/10"></div>
-                        </div>
-
-                        {{-- 4. Descripción: Ahora centrada y con aire --}}
-                        <div class="max-w-2xl mb-12">
-                            <h4 class="font-bebas text-3xl md:text-4xl uppercase tracking-tight mb-3">
-                                Exhibición pública y gala de premios
-                            </h4>
-                            <p class="text-sm md:text-lg font-bold italic opacity-60 leading-tight uppercase tracking-widest">
-                                Estreno oficial de los cortometrajes ante la industria <br class="hidden md:block"> y socios de Actores Sociedad Colombiana de Gestión.
-                            </p>
-                        </div>
-
-                        {{-- 5. FECHA: La protagonista absoluta --}}
-                        <div class="relative py-10 w-full flex flex-col items-center">
-                            {{-- Marca de agua de fondo específica para la fecha --}}
-                            <div class="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none scale-150">
-                                <span class="font-bebas text-[15rem] md:text-[25rem]">2026</span>
-                            </div>
-
-                            <span class="block text-brand-orange text-xs font-black uppercase tracking-[10px] mb-4">Gran Lanzamiento</span>
-
-                            {{-- OCTUBRE: Espacio infinito, sin cortes. Usamos line-height de 1.2 para seguridad --}}
-                            <h3 class="font-bebas text-[6rem] sm:text-[9rem] md:text-[12rem] lg:text-[15rem] leading-[1] tracking-normal text-black transition-all hover:text-brand-orange">
-                                OCTUBRE
-                            </h3>
-
-                            <div class="mt-4 px-10 py-2 border-x-2 border-black inline-block">
-                                <span class="font-mono text-[10px] md:text-xs tracking-[5px] uppercase opacity-40">Bogotá, Colombia • Centro Camaleón</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Esquinas de diseño técnico --}}
-                    <div class="absolute bottom-4 left-4 font-mono text-[8px] opacity-20 uppercase tracking-widest">
-                        SEC: PREMIER_FINAL / CODE: 04-2026
-                    </div>
-                    <div class="absolute bottom-4 right-4 font-mono text-[8px] opacity-20 uppercase tracking-widest">
-                        © ACTORES S.C.G. TODOS LOS DERECHOS RESERVADOS
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -860,248 +855,156 @@
     {{-- Sección de Cronograma y Etapas --}}
     <section id="anexos" class="mb-[120px] scroll-mt-[100px] max-w-7xl mx-auto px-4 font-outfit">
 
-        {{-- Encabezado Mejorado --}}
-        {{-- Encabezado Expandido y Aireado --}}
+        {{-- Encabezado de Impacto --}}
         <div class="mb-20 border-b border-white/10 pb-16">
-
-            {{-- Fila Superior: Badge y Título Gigante --}}
-            <div class="text-center md:text-left mb-12">
-                <span class="text-brand-orange font-bold uppercase tracking-[8px] text-sm md:text-base mb-6 block opacity-90">
-                    Ruta de participación 2026
-                </span>
-                <h2 class="font-bebas text-[6rem] md:text-[10rem] lg:text-[12rem] leading-[0.85] mb-8">
-                    <span class="text-white">¡PREPÁRATE</span><span class="text-brand-orange">!</span>
-                </h2>
-            </div>
-
-            {{-- Fila Inferior: Texto descriptivo y Caja de Alerta en Grid --}}
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-
-                {{-- Descripción con más interlineado --}}
-                <div class="lg:col-span-7">
-                    <p class="text-gray-300 text-2xl md:text-3xl uppercase tracking-tight font-light leading-[1.4]">
-                        No esperes al día de las inscripciones.
-                        <span class="text-white font-medium border-b-4 border-brand-orange/40 pb-1 inline-block mt-2">
-                            Descarga aquí los anexos
-                        </span>
-                        <br class="hidden md:block"> que debes diligenciar por cada etapa.
-                    </p>
-                </div>
-
-                {{-- Caja Informativa como un "Callout" flotante --}}
-                <div class="lg:col-span-5">
-                    <div class="relative bg-white/[0.03] backdrop-blur-sm border-l-4 border-brand-orange p-10 shadow-2xl overflow-hidden group">
-                        {{-- Signo de exclamación decorativo más integrado --}}
-                        <div class="absolute -right-4 -bottom-6 text-brand-orange/5 font-bebas text-[10rem] select-none group-hover:text-brand-orange/10 transition-colors">!</div>
-
-                        <div class="relative z-10">
-                            <div class="flex items-center gap-4 mb-4">
-                                <div class="text-brand-orange bg-brand-orange/10 p-2 rounded-sm">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <h4 class="text-white font-bold text-base uppercase tracking-[4px]">Archivos de postulación</h4>
-                            </div>
-
-                            <p class="text-gray-400 text-base md:text-lg uppercase leading-relaxed tracking-wide font-medium">
-                                Diligenciamiento <span class="text-white font-bold">100% digital</span>.
-                                <span class="text-brand-orange font-bold">No modifiques</span> los formatos establecidos.
-                            </p>
-                        </div>
+                <div class="lg:col-span-8 text-center md:text-left">
+                    <span class="text-brand-orange font-bold uppercase tracking-[8px] text-sm md:text-base mb-6 block opacity-90">
+                        Etapas de participación
+                    </span>
+                    <h2 class="font-bebas text-[6rem] md:text-[10rem] lg:text-[12rem] leading-[0.85] mb-8">
+                        <span class="text-white">¡PREPÁRATE</span><span class="text-brand-orange">!</span>
+                    </h2>
+                    <div class="lg:col-span-7">
+                        <p class="text-gray-300 text-2xl md:text-3xl uppercase tracking-tight font-light leading-[1.4]">
+                            No esperes al día de las inscripciones.
+                            <span class="text-white font-medium border-b-4 border-brand-orange/40 pb-1 inline-block mt-2">
+                                Descarga aquí los anexos
+                            </span>
+                            <br class="hidden md:block"> que debes diligenciar por cada etapa.
+                        </p>
                     </div>
                 </div>
+
             </div>
         </div>
 
-        <div class="space-y-6">
-            {{-- 10.1 ETAPA I --}}
-            <details class="group bg-black border-y-2 border-brand-orange/30 transition-all duration-700 ease-in-out" open>
-                <summary class="flex items-center justify-between p-10 cursor-pointer list-none select-none hover:bg-brand-orange/[0.02] transition-colors relative overflow-hidden">
-                    {{-- Efecto de iluminación de set --}}
-                    <div class="absolute top-0 -left-1/4 w-1/2 h-full bg-brand-orange/5 blur-[120px] pointer-events-none"></div>
+        {{-- LISTADO DE ETAPAS --}}
+        <div class="space-y-20">
 
-                    <div class="relative z-10 flex flex-col gap-2">
-                        <div class="flex items-center gap-4">
-                            <span class="inline-block w-3 h-3 bg-brand-orange animate-pulse rounded-full"></span>
-                            <span class="text-brand-orange font-black uppercase tracking-[0.3em] text-xs md:text-sm">Fase de Convocatoria: 01</span>
-                        </div>
-                        <h3 class="font-bebas text-[4rem] md:text-[6.5rem] text-white leading-[0.85] tracking-tight uppercase">
-                            ETAPA I <span class="text-brand-orange opacity-80">-</span> <br class="md:hidden"> INSCRIPCIÓN
-                        </h3>
-                        <p class="text-gray-500 font-bold text-xs md:text-sm uppercase tracking-[2px]">Verificación de requisitos y soportes iniciales</p>
-                    </div>
+            {{-- ETAPA 1: ACTIVA (CHECKLIST) --}}
+            <div class="relative">
+                <div class="flex items-center gap-4 mb-10">
+                    <span class="bg-brand-orange text-black font-bebas text-2xl px-4 py-1 tracking-tighter">ACTIVA</span>
+                    <h3 class="font-bebas text-5xl md:text-7xl text-white uppercase tracking-tight">ETAPA 01: INSCRIPCIÓN Y ANEXOS</h3>
+                </div>
 
-                    <div class="relative z-10">
-                        <div class="w-20 h-20 md:w-24 md:h-24 border border-white/10 flex items-center justify-center group-open:border-brand-orange/50 transition-all duration-500 group-hover:scale-110">
-                            <svg class="w-10 h-10 text-white group-open:text-brand-orange group-open:rotate-180 transition-all duration-500 ease-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-                </summary>
-
-                <div class="px-10 pb-20 pt-10 bg-[#050505]">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-                        {{-- Anexo 01 --}}
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-01-manifestacion-del-director.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40">
-                            <div class="absolute top-0 right-0 p-4 font-bebas text-5xl text-white/5 group-hover/item:text-brand-orange/20 transition-colors italic">01</div>
-                            <div class="relative z-10">
-                                <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-6 block border-b border-brand-orange/20 pb-2 w-fit">Formato Descargable</span>
-                                <h4 class="font-bebas text-3xl text-white mb-8 leading-none tracking-wide group-hover/item:text-brand-orange transition-colors">Manifestación <br> del Director</h4>
-                                <div class="flex items-center gap-4 text-white/40 group-hover/item:text-white transition-colors">
-                                    <div class="h-[1px] w-8 bg-brand-orange"></div>
-                                    <span class="text-[10px] font-bold uppercase tracking-widest">Descargar PDF oficial</span>
-                                </div>
-                            </div>
-                        </a>
-
-                        {{-- Anexo 02 --}}
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-02-experiencia-director-general.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40">
-                            <div class="absolute top-0 right-0 p-4 font-bebas text-5xl text-white/5 group-hover/item:text-brand-orange/20 italic">02</div>
-                            <div class="relative z-10">
-                                <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-6 block border-b border-brand-orange/20 pb-2 w-fit">Formato Descargable</span>
-                                <h4 class="font-bebas text-3xl text-white mb-8 leading-none tracking-wide group-hover/item:text-brand-orange transition-colors uppercase">Experiencia como <br> Director General</h4>
-                                <div class="flex items-center gap-4 text-white/40 group-hover/item:text-white transition-colors">
-                                    <div class="h-[1px] w-8 bg-brand-orange"></div>
-                                    <span class="text-[10px] font-bold uppercase tracking-widest">Descargar PDF oficial</span>
-                                </div>
-                            </div>
-                        </a>
-
-                        {{-- Bloque de Soportes (El diferente) --}}
-                        <div class="relative bg-brand-orange p-10 flex flex-col justify-between shadow-[0_0_40px_rgba(255,102,0,0.1)] group/notes">
-                            <div class="absolute top-0 right-0 p-4">
-                                <svg class="w-8 h-8 text-black/20" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M13 14.5s2 3 5 3 5-3 5-3V3s-2 3-5 3-5-3-5-3v11.5zM5 14.5s2 3 5 3 5-3 5-3V3s-2 3-5 3-5-3-5-3v11.5z" />
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {{-- Item 01 --}}
+                    <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="font-bebas text-5xl text-white/5 group-hover:text-brand-orange/20 transition-colors">01</span>
+                            <div class="w-8 h-8 rounded-full border-2 border-brand-orange/30 flex items-center justify-center group-hover:bg-brand-orange transition-all">
+                                <svg class="w-4 h-4 text-brand-orange group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <div>
-                                <span class="text-black text-[10px] font-black uppercase tracking-[4px] mb-4 block">Documentación Propia</span>
-                                <h4 class="font-bebas text-3xl text-black mb-4 leading-none uppercase">Certificados <br> y Evidencias 1 y 2</h4>
-                                <p class="text-black/80 text-sm font-bold leading-tight uppercase tracking-tighter">
-                                    Debes preparar <span class="bg-black text-white px-1">2 archivos PDF</span> independientes con tus soportes de experiencia y evidencias visuales.
-                                </p>
-                            </div>
-                            <div class="mt-8 pt-4 border-t border-black/10">
-                                <span class="text-[9px] text-black font-black uppercase tracking-widest opacity-60 italic uppercase">No requiere formato de descarga</span>
-                            </div>
                         </div>
-
-                        {{-- Anexo 03 (Homogeneizado con descarga) --}}
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-03-autorizacion-uso-de-guion.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40">
-                            <div class="absolute top-0 right-0 p-4 font-bebas text-5xl text-white/5 group-hover/item:text-brand-orange/20 italic">03</div>
-                            <div class="relative z-10">
-                                <span class="text-gray-500 text-[10px] font-black uppercase tracking-[4px] mb-1 block">Requisito Opcional</span>
-                                <span class="text-brand-orange/70 text-[9px] font-bold uppercase mb-6 block italic leading-none">Solo autoría de terceros</span>
-
-                                <h4 class="font-bebas text-3xl text-white mb-8 leading-none group-hover/item:text-brand-orange transition-colors uppercase">Autorización <br> Uso de Guion</h4>
-
-                                <div class="flex items-center gap-4 text-white/40 group-hover/item:text-white transition-colors">
-                                    <div class="h-[1px] w-8 bg-brand-orange"></div>
-                                    <span class="text-[10px] font-bold uppercase tracking-widest">Descargar PDF oficial</span>
-                                </div>
-                            </div>
-                        </a>
-
-                        {{-- Anexo 04 --}}
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-04-consideraciones-y-declaraciones.pdf') }}" target="_blank" class="relative overflow-hidden bg-[#0a0a0a] border border-white/5 p-10 group/item transition-all duration-500 hover:border-brand-orange/40 lg:col-span-2">
-                            <div class="absolute top-0 right-0 p-4 font-bebas text-5xl text-white/5 group-hover/item:text-brand-orange/20 italic">04</div>
-                            <div class="relative z-10">
-                                <span class="text-brand-orange text-[10px] font-black uppercase tracking-[4px] mb-6 block border-b border-brand-orange/20 pb-2 w-fit">Formato Obligatorio</span>
-                                <h4 class="font-bebas text-4xl md:text-5xl text-white mb-6 leading-[0.9] group-hover/item:text-brand-orange uppercase max-w-xl">
-                                    Consideraciones y declaraciones generales
-                                </h4>
-                                <div class="flex items-center gap-4 text-white/40 group-hover/item:text-white transition-colors">
-                                    <div class="h-[1px] w-12 bg-brand-orange"></div>
-                                    <span class="text-[10px] font-bold uppercase tracking-[3px]">Descargar Formato Completo</span>
-                                </div>
-                            </div>
-                        </a>
-
+                        <h4 class="font-bebas text-3xl text-white mb-6 uppercase">Manifestación <br> del Director</h4>
+                        <a href="{{ asset('storage/formatos/etapa_01/anexo-01-manifestacion-del-director.pdf') }}" target="_blank" class="block w-full text-center py-3 bg-white/5 text-white font-mono text-[10px] tracking-[3px] uppercase hover:bg-brand-orange hover:text-black transition-colors">Descargar Formato</a>
                     </div>
-                </div>
-            </details>
 
-            <div class="space-y-6">
-                {{-- ETAPA 02: VERIFICACIÓN TÉCNICA --}}
-                <div class="relative overflow-hidden bg-[#0a0a0a]/40 border border-white/5 p-10 group transition-all duration-500">
-                    {{-- Marca de agua de fondo --}}
-                    <div class="absolute -bottom-6 -right-4 font-bebas text-[10rem] text-white/[0.02] select-none">02</div>
-
-                    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                        <div class="space-y-2">
-                            <div class="flex items-center gap-3">
-                                <span class="w-2 h-2 bg-gray-600 rounded-full"></span>
-                                <span class="text-gray-500 font-black uppercase tracking-[0.3em] text-[10px]">Módulo en Espera</span>
+                    {{-- Item 02 --}}
+                    <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="font-bebas text-5xl text-white/5 group-hover:text-brand-orange/20 transition-colors">02</span>
+                            <div class="w-8 h-8 rounded-full border-2 border-brand-orange/30 flex items-center justify-center group-hover:bg-brand-orange transition-all">
+                                <svg class="w-4 h-4 text-brand-orange group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                </svg>
                             </div>
-                            <h3 class="font-bebas text-[3.5rem] md:text-[5rem] text-gray-500 leading-none uppercase tracking-tight">
-                                VERIFICACIÓN <span class="text-gray-700">TÉCNICA</span>
-                            </h3>
                         </div>
+                        <h4 class="font-bebas text-3xl text-white mb-6 uppercase">Experiencia <br> Director General</h4>
+                        <a href="{{ asset('storage/formatos/etapa_01/anexo-02-experiencia-director-general.pdf') }}" target="_blank" class="block w-full text-center py-3 bg-white/5 text-white font-mono text-[10px] tracking-[3px] uppercase hover:bg-brand-orange hover:text-black transition-colors">Descargar Formato</a>
+                    </div>
 
-                        {{-- Badge de Disponibilidad Cinematográfico --}}
-                        <div class="flex flex-col items-end">
-                            <div class="bg-white/[0.03] border border-white/10 px-6 py-4 backdrop-blur-sm relative overflow-hidden group-hover:border-brand-orange/30 transition-colors">
-                                <span class="block text-brand-orange/60 text-[9px] font-black uppercase tracking-[3px] mb-1">Anexos disponibles el:</span>
-                                <span class="block text-white font-bebas text-3xl tracking-[2px]">25 / ABR / 2026</span>
-                                {{-- Línea de carga decorativa --}}
-                                <div class="absolute bottom-0 left-0 h-[2px] bg-brand-orange/20 w-full"></div>
+                    {{-- Item 03 (Especial: Tus Archivos) --}}
+                    <div class="bg-brand-orange p-8 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-6 text-black">
+                                <span class="font-bebas text-5xl opacity-20 italic">03</span>
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                                </svg>
                             </div>
+                            <h4 class="font-bebas text-3xl text-black mb-2 uppercase">Certificados <br> y Evidencias</h4>
+                            <p class="text-black/80 text-xs font-bold uppercase tracking-wide">Prepara 2 archivos PDF con tus soportes propios.</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-black/10 text-[9px] font-black uppercase text-black/60 italic">Sin formato de descarga</div>
+                    </div>
+
+                    {{-- Item 04 --}}
+                    <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="font-bebas text-5xl text-white/5 group-hover:text-brand-orange/20 transition-colors">04</span>
+                            <div class="w-8 h-8 rounded-full border-2 border-white/10 flex items-center justify-center group-hover:border-brand-orange transition-all">
+                                <span class="text-[9px] text-gray-500 font-bold">OPC</span>
+                            </div>
+                        </div>
+                        <h4 class="font-bebas text-3xl text-white mb-6 uppercase">Autorización <br> Uso de Guion</h4>
+                        <a href="{{ asset('storage/formatos/etapa_01/anexo-03-autorizacion-uso-de-guion.pdf') }}" target="_blank" class="block w-full text-center py-3 bg-white/5 text-white font-mono text-[10px] tracking-[3px] uppercase hover:bg-brand-orange hover:text-black transition-colors">Descargar Formato</a>
+                    </div>
+
+                    {{-- Item 05 (Ancho Doble) --}}
+                    <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all md:col-span-2">
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="font-bebas text-5xl text-white/5 group-hover:text-brand-orange/20 transition-colors">05</span>
+                            <span class="text-brand-orange font-mono text-[10px] tracking-[4px] uppercase font-bold">Obligatorio</span>
+                        </div>
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                            <h4 class="font-bebas text-4xl text-white uppercase leading-none">Consideraciones y declaraciones</h4>
+                            <a href="{{ asset('storage/formatos/etapa_01/anexo-04-consideraciones-y-declaraciones.pdf') }}" target="_blank" class="w-full md:w-auto px-8 py-4 bg-white text-black font-bebas text-xl tracking-widest hover:bg-brand-orange transition-colors uppercase">Descargar Formato</a>
                         </div>
                     </div>
-                </div>
 
-                {{-- ETAPA 03: EVALUACIÓN DE JURADOS --}}
-                <div class="relative overflow-hidden bg-[#0a0a0a]/40 border border-white/5 p-10 group transition-all duration-500">
-                    <div class="absolute -bottom-6 -right-4 font-bebas text-[10rem] text-white/[0.02] select-none">03</div>
-
-                    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                        <div class="space-y-2">
-                            <div class="flex items-center gap-3">
-                                <span class="w-2 h-2 bg-gray-600 rounded-full"></span>
-                                <span class="text-gray-500 font-black uppercase tracking-[0.3em] text-[10px]">Módulo en Espera</span>
-                            </div>
-                            <h3 class="font-bebas text-[3.5rem] md:text-[5rem] text-gray-500 leading-none uppercase tracking-tight">
-                                EVALUACIÓN <span class="text-gray-700">DE JURADOS</span>
-                            </h3>
-                        </div>
-
-                        <div class="flex flex-col items-end">
-                            <div class="bg-white/[0.03] border border-white/10 px-6 py-4 backdrop-blur-sm">
-                                <span class="block text-brand-orange/60 text-[9px] font-black uppercase tracking-[3px] mb-1">Apertura Programada:</span>
-                                <span class="block text-white font-bebas text-3xl tracking-[2px]">14 / MAY / 2026</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- ETAPA 04: SELECCIÓN Y PREMIER --}}
-                <div class="relative overflow-hidden bg-[#0a0a0a]/40 border border-white/5 p-10 group transition-all duration-500">
-                    <div class="absolute -bottom-6 -right-4 font-bebas text-[10rem] text-white/[0.02] select-none">04</div>
-
-                    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                        <div class="space-y-2">
-                            <div class="flex items-center gap-3">
-                                <span class="w-2 h-2 bg-gray-600 rounded-full"></span>
-                                <span class="text-gray-500 font-black uppercase tracking-[0.3em] text-[10px]">Módulo en Espera</span>
-                            </div>
-                            <h3 class="font-bebas text-[3.5rem] md:text-[5rem] text-gray-500 leading-none uppercase tracking-tight">
-                                SELECCIÓN <span class="text-gray-700">& PREMIER</span>
-                            </h3>
-                        </div>
-
-                        <div class="flex flex-col items-end">
-                            <div class="bg-white/[0.03] border border-white/10 px-6 py-4 backdrop-blur-sm">
-                                <span class="block text-brand-orange/60 text-[9px] font-black uppercase tracking-[3px] mb-1">Evento Final:</span>
-                                <span class="block text-white font-bebas text-3xl tracking-[2px]">25 / JUN / 2026</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
+
+            {{-- ETAPAS INHABILITADAS (2, 3 Y 4) --}}
+            <div class="space-y-6 opacity-30 pointer-events-none select-none grayscale filter blur-[1px]">
+
+                {{-- ETAPA 2 --}}
+                <div class="bg-white/5 border border-white/10 p-10 flex flex-col md:flex-row justify-between items-center group">
+                    <div>
+                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Fase_02 // Bloqueada</span>
+                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA 02: VERIFICACIÓN TÉCNICA</h3>
+                    </div>
+                    <div class="text-right">
+                        <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
+                        <span class="block text-gray-400 font-bebas text-4xl">25 / ABR / 2026</span>
+                    </div>
+                </div>
+
+                {{-- ETAPA 3 --}}
+                <div class="bg-white/5 border border-white/10 p-10 flex flex-col md:flex-row justify-between items-center">
+                    <div>
+                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Fase_03 // Bloqueada</span>
+                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA 03: EVALUACIÓN DE JURADOS</h3>
+                    </div>
+                    <div class="text-right">
+                        <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
+                        <span class="block text-gray-400 font-bebas text-4xl">14 / MAY / 2026</span>
+                    </div>
+                </div>
+
+                {{-- ETAPA 4 --}}
+                <div class="bg-white/5 border border-white/10 p-10 flex flex-col md:flex-row justify-between items-center">
+                    <div>
+                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Fase_04 // Bloqueada</span>
+                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA 04: SELECCIÓN Y PREMIER</h3>
+                    </div>
+                    <div class="text-right">
+                        <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
+                        <span class="block text-gray-400 font-bebas text-4xl">25 / JUN / 2026</span>
+                    </div>
+                </div>
+
+            </div>
         </div>
+        <p class="text-gray-400 text-base md:text-lg uppercase leading-relaxed tracking-wide font-medium">
+            Diligenciamiento <span class="text-white font-bold">100% digital</span>.
+            <span class="text-brand-orange font-bold">No modifiques</span> los formatos establecidos.
+        </p>
     </section>
 
     {{-- Pasos e Inscripción Final - Versión Plataforma Digital con Logo de Fondo --}}
@@ -1127,9 +1030,9 @@
                         VALIDACIÓN <span class="text-brand-orange">DE SOCIO</span>
                     </h4>
                     <div class="h-1 w-12 bg-brand-orange/40 group-hover:w-24 transition-all duration-500"></div>
-                    <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed uppercase tracking-tight max-w-md">
+                    <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed tracking-tight max-w-md">
                         Ingresa con tu identificación para confirmar que eres un
-                        <strong class="text-white font-medium">socio activo</strong>.
+                        <strong class="text-white font-medium">socio.</strong>
                     </p>
                 </div>
             </div>
@@ -1146,7 +1049,7 @@
                         GESTIÓN <span class="text-brand-orange">DE ANEXOS</span>
                     </h4>
                     <div class="h-1 w-12 bg-brand-orange/40 group-hover:w-24 transition-all duration-500"></div>
-                    <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed uppercase tracking-tight max-w-md">
+                    <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed tracking-tight max-w-md">
                         Diligencia los anexos oficiales y conviértelos a
                         <strong class="text-white font-medium">formato PDF</strong> para la carga.
                     </p>
@@ -1165,8 +1068,8 @@
                         CARGA <span class="text-brand-orange">AL SISTEMA</span>
                     </h4>
                     <div class="h-1 w-12 bg-brand-orange/40 group-hover:w-24 transition-all duration-500"></div>
-                    <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed uppercase tracking-tight max-w-md">
-                        Sube tus documentos. El portal te guiará
+                    <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed tracking-tight max-w-md">
+                        Sube tus documentos al portal, este te guiara
                         <span class="text-white font-medium border-b border-brand-orange/30">paso a paso</span>.
                     </p>
                 </div>
@@ -1184,9 +1087,9 @@
                         RADICADO <span class="text-brand-orange">OFICIAL</span>
                     </h4>
                     <div class="h-1 w-12 bg-brand-orange/40 group-hover:w-24 transition-all duration-500"></div>
-                    <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed uppercase tracking-tight max-w-md">
-                        Obtén tu número de radicado y
-                        <strong class="text-brand-orange font-medium">comprobante digital</strong> por correo.
+                    <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed tracking-tight max-w-md">
+                        Recibiras un número de radicado al correo
+                        <strong class="text-brand-orange font-medium">correo registrado</strong> en la sociedad.
                     </p>
                 </div>
             </div>
@@ -1227,13 +1130,19 @@
 
                 {{-- Bajada de Texto --}}
                 <p class="text-black font-black mb-16 max-w-4xl mx-auto uppercase tracking-[1px] text-xl md:text-3xl leading-tight">
-                    POSTULA TU OBRA EN EL PORTAL DE <br class="hidden md:block">
-                    <span class="underline decoration-4 underline-offset-8">INSCRIPCIÓN VIRTUAL PARA SOCIOS</span>
+                    POSTúLATE EN EL PORTAL <br class="hidden md:block">
+                    <span class="underline decoration-4 underline-offset-8">DE INSCRIPCIÓN VIRTUAL PARA SOCIOS</span>
                 </p>
 
-                {{-- Botón de Acción con Sombra Sólida - Optimizado para que no se desborde --}}
+                @php
+                // Lógica de fecha: Apertura 9 de Marzo de 2026, 00:00
+                $fechaApertura = \Carbon\Carbon::create(2026, 3, 4, 0, 0, 0);
+                $estaAbierto = \Carbon\Carbon::now()->greaterThanOrEqualTo($fechaApertura);
+                @endphp
+
                 <div class="relative inline-block group w-full max-w-fit mx-auto">
-                    {{-- Sombra (ajustada para que en móvil no sea tan exagerada y ayude al espacio) --}}
+                    @if($estaAbierto)
+                    {{-- BOTÓN ACTIVO (POSTULARME AHORA) --}}
                     <div class="absolute inset-0 bg-black translate-x-2 translate-y-2 md:translate-x-3 md:translate-y-3 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></div>
 
                     <a href="{{ route('validar-socio') }}"
@@ -1241,12 +1150,34 @@
 
                         <span class="whitespace-nowrap">POSTULARME AHORA</span>
 
-                        <svg xmlns="http://www.w3.org/2000/svg"
+                        <svg xmlns="http://www.w3.org/2000/center/svg"
                             class="w-8 h-8 md:w-12 md:h-12 shrink-0 transition-transform group-hover:rotate-45"
                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
                     </a>
+                    @else
+                    {{-- BOTÓN BLOQUEADO (EXPECTATIVA) --}}
+                    <div class="absolute inset-0 bg-white/10 translate-x-1 translate-y-1 md:translate-x-2 md:translate-y-2 border border-white/20"></div>
+
+                    <div class="relative flex flex-col items-center justify-center bg-zinc-900 text-zinc-500 px-6 sm:px-12 md:px-20 py-5 md:py-8 border-4 border-zinc-700 cursor-not-allowed overflow-hidden">
+
+                        {{-- Texto de Expectativa --}}
+                        <div class="flex items-center gap-4 md:gap-8 opacity-60">
+                            <span class="whitespace-nowrap font-bebas text-[1.8rem] sm:text-[2.2rem] md:text-[3.5rem] tracking-[3px] md:tracking-[6px]">
+                                POSTULARME AHORA
+                            </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 md:w-12 md:h-12 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+
+                        {{-- Badge decorativo --}}
+                        <div class="absolute top-0 left-0 bg-brand-orange text-black font-montserrat font-bold text-[10px] md:text-xs px-3 py-1 uppercase tracking-widest">
+                            Próximamente
+                        </div>
+                    </div>
+                    @endif
                 </div>
 
                 {{-- Footer de Marca y Evento --}}

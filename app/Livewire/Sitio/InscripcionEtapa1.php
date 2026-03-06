@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Str;
 
 #[Layout('layouts.guest')]
 class InscripcionEtapa1 extends Component
@@ -48,7 +49,7 @@ class InscripcionEtapa1 extends Component
     public function rules()
     {
         return [
-            'titulo' => 'required|string|min:5',
+            'titulo' => 'required|string|min:2',
             'aceptaTerminos' => 'accepted',
             'aceptaDatos' => 'accepted',
             'guionArchivo' => $this->autoria === 'no' ? 'required|file|mimes:pdf|max:12288' : 'nullable',
@@ -114,11 +115,19 @@ class InscripcionEtapa1 extends Component
         if (!$phone) return 'N/A';
         return substr($phone, 0, 3) . '***' . substr($phone, -3);
     }
+    public $mostrarOnboarding = true;
 
-    public function updated($propertyName)
+    public function completarOnboarding()
     {
-        $this->validateOnly($propertyName);
+        // Aquí puedes guardar en la DB que el socio ya vio el onboarding para no mostrarlo más
+        // $this->socio->update(['onboarding_completado' => true]);
+        $this->mostrarOnboarding = false;
     }
+
+    // public function updated($propertyName)
+    // {
+    //     $this->validateOnly($propertyName);
+    // }
 
     public function updatedDirectorPropio($value)
     {
@@ -184,39 +193,47 @@ class InscripcionEtapa1 extends Component
                 'correo'         => $this->directorPropio === 'si' ? strtolower($this->socio->email) : strtolower($this->directorCorreo),
             ]);
 
-            // Carga Masiva
+            // --- LÓGICA DE NOMBRES DE ARCHIVOS ---
+            // Creamos un slug del nombre del socio para que el archivo no tenga espacios ni caracteres raros
+            $nombreSocioSaneado = Str::slug($this->socio->name, '_');
+
             $mapeoDocs = [
-                ['file' => $this->docDirectorCompromiso,  'tipo' => 'ANEXO 1: MANIFESTACIÓN DEL DIRECTOR', 'pfx' => 'MANIF'],
-                ['file' => $this->docDirectorExperiencia, 'tipo' => 'ANEXO 2: EXPERIENCIA COMO DIRECTOR GENERAL', 'pfx' => 'EXP'],
-                ['file' => $this->docDirectorEvidencia1,  'tipo' => 'CERTIFICADO Y EVIDENCIAS 1', 'pfx' => 'EVI1'],
-                ['file' => $this->docDirectorEvidencia2,  'tipo' => 'CERTIFICADO Y EVIDENCIAS 2', 'pfx' => 'EVI2'],
-                ['file' => $this->formatoFirmado,         'tipo' => 'ANEXO 4: CONSIDERACIONES Y DECLARACIONES GENERALES', 'pfx' => 'DECL'],
+                ['file' => $this->docDirectorCompromiso,  'tipo' => 'ANEXO 1: MANIFESTACIÓN DEL DIRECTOR', 'pfx' => 'ANEXO_1_MANIFESTACION'],
+                ['file' => $this->docDirectorExperiencia, 'tipo' => 'ANEXO 2: EXPERIENCIA COMO DIRECTOR GENERAL', 'pfx' => 'ANEXO_2_EXPERIENCIA'],
+                ['file' => $this->docDirectorEvidencia1,  'tipo' => 'CERTIFICADO Y EVIDENCIAS 1', 'pfx' => 'EVIDENCIA_1'],
+                ['file' => $this->docDirectorEvidencia2,  'tipo' => 'CERTIFICADO Y EVIDENCIAS 2', 'pfx' => 'EVIDENCIA_2'],
+                ['file' => $this->formatoFirmado,         'tipo' => 'ANEXO 4: CONSIDERACIONES Y DECLARACIONES GENERALES', 'pfx' => 'ANEXO_4_DECLARACIONES'],
             ];
 
             foreach ($mapeoDocs as $doc) {
-                if (isset($tiposDoc[$doc['tipo']])) {
-                    $this->upload($proyecto, $doc['file'], $tiposDoc[$doc['tipo']], $doc['pfx']);
+                if ($doc['file'] && isset($tiposDoc[$doc['tipo']])) {
+                    // Nombre resultante: RAD-2026-001_ANEXO_1_MANIFESTACION_erick_hernandez.pdf
+                    $nombreFinal = $proyecto->codigo_radicado . '_' . $doc['pfx'] . '_' . $nombreSocioSaneado;
+                    $this->upload($proyecto, $doc['file'], $tiposDoc[$doc['tipo']], $nombreFinal);
                 }
             }
 
             if ($this->autoria === 'no' && $this->guionArchivo) {
                 $tipoGuionId = $tiposDoc['ANEXO 3: AUTORIZACIÓN USO DEL GUION'] ?? null;
-                if ($tipoGuionId) $this->upload($proyecto, $this->guionArchivo, $tipoGuionId, 'GUION');
+                if ($tipoGuionId) {
+                    $nombreGuion = $proyecto->codigo_radicado . '_ANEXO_3_AUTORIZACION_GUION_' . $nombreSocioSaneado;
+                    $this->upload($proyecto, $this->guionArchivo, $tipoGuionId, $nombreGuion);
+                }
             }
 
             DB::commit();
 
             // 3. Email
             try {
-                Mail::to($this->socio->email)->send(new \App\Mail\InscripcionConfirmadaMail($proyecto, $this->socio));
-                // En tu método guardar(), busca la línea del Mail interno y déjala así:
+                Mail::to($this->socio->email)->send(new \App\Mail\ConfirmacionEtapaUnoMail($proyecto, $this->socio));
+
                 Mail::to('sistemas@actores.org.co')->send(
-                    new \App\Mail\NotificacionInternaInscripcionMail(
+                    new \App\Mail\InternoEtapaUnoMail(
                         $proyecto,
                         $this->socio,
                         [
                             'autoria'        => $this->autoria,
-                            'directorPropio' => $this->directorPropio // <--- ESTO ES LO QUE FALTA
+                            'directorPropio' => $this->directorPropio
                         ]
                     )
                 );
@@ -232,11 +249,18 @@ class InscripcionEtapa1 extends Component
         }
     }
 
-    private function upload($proyecto, $file, $tipoId, $prefix)
+    private function upload($proyecto, $file, $tipoId, $nombreDiciente)
     {
         if ($file) {
-            $name = "E1_{$tipoId}_{$prefix}_" . time() . ".pdf";
+            // Obtenemos la extensión original (pdf, png, jpg, etc.)
+            $extension = $file->getClientOriginalExtension();
+
+            // Construimos el nombre final usando el que viene de 'guardar'
+            $name = "{$nombreDiciente}.{$extension}";
+
+            // Guardamos en la carpeta del año actual (como lo tenías)
             $path = $file->storeAs('documentos/' . now()->year, $name, 'public');
+
             $proyecto->documentos()->create([
                 'tipo_documento_id' => $tipoId,
                 'ruta_archivo'      => $path,

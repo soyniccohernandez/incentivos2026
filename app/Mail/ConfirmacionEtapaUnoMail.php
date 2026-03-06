@@ -5,45 +5,44 @@ namespace App\Mail;
 use App\Models\Proyecto;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue; // Para enviarlo en segundo plano
+// COMENTA O ELIMINA ESTA LÍNEA:
+// use Illuminate\Contracts\Queue\ShouldQueue; 
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class InscripcionConfirmadaMail extends Mailable implements ShouldQueue
+// ELIMINA EL "implements ShouldQueue" AQUÍ ABAJO:
+class ConfirmacionEtapaUnoMail extends Mailable 
 {
     use Queueable, SerializesModels;
 
     public $proyecto;
     public $socio;
 
-    /**
-     * Recibimos el proyecto y el socio
-     */
     public function __construct(Proyecto $proyecto, User $socio)
     {
         $this->proyecto = $proyecto;
         $this->socio = $socio;
     }
 
-    /**
-     * Definimos el asunto
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Confirmación de Inscripción - Radicado: ' . $this->proyecto->codigo_radicado,
+            subject: 'Inscripción Exitosa: ' . $this->proyecto->codigo_radicado . ' - Incentivos Audiovisuales (Actores S.C.G.)',
+            replyTo: [
+                new \Illuminate\Mail\Mailables\Address('incentivos@actores.org.co', 'Incentivos Actores S.C.G.'),
+            ],
+            bcc: [
+                new \Illuminate\Mail\Mailables\Address('nhernandez@actores.org.co', 'Erick Hernández'),
+            ],
         );
     }
 
-    /**
-     * Definimos la vista
-     */
     public function content(): Content
     {
         return new Content(
-            view: 'emails.inscripcion-confirmada', // Asegúrate de crear esta vista
+            view: 'emails.ConfirmacionEtapaUnoMail',
         );
     }
 

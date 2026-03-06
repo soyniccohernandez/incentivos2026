@@ -208,13 +208,17 @@
                                                         wire:model.defer="elenco.{{ $index }}.identificacion"
                                                         wire:keydown.enter.prevent="buscarSocio({{ $index }})"
                                                         {{ $miembro['encontrado'] ? 'readonly' : '' }}
+
+                                                        /* Bloqueo de caracteres no numéricos en tiempo real */
+                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+
                                                         class="w-full border rounded-xl px-4 py-3 text-sm font-bold transition-all uppercase outline-none
-                                                            {{ $miembro['encontrado'] 
-                                                                ? 'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed shadow-inner' 
-                                                                : ($errors->has('elenco.'.$index.'.identificacion') 
-                                                                    ? 'bg-red-50 border-red-300 text-red-900 focus:border-red-400' 
-                                                                    : 'bg-white border-slate-200 text-slate-700 focus:border-[#ff6600] shadow-sm') 
-                                                            }}"
+                                                        {{ $miembro['encontrado'] 
+                                                            ? 'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed shadow-inner' 
+                                                            : ($errors->has('elenco.'.$index.'.identificacion') 
+                                                                ? 'bg-red-50 border-red-300 text-red-900 focus:border-red-400' 
+                                                                : 'bg-white border-slate-200 text-slate-700 focus:border-[#ff6600] shadow-sm') 
+                                                        }}"
                                                         placeholder="Presione Enter para validar">
 
                                                     {{-- BOTÓN PARA LIMPIAR (Sale si hay algo escrito O si ya se encontró) --}}

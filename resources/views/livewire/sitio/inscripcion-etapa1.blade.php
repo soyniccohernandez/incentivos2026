@@ -71,7 +71,7 @@
                         <div x-show="dropdownOpen" @click.away="dropdownOpen = false" x-transition class="absolute right-0 mt-3 w-64 bg-[#0a0a0a] border border-white/10 shadow-2xl rounded-xl overflow-hidden z-[1100]">
                             <div class="px-5 py-4 bg-white/[0.02] border-b border-white/5">
                                 <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Usuario Conectado</p>
-                                <p class="text-xs font-medium text-gray-300 truncate">{{ $this->maskEmail($this->socio->email) }}</p>
+                                <p class="text-xs font-medium text-gray-300 truncate">{{ $this->socio->email }}</p>
                             </div>
                             <div class="p-2">
                                 <button wire:click="logout" class="w-full flex items-center gap-3 text-left px-4 py-3 text-[13px] font-bold text-red-500/80 hover:text-red-500 hover:bg-red-500/5 rounded-lg transition-all">
@@ -102,6 +102,230 @@
                 </div>
             </header>
 
+            {{-- CONTENEDOR ONBOARDING --}}
+            @if($mostrarOnboarding)
+            <div x-data="{ step: 1 }" class="fixed inset-0 z-[2000] flex items-center justify-center p-4 md:p-6 bg-slate-900/95 backdrop-blur-md animate-fade-in">
+                <div class="bg-white w-full max-w-5xl rounded-[3rem] shadow-2xl border border-white/20 overflow-hidden relative flex flex-col max-h-[90vh]">
+
+                    {{-- Barra de Progreso Superior --}}
+                    <div class="absolute top-0 left-0 w-full h-2 bg-slate-100 flex z-50">
+                        <div class="h-full bg-[#ff6600] transition-all duration-700 ease-out" :style="'width: ' + (step * 33.33) + '%'"></div>
+                    </div>
+
+                    <div class="p-8 md:p-14 overflow-y-auto">
+
+                        {{-- PASO 1: BIENVENIDA CINEMATOGRÁFICA --}}
+                        <div x-show="step === 1" x-transition:enter="transition duration-500" x-transition:enter-start="opacity-0 scale-95" class="relative">
+                            {{-- Guías de Encuadre (Visor de Cine) --}}
+                            <div class="absolute -top-4 -left-4 w-16 h-16 border-t-4 border-l-4 border-slate-100"></div>
+                            <div class="absolute -top-4 -right-4 w-16 h-16 border-t-4 border-r-4 border-slate-100"></div>
+
+                            <div class="text-center py-6">
+                                <div class="inline-flex items-center gap-3 mb-8 bg-black px-6 py-2 rounded-sm">
+                                    <span class="w-2 h-2 bg-[#ff6600] animate-pulse rounded-full"></span>
+                                    <span class="text-[#ff6600] font-bebas text-xl tracking-[4px] uppercase">ESCENA 01: EL COMIENZO</span>
+                                </div>
+
+                                <h2 class="font-bebas text-[4.5rem] md:text-[7rem] leading-[0.85] text-slate-900 mb-8 uppercase tracking-tighter">
+                                    HAZ REALIDAD TU <br>
+                                    <span class="text-[#ff6600] bg-black px-6 py-2 inline-block my-2 transform -rotate-1">CORTOMETRAJE</span> <br>
+                                    DE FICCIÓN
+                                </h2>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto mb-10">
+                                    <div class="bg-slate-50 border-2 border-black p-6">
+                                        <p class="font-bebas text-5xl text-black">3 INCENTIVOS</p>
+                                        <p class="font-inter text-[10px] font-black text-slate-400 uppercase tracking-widest">Cupos Disponibles</p>
+                                    </div>
+                                    <div class="bg-black text-[#ff6600] p-6 shadow-xl">
+                                        <p class="font-bebas text-5xl">$45.000.000</p>
+                                        <p class="font-inter text-[10px] font-black text-white/50 uppercase tracking-widest">Por cada Proyecto</p>
+                                    </div>
+                                </div>
+
+                                <p class="font-inter text-slate-500 text-lg font-bold max-w-2xl mx-auto leading-tight uppercase tracking-tight">
+                                    Bienvenido a la Convocatoria 2026 de <span class="text-black underline decoration-[#ff6600] decoration-4">Actores S.C.G.</span> dedicada a la excelencia narrativa e interpretativa.
+                                </p>
+                            </div>
+                        </div>
+
+                        {{-- PASO 2: REQUISITOS DE INSCRIPCIÓN (CHECKLIST TÉCNICO) --}}
+                        <div x-show="step === 2" x-transition:enter="transition duration-500" x-transition:enter-start="opacity-0 scale-95" class="relative max-w-6xl mx-auto px-4">
+
+                            {{-- Guías de Encuadre (Visor de Cine) --}}
+                            <div class="absolute -top-4 -left-4 w-16 h-16 border-t-4 border-l-4 border-slate-100"></div>
+                            <div class="absolute -top-4 -right-4 w-16 h-16 border-t-4 border-r-4 border-slate-100"></div>
+
+                            {{-- Encabezado Estilo "Shoot Plan" --}}
+                            <div class="text-center py-6 mb-10">
+                                <div class="inline-flex items-center gap-3 mb-6 bg-black px-6 py-2 rounded-sm">
+                                    <span class="w-2 h-2 bg-[#ff6600] rounded-full"></span>
+                                    <span class="text-[#ff6600] font-bebas text-xl tracking-[4px] uppercase">ESCENA 02: PRE-PRODUCCIÓN</span>
+                                </div>
+
+                                <h2 class="font-bebas text-[3.5rem] md:text-[5.5rem] leading-[0.85] text-slate-900 mb-4 uppercase tracking-tighter">
+                                    REQUISITOS DE <br>
+                                    <span class="text-white bg-black px-6 py-1 inline-block my-2 transform rotate-1 italic">INSCRIPCIÓN</span>
+                                </h2>
+                                <p class="font-inter text-slate-400 text-[10px] md:text-xs font-black uppercase tracking-[5px]">Prepara tu maleta técnica antes del rodaje</p>
+                            </div>
+
+                            {{-- Grid de Documentos Estilo "Shot List" --}}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+                                @php
+                                $requisitos = [
+                                ['titulo' => 'PROYECTO', 'desc' => 'Nombre de la obra y datos del titular.', 'tipo' => 'dato'],
+                                ['titulo' => 'DIRECCIÓN', 'desc' => 'Datos de identificación y contacto del Director.', 'tipo' => 'dato'],
+                                ['titulo' => 'ANEXO 1', 'desc' => 'Manifestación del Director.', 'url' => 'anexo1.pdf'],
+                                ['titulo' => 'ANEXO 2', 'desc' => 'Experiencia del Director General.', 'url' => 'anexo2.pdf'],
+                                ['titulo' => 'EVIDENCIAS', 'desc' => 'Soportes de trayectoria (2 documentos).', 'tipo' => 'soporte'],
+                                ['titulo' => 'ANEXO 3', 'desc' => 'Autorización de Guion (Si aplica).', 'url' => 'anexo3.pdf'],
+                                ['titulo' => 'ANEXO 4', 'desc' => 'Declaraciones y consideraciones.', 'url' => 'anexo4.pdf'],
+                                ['titulo' => 'LEGAL', 'desc' => 'Tratamiento de datos y verificación final.', 'tipo' => 'dato']
+                                ];
+                                @endphp
+
+                                @foreach($requisitos as $req)
+                                <div class="bg-slate-50 border-2 border-black p-5 flex items-center justify-between group hover:bg-black transition-all duration-300">
+                                    <div class="flex flex-col">
+                                        <span class="font-bebas text-4xl text-black group-hover:text-[#ff6600] transition-colors leading-none">
+                                            {{ $req['titulo'] }}
+                                        </span>
+                                        <span class="font-inter text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1 group-hover:text-white/50">
+                                            {{ $req['desc'] }}
+                                        </span>
+                                    </div>
+
+                                    @if(isset($req['url']))
+                                    <a href="{{ asset('storage/formatos/'.$req['url']) }}" target="_blank"
+                                        class="bg-[#ff6600] text-black font-bebas text-sm px-4 py-2 hover:bg-white hover:scale-105 transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(255,102,0,1)]">
+                                        DESCARGAR
+                                    </a>
+                                    @else
+                                    <div class="w-8 h-8 border-2 border-black flex items-center justify-center group-hover:border-[#ff6600]">
+                                        <span class="w-2 h-2 bg-black group-hover:bg-[#ff6600]"></span>
+                                    </div>
+                                    @endif
+                                </div>
+                                @endforeach
+                            </div>
+
+                            {{-- Cláusula de Unicidad Estilo "Warning" Cinematográfico --}}
+                            <div class="bg-black text-white p-8 relative overflow-hidden">
+                                {{-- Marca de agua fondo --}}
+                                <div class="absolute right-0 top-0 font-bebas text-9xl text-white/5 italic -rotate-12 pointer-events-none">ONLY</div>
+
+                                <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
+                                    <div class="bg-[#ff6600] text-black font-bebas text-4xl px-4 transform -rotate-3 shadow-lg">
+                                        ¡ATENCIÓN!
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bebas text-2xl text-[#ff6600] tracking-widest mb-1 uppercase">REGLA DE UNICIDAD</h4>
+                                        <p class="font-inter text-[11px] font-bold text-white/70 uppercase tracking-wider leading-relaxed">
+                                            Tanto el <span class="text-white underline decoration-[#ff6600]">Director</span> como la <span class="text-white underline decoration-[#ff6600]">Documentación</span> son válidos para <span class="text-[#ff6600]">una única postulación</span>. Un mismo profesional no puede estar en dos proyectos para esta convocatoria.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- PASO 3: RECOMENDACIONES FINALES (¡ACCIÓN!) --}}
+                        <div x-show="step === 3" x-transition:enter="transition duration-500" x-transition:enter-start="opacity-0 scale-95" class="relative max-w-6xl mx-auto px-4 text-center">
+
+                            {{-- Guías de Encuadre (Visor de Cine) --}}
+                            <div class="absolute -top-4 -left-4 w-16 h-16 border-t-4 border-l-4 border-slate-100"></div>
+                            <div class="absolute -top-4 -right-4 w-16 h-16 border-t-4 border-r-4 border-slate-100"></div>
+
+                            <div class="py-6">
+                                {{-- Indicador de Rec --}}
+                                <div class="inline-flex items-center gap-3 mb-8 bg-black px-6 py-2 rounded-sm">
+                                    <span class="w-3 h-3 bg-red-600 animate-pulse rounded-full"></span>
+                                    <span class="text-white font-bebas text-xl tracking-[4px] uppercase">ESCENA 03: ¡ACCIÓN!</span>
+                                </div>
+
+                                <h2 class="font-bebas text-[4rem] md:text-[6.5rem] leading-[0.85] text-slate-900 mb-10 uppercase tracking-tighter">
+                                    ¡TODO LISTO <br>
+                                    <span class="text-[#ff6600]">PARA EMPEZAR!</span>
+                                </h2>
+
+                                <div class="max-w-4xl mx-auto space-y-8">
+                                    {{-- Mensaje Central --}}
+                                    <p class="font-inter text-slate-500 text-lg md:text-xl font-bold uppercase tracking-tight leading-tight max-w-2xl mx-auto">
+                                        Es fundamental que tus datos estén <span class="text-black underline decoration-[#ff6600] decoration-4">actualizados</span> ante la Sociedad y los documentos firmados en formatos oficiales.
+                                    </p>
+
+                                    {{-- Grid de Recomendaciones Estilo "Production Notes" --}}
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                                        {{-- Tarjeta WhatsApp (Verificación) --}}
+                                        <div class="bg-slate-50 border-2 border-black p-8 group hover:bg-[#25D366] transition-all duration-300">
+                                            <p class="font-bebas text-4xl text-black mb-3">¿DATOS AL DÍA?</p>
+                                            <p class="font-inter text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 group-hover:text-black">Valida tu estado antes de postularte</p>
+                                            <a href="https://wa.me/573174188415?text=Hola,%20quiero%20ver%20si%20mis%20datos%20están%20OK%20para%20la%20convocatoria%20de%20incentivos" target="_blank"
+                                                class="inline-block bg-black text-white font-bebas text-lg px-6 py-2 shadow-[4px_4px_0px_0px_rgba(37,211,102,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:bg-white group-hover:text-black transition-all">
+                                                WHATSAPP: 317 4188415
+                                            </a>
+                                        </div>
+
+                                        {{-- Tarjeta Dashboard (Seguimiento) --}}
+                                        <div class="bg-black text-white p-8 border-2 border-black shadow-xl relative overflow-hidden group">
+                                            <div class="relative z-10">
+                                                <p class="font-bebas text-4xl text-[#ff6600] mb-3">TU DASHBOARD</p>
+                                                <p class="font-inter text-[10px] font-black text-white/50 uppercase tracking-widest mb-4">Panel de Control en tiempo real</p>
+                                                <p class="font-inter text-xs font-bold uppercase leading-relaxed text-white/80">
+                                                    Usa tu usuario y contraseña para acceder al tablero y monitorear el <span class="text-[#ff6600]">Estado de Postulación</span>.
+                                                </p>
+                                            </div>
+                                            {{-- Elemento visual de fondo --}}
+                                            <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
+                                                <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Cierre Final --}}
+                                    <div class="pt-8">
+                                        <p class="font-bebas text-5xl md:text-7xl text-slate-900 tracking-tighter hover:italic transition-all">
+                                            ¡MUCHA SUERTE EN EL <span class="text-[#ff6600]">RODAJE!</span>
+                                        </p>
+                                        <div class="w-full h-px bg-slate-200 mt-4 relative">
+                                            <div class="absolute inset-0 flex justify-center -top-2">
+                                                <span class="bg-white px-4 font-bebas text-slate-300 tracking-[10px]">THE END</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- CONTROLES --}}
+                        <div class="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 pt-10 border-t border-slate-100">
+                            <div class="flex gap-3">
+                                <template x-for="i in 3">
+                                    <div class="h-1.5 transition-all duration-500 rounded-full"
+                                        :class="step === i ? 'w-12 bg-[#ff6600]' : 'w-4 bg-slate-200'"></div>
+                                </template>
+                            </div>
+
+                            <div class="flex gap-4 w-full md:w-auto">
+                                <button x-show="step > 1" @click="step--" class="flex-1 md:flex-none px-10 py-4 text-slate-400 font-bold text-[10px] uppercase tracking-[3px] hover:text-slate-800 transition-colors font-inter">
+                                    Regresar
+                                </button>
+
+                                <button x-show="step < 3" @click="step++" class="flex-1 md:flex-none px-14 py-4 bg-black text-white rounded-2xl font-bebas text-2xl tracking-[2px] hover:bg-[#ff6600] transition-all shadow-xl shadow-slate-200">
+                                    Siguiente
+                                </button>
+
+                                <button x-show="step === 3" wire:click="completarOnboarding" class="flex-1 md:flex-none px-14 py-4 bg-[#ff6600] text-white rounded-2xl font-bebas text-2xl tracking-[2px] hover:bg-slate-800 transition-all shadow-xl shadow-orange-100">
+                                    ¡COMENZAR INSCRIPCIÓN!
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
             {{-- PASO 0: VERIFICACIÓN (OTP) --}}
             @if($mostrarPasoCero)
             <section wire:key="paso-cero" x-data="{ timer: 0, interval: null, codigoLocal: '', mostrarSoporte: @js($socio->otp_requests >= $this->maxIntentos), startTimer(seconds) { if (this.timer > 0) return; clearInterval(this.interval); this.timer = Math.ceil(seconds); this.interval = setInterval(() => { if (this.timer > 0) this.timer--; else { clearInterval(this.interval); this.timer = 0; } }, 1000); } }" x-init=" @if($socio->otp_last_sent_at) @php $restante = $this->segundosEntreIntentos - now()->diffInSeconds($socio->otp_last_sent_at); @endphp @if($restante > 0) if(timer === 0) startTimer({{ $restante }}); @endif @endif $watch('$wire.socio.otp_requests', value => { if (value >= @js($this->maxIntentos)) mostrarSoporte = true; }); " @timer-reset.window="timer = 0; startTimer($event.detail.seconds)">
@@ -293,11 +517,90 @@
                 <section class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm text-left">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
                         <h2 class="font-outfit text-2xl font-800 text-slate-800 uppercase tracking-tight">3. Perfil del Director</h2>
-                        <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-xl border border-slate-100"> <span class="text-[9px] font-bold text-slate-400 uppercase px-3 tracking-widest">¿Eres el director?</span>
-                            <div class="flex bg-white rounded-lg p-1 shadow-sm border border-slate-100"> <label class="px-6 py-1.5 rounded-md cursor-pointer transition-all {{ $directorPropio === 'si' ? 'bg-[#ff6600] text-white shadow-md' : 'text-slate-400 hover:text-slate-600' }}"> <input type="radio" value="si" wire:model.live="directorPropio" class="hidden"> <span class="text-[10px] font-black">SÍ</span> </label> <label class="px-6 py-1.5 rounded-md cursor-pointer transition-all {{ $directorPropio === 'no' ? 'bg-[#ff6600] text-white shadow-md' : 'text-slate-400 hover:text-slate-600' }}"> <input type="radio" value="no" wire:model.live="directorPropio" class="hidden"> <span class="text-[10px] font-black">NO</span> </label> </div>
+
+                        <div x-data="{ esDirector: @entangle('directorPropio') }"
+                            class="flex items-center gap-3 bg-slate-50 p-2 rounded-xl border border-slate-100">
+
+                            <span class="text-[9px] font-bold text-slate-400 uppercase px-3 tracking-widest">¿Eres el director?</span>
+
+                            <div class="flex bg-white rounded-lg p-1 shadow-sm border border-slate-100">
+                                <label class="px-6 py-1.5 rounded-md cursor-pointer transition-all"
+                                    :class="esDirector === 'si' ? 'bg-[#ff6600] text-white shadow-md' : 'text-slate-400 hover:text-slate-600'">
+                                    <input type="radio" value="si" x-model="esDirector" class="hidden">
+                                    <span class="text-[10px] font-black">SÍ</span>
+                                </label>
+
+                                <label class="px-6 py-1.5 rounded-md cursor-pointer transition-all"
+                                    :class="esDirector === 'no' ? 'bg-[#ff6600] text-white shadow-md' : 'text-slate-400 hover:text-slate-600'">
+                                    <input type="radio" value="no" x-model="esDirector" class="hidden">
+                                    <span class="text-[10px] font-black">NO</span>
+                                </label>
+                            </div>
                         </div>
-                    </div> {{-- Campos condicionales Director --}}
-                    <div x-show="$wire.directorPropio === 'no'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" x-cloak class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-slate-50/50 p-6 rounded-3xl border border-dashed border-slate-200 mb-10"> @foreach(['directorIdentificacion' => 'Identificación', 'directorNombre' => 'Nombre Completo', 'directorCelular' => 'Celular', 'directorCorreo' => 'Correo'] as $model => $label) <div> <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 block ml-1"> {{ $label }} <span class="text-red-500">*</span> </label> <input type="text" wire:model.blur="{{ $model }}" placeholder="Obligatorio" class="w-full bg-white border @error($model) border-red-300 @else border-slate-100 @enderror rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-[#ff6600] uppercase transition-all"> @error($model) <span class="text-red-500 text-[8px] font-bold mt-1 block uppercase animate-fade-in">{{ $message }}</span> @enderror </div> @endforeach </div> {{-- Grid de Documentos Director --}}
+                    </div>
+                    <div x-show="$wire.directorPropio === 'no'"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 transform -translate-y-4"
+                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                        x-cloak
+                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-slate-50/50 p-6 rounded-3xl border border-dashed border-slate-200 mb-10">
+
+                        <div>
+                            <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 block ml-1">
+                                Identificación <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                wire:model.blur="directorIdentificacion"
+                                placeholder="Ej: 10203040"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                class="w-full bg-white border @error('directorIdentificacion') border-red-300 @else border-slate-100 @enderror rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-[#ff6600] placeholder:text-slate-300 placeholder:font-normal uppercase transition-all">
+                            @error('directorIdentificacion')
+                            <span class="text-red-500 text-[8px] font-bold mt-1 block uppercase animate-fade-in">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 block ml-1">
+                                Nombre Completo <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                wire:model.blur="directorNombre"
+                                placeholder="Nombre y Apellidos"
+                                class="w-full bg-white border @error('directorNombre') border-red-300 @else border-slate-100 @enderror rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-[#ff6600] placeholder:text-slate-300 placeholder:font-normal uppercase transition-all">
+                            @error('directorNombre')
+                            <span class="text-red-500 text-[8px] font-bold mt-1 block uppercase animate-fade-in">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 block ml-1">
+                                Celular <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                wire:model.blur="directorCelular"
+                                placeholder="3001234567"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                class="w-full bg-white border @error('directorCelular') border-red-300 @else border-slate-100 @enderror rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-[#ff6600] placeholder:text-slate-300 placeholder:font-normal uppercase transition-all">
+                            @error('directorCelular')
+                            <span class="text-red-500 text-[8px] font-bold mt-1 block uppercase animate-fade-in">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 block ml-1">
+                                Correo <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email"
+                                wire:model.blur="directorCorreo"
+                                placeholder="ejemplo@correo.com"
+                                class="w-full bg-white border @error('directorCorreo') border-red-300 @else border-slate-100 @enderror rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-[#ff6600] placeholder:text-slate-300 placeholder:font-normal transition-all">
+                            @error('directorCorreo')
+                            <span class="text-red-500 text-[8px] font-bold mt-1 block uppercase animate-fade-in">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- Grid de Documentos Director --}}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> @php $docsDirector = [ [ 'model' => 'docDirectorCompromiso', 'label' => 'ANEXO 1: MANIFESTACIÓN DEL DIRECTOR', 'desc' => 'Aceptación del cargo de director', 'formato' => 'etapa_01/anexo-01-manifestacion-del-director.pdf', 'hasDownload' => true ], [ 'model' => 'docDirectorExperiencia', 'label' => 'ANEXO 2: EXPERIENCIA COMO DIRECTOR GENERAL', 'desc' => 'Filmografía y experiencia general', 'formato' => 'etapa_01/anexo-02-experiencia-director-general.pdf', 'hasDownload' => true ], [ 'model' => 'docDirectorEvidencia1', 'label' => 'Evidencia de Soporte 1', 'desc' => 'Certificado o contrato previo', 'formato' => null, 'hasDownload' => false ], [ 'model' => 'docDirectorEvidencia2', 'label' => 'Evidencia de Soporte 2', 'desc' => 'Certificado o contrato previo', 'formato' => null, 'hasDownload' => false ], ]; @endphp @foreach($docsDirector as $doc) <div class="p-6 bg-slate-50/50 rounded-[2rem] border border-slate-100 flex flex-col justify-between group hover:border-orange-200 transition-all" x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true" x-on:livewire-upload-finish="isUploading = false" x-on:livewire-upload-error="isUploading = false" x-on:livewire-upload-progress="progress = $event.detail.progress">
                             <div class="mb-6">
                                 <h4 class="font-outfit text-sm font-800 text-slate-700 uppercase mb-1"> {{ $doc['label'] }} <span class="text-red-500">*</span> </h4>

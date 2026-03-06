@@ -92,7 +92,7 @@
                                         <span class="flex h-3 w-3 rounded-full bg-blue-500"></span>
                                         <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest">Canal de Atención</p>
                                     </div>
-                                    <p class="text-xs text-slate-500 mb-6 leading-relaxed">Para cualquier actualización o trámite, contacte al área de **Incentivos**:</p>
+                                    <p class="text-xs text-slate-500 mb-6 leading-relaxed">Para cualquier actualización, subsanación o trámite, contacte al área de <span class="font-bold text-slate-700">Incentivos</span>:</p>
                                     <div class="space-y-4">
                                         <a href="mailto:incentivos@actores.org.co" class="flex items-center gap-4 group no-underline">
                                             <div class="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center text-white group-hover:bg-[#ff6600] transition-colors">
@@ -233,16 +233,45 @@
                                         <div class="flex-1 w-full">
                                             <div class="text-center lg:text-left mb-6">
                                                 <h4 class="font-outfit text-3xl font-800 text-slate-800 uppercase leading-tight">{{ $proyecto->director->nombre }}</h4>
-                                                <p class="text-[11px] text-[#ff6600] font-bold uppercase mt-2 tracking-[0.3em]">Director Externo</p>
+                                                <p class="text-[11px] text-[#ff6600] font-bold uppercase mt-2 tracking-[0.3em]">
+                                                    {{ $proyecto->director->es_proponente ? 'Director Proponente' : 'Director Externo' }}
+                                                </p>
                                             </div>
+
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 pt-8 border-t border-slate-50">
                                                 <div class="flex items-center gap-4">
-                                                    <div class="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <div class="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-4 0H5m14 0h-5" stroke-width="2" />
-                                                        </svg></div>
+                                                        </svg>
+                                                    </div>
                                                     <div>
                                                         <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Identificación</p>
                                                         <p class="text-sm font-bold text-slate-700">{{ $proyecto->director->identificacion }}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex items-center gap-4">
+                                                    <div class="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Teléfono / Celular</p>
+                                                        <p class="text-sm font-bold text-slate-700">{{ $proyecto->director->celular }}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex items-center gap-4">
+                                                    <div class="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Correo Electrónico</p>
+                                                        <p class="text-sm font-bold text-slate-700 lowercase">{{ $proyecto->director->correo }}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -255,15 +284,35 @@
                             <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden">
                                 <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                                     <div class="flex items-center gap-6">
-                                        <div class="h-16 w-16 rounded-2xl bg-orange-50 flex items-center justify-center text-[#ff6600] border border-orange-100"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="h-16 w-16 rounded-2xl {{ $proyecto->guion_propio ? 'bg-orange-50 text-[#ff6600] border-orange-100' : 'bg-slate-50 text-slate-500 border-slate-100' }} flex items-center justify-center border">
+                                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-width="2" />
-                                            </svg></div>
+                                            </svg>
+                                        </div>
                                         <div>
-                                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[4px] mb-1">Origen del Libreto</p>
-                                            <h4 class="font-outfit text-2xl font-800 text-slate-800 uppercase">{{ $proyecto->guion_propio ? 'AUTORÍA PROPIA' : 'GUION DE TERCERO' }}</h4>
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[4px] mb-1">Tu declaración</p>
+                                            <h4 class="font-outfit text-2xl font-800 text-slate-800 uppercase">
+                                                {{ $proyecto->guion_propio ? 'Soy el autor del guion' : 'Uso un guion de un tercero' }}
+                                            </h4>
                                         </div>
                                     </div>
-                                    <div class="px-6 py-2 rounded-full bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Verificación Técnica OK</div>
+
+                                    @if($proyecto->guion_propio)
+                                    <div class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 text-white shadow-lg shadow-orange-100">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" />
+                                        </svg>
+                                        <span class="text-[10px] font-black uppercase tracking-wider">Autoría Confirmada</span>
+                                    </div>
+                                    @else
+                                    <div class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 text-slate-600 border border-slate-200">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                                            <path d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" />
+                                        </svg>
+                                        <span class="text-[10px] font-black uppercase tracking-wider">Con Cesión de Derechos</span>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -274,23 +323,23 @@
                 <div class="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm">
                     <h3 class="font-outfit text-3xl font-800 text-slate-900 uppercase mb-8">Expediente <span class="text-[#ff6600]">Técnico</span></h3>
                     @php
-                        // 1. Identificar si el proponente (usuario autenticado) está en el elenco
-                        $proponenteIden = Auth::user()->identificacion;
-                        $proponenteEnElenco = $proyecto->elenco->contains('identificacion', $proponenteIden);
+                    // 1. Identificar si el proponente (usuario autenticado) está en el elenco
+                    $proponenteIden = Auth::user()->identificacion;
+                    $proponenteEnElenco = $proyecto->elenco->contains('identificacion', $proponenteIden);
 
-                        // 2. Obtener la última versión de cada documento
-                        $documentosRecientes = $proyecto->documentos->groupBy('tipo_documento_id')->map(function($grupo) { 
-                            return $grupo->sortByDesc('version')->first(); 
-                        });
+                    // 2. Obtener la última versión de cada documento
+                    $documentosRecientes = $proyecto->documentos->groupBy('tipo_documento_id')->map(function($grupo) {
+                    return $grupo->sortByDesc('version')->first();
+                    });
 
-                        // 3. Si está en el elenco, filtramos para que la carta de intención NO salga aquí
-                        if ($proponenteEnElenco) {
-                            $documentosRecientes = $documentosRecientes->filter(function($doc) {
-                                $nombreDoc = strtolower($doc->tipoDocumento->nombre);
-                                // Excluimos si el nombre contiene "carta" o "intención"
-                                return !(str_contains($nombreDoc, 'carta') || str_contains($nombreDoc, 'intención'));
-                            });
-                        }
+                    // 3. Si está en el elenco, filtramos para que la carta de intención NO salga aquí
+                    if ($proponenteEnElenco) {
+                    $documentosRecientes = $documentosRecientes->filter(function($doc) {
+                    $nombreDoc = strtolower($doc->tipoDocumento->nombre);
+                    // Excluimos si el nombre contiene "carta" o "intención"
+                    return !(str_contains($nombreDoc, 'carta') || str_contains($nombreDoc, 'intención'));
+                    });
+                    }
                     @endphp
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach($documentosRecientes as $doc)

@@ -57,7 +57,7 @@ class InternoEtapaUnoMail extends Mailable
                 new Address('incentivos@actores.org.co', 'Incentivos Actores S.C.G.'),
             ],
             bcc: [
-                new Address('nhernandez@actores.org.co', 'Erick Hernández'),
+                new Address('sistemas@actores.org.co', 'Área de tecnología'),
             ],
         );
     }

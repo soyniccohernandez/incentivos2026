@@ -34,7 +34,7 @@ class ConfirmacionEtapaUnoMail extends Mailable
                 new \Illuminate\Mail\Mailables\Address('incentivos@actores.org.co', 'Incentivos Actores S.C.G.'),
             ],
             bcc: [
-                new \Illuminate\Mail\Mailables\Address('nhernandez@actores.org.co', 'Erick Hernández'),
+                new \Illuminate\Mail\Mailables\Address('sistemas@actores.org.co', 'Área de tecnología'),
             ],
         );
     }

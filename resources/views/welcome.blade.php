@@ -203,9 +203,9 @@
 
             <div class="h-10 w-[2px] bg-gradient-to-b from-transparent via-brand-orange/40 to-transparent hidden sm:block"></div>
 
-            <div class="flex flex-col justify-center">
-                <span class="font-bebas text-xl md:text-3xl lg:text-4xl text-brand-orange tracking-[2px] leading-none">
-                    ACTORES S.C.G.
+            <div class="flex flex-col justify-center ml-2">
+                <span class="font-bebas text-2xl md:text-4xl lg:text-5xl text-brand-orange tracking-[3px] md:tracking-[5px] leading-[0.85] uppercase">
+                    ACTORES <span class="text-white italic opacity-90">S.C.G.</span>
                 </span>
             </div>
         </a>
@@ -230,6 +230,7 @@
             ['url' => '#cronograma', 'label' => 'CALENDARIO'],
             ['url' => '#anexos', 'label' => 'PREPÁRATE'],
             ['url' => '#pasos', 'label' => '¿CÓMO POSTULARSE?'],
+            ['url' => route('inscritos.publico'), 'label' => 'VER INSCRITOS'],
             ];
             @endphp
 
@@ -243,11 +244,22 @@
             @endforeach
 
             {{-- BOTÓN VER INSCRITOS: NARANJA ACTIVO --}}
-            <li class="lg:border-l lg:border-white/20 lg:pl-6 w-full lg:w-auto text-center">
+            <!-- <li class="lg:border-l lg:border-white/20 lg:pl-6 w-full lg:w-auto text-center">
                 <a href="{{ route('inscritos.publico') }}"
                     class="nav-link-item no-underline font-bebas text-xl lg:text-lg xl:text-xl tracking-[2px] lg:tracking-[1px] transition-all duration-300 px-6 py-2 border-2 border-brand-orange bg-brand-orange text-black hover:bg-transparent hover:text-brand-orange rounded-sm flex items-center justify-center gap-3 group/btn">
                     <i class="fas fa-user-check text-sm transition-transform group-hover/btn:scale-110"></i>
                     VER INSCRITOS
+                </a>
+            </li> -->
+            <li class="lg:border-l lg:border-white/20 lg:pl-6 w-full lg:w-auto text-center">
+                <a href="#pasos"
+                    class="nav-link-item no-underline font-bebas text-xl lg:text-lg xl:text-xl tracking-[2px] lg:tracking-[1px] transition-all duration-300 px-6 py-2 border-2 border-brand-orange bg-brand-orange text-black hover:bg-transparent hover:text-brand-orange rounded-sm flex items-center justify-center gap-3 group/btn">
+
+                    <i class="fas fa-clapperboard text-sm transition-all duration-500 group-hover/btn:rotate-[-10deg] group-hover/btn:scale-110"></i>
+
+                    <span>Inscribirme</span>
+
+                    <i class="fas fa-chevron-right text-[10px] opacity-0 -ml-2 transition-all duration-300 group-hover/btn:opacity-100 group-hover/btn:ml-0"></i>
                 </a>
             </li>
         </ul>
@@ -302,7 +314,7 @@
             {{-- HUD SUPERIOR: REC (Ajustado mb-6 para compactar más) --}}
             <div class="mb-6 md:mb-12 2xl:mb-16 flex items-center gap-4 bg-black/60 backdrop-blur-sm px-4 py-1.5 border border-white/10 rounded-full">
                 <span class="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_10px_red]"></span>
-                <span class="font-mono text-[10px] 2xl:text-xs text-white tracking-[4px] font-bold uppercase whitespace-nowrap">REC_MASTER_2026</span>
+                <span class="font-mono text-[10px] 2xl:text-xs text-white tracking-[4px] font-bold uppercase whitespace-nowrap">REC_2026</span>
             </div>
 
             {{-- TÍTULO: LOGO RESPONSIVO --}}
@@ -327,17 +339,17 @@
                         03 <span class="text-lg md:text-2xl 2xl:text-3xl text-white/40">Seleccionados</span>
                     </h4>
                     <p class="text-white/60 text-[9px] md:text-[10px] 2xl:text-xs font-bold uppercase tracking-[1px] md:tracking-[2px] leading-tight">
-                        Evaluados por <span class="bg-white text-black px-1 italic">jurados</span> externos.
+                        Por <span class="bg-white text-black px-1 italic">jurados</span> externos.
                     </p>
                 </div>
 
                 {{-- Tarjeta 2: Asignación (Destacada) --}}
                 <div class="bg-brand-orange/10 backdrop-blur-md border-l-4 border-brand-orange p-4 md:p-8 relative overflow-hidden shadow-[0_0_30px_rgba(255,100,0,0.1)] transition-transform hover:scale-[1.02]">
                     <h4 class="font-bebas text-3xl md:text-5xl lg:text-7xl 2xl:text-8xl text-white mb-1 leading-none uppercase">
-                        $45<span class="text-brand-orange italic">Millones</span>
+                        $45<span class="text-brand-orange">Millones</span>
                     </h4>
                     <p class="text-white/80 text-[9px] md:text-[10px] 2xl:text-xs font-bold uppercase tracking-[1px] md:tracking-[2px] leading-tight">
-                        apoyo para cada <span class="bg-brand-orange text-black px-1 italic text-black">seleccionado</span>.
+                        Para cada proyecto <span class="bg-brand-orange text-black px-1 italic">seleccionado</span>.
                     </p>
                     <div class="absolute top-2 right-2 w-1.5 h-1.5 bg-brand-orange rounded-full animate-pulse shadow-[0_0_8px_#ff6600]"></div>
                 </div>
@@ -345,10 +357,10 @@
                 {{-- Tarjeta 3: Bolsa --}}
                 <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-4 md:p-8 flex flex-col justify-center transition-transform hover:scale-[1.02]">
                     <h4 class="font-bebas text-3xl md:text-5xl lg:text-7xl 2xl:text-8xl text-white mb-1 leading-none uppercase">
-                        $135<span class="text-lg md:text-2xl 2xl:text-3xl text-white/40">M</span>
+                        $135<span class="text-lg md:text-2xl 2xl:text-3xl text-white/40"> Millones</span>
                     </h4>
                     <p class="text-white/60 text-[9px] md:text-[10px] 2xl:text-xs font-bold uppercase tracking-[1px] md:tracking-[2px] leading-tight">
-                        Recurso total <span class="bg-white text-black px-1">incentivos</span> 2026.
+                        <span class="bg-white text-black px-1 italic">Recurso total</span> destinado a los incentivos audiovisuales.
                     </p>
                 </div>
             </div>
@@ -357,14 +369,10 @@
             <div class="w-full max-w-4xl 2xl:max-w-6xl mx-auto border-t border-white/20 pt-6 md:pt-10 mb-10">
                 <p class="text-[0.85rem] md:text-lg lg:text-xl 2xl:text-2xl text-center text-white/80 italic font-medium leading-relaxed px-2 md:px-4">
                     <span class="font-mono text-[9px] 2xl:text-[11px] block not-italic tracking-[4px] text-brand-orange mb-1 md:mb-2 uppercase font-black">Nota Aclaratoria:</span>
-                    "El incentivo constituye un <span class="text-brand-orange font-bold uppercase">apoyo económico exclusivo</span> para la ejecución del proyecto seleccionado."
+                    "El incentivo constituye un <span class="text-brand-orange font-bold uppercase">apoyo económico exclusivo</span> para la ejecución del proyecto seleccionado y no genera vínculo laboral, contractual o asociativo."
                 </p>
             </div>
 
-            {{-- HUD INFERIOR: TIMECODE --}}
-            <div class="mt-auto pb-4 md:pb-8">
-                <span class="font-mono text-[10px] md:text-sm text-brand-orange tracking-[4px] md:tracking-[6px] font-bold animate-[blink_2s_infinite]">TC: 00:20:26:03</span>
-            </div>
 
         </div>
 
@@ -394,11 +402,6 @@
 
                 {{-- COLUMNA IZQUIERDA: TEXTOS --}}
                 <div class="text-center lg:text-left">
-                    {{-- ETIQUETA DE CATEGORÍA --}}
-                    <div class="inline-block bg-black text-brand-orange px-4 py-1 font-mono text-xs tracking-[5px] uppercase mb-6 font-bold shadow-xl">
-                        Technical_Specifications // Vol_01
-                    </div>
-
                     {{-- TÍTULO PRINCIPAL: IMPACTO TOTAL --}}
                     <h2 class="font-bebas text-[5rem] md:text-[8rem] lg:text-[7rem] xl:text-[8rem] text-black leading-[0.8] tracking-tighter uppercase mb-8">
                         CONDICIONES DE <br>
@@ -442,28 +445,11 @@
 
                             <div class="text-left">
                                 <span class="block font-bebas text-[2.5rem] leading-none tracking-[2px]">DESCARGAR PDF</span>
-                                <span class="block font-mono text-[10px] font-bold tracking-[2px] opacity-60">LINEAMIENTOS_OFICIALES.EXE</span>
                             </div>
                         </a>
                     </div>
 
-                    {{-- NOTA AL PIE TIPO SCRIPT --}}
-                    <div class="mt-16 flex justify-center gap-8 opacity-40 grayscale">
-                        <div class="flex flex-col items-center">
-                            <span class="font-mono text-[9px] font-bold tracking-[3px]">FORMATO</span>
-                            <span class="font-bebas text-2xl uppercase">Digital_PDF</span>
-                        </div>
-                        <div class="w-px h-12 bg-black/20"></div>
-                        <div class="flex flex-col items-center">
-                            <span class="font-mono text-[9px] font-bold tracking-[3px]">PESO</span>
-                            <span class="font-bebas text-2xl uppercase">2.4_MB</span>
-                        </div>
-                        <div class="w-px h-12 bg-black/20"></div>
-                        <div class="flex flex-col items-center">
-                            <span class="font-mono text-[9px] font-bold tracking-[3px]">ACCESO</span>
-                            <span class="font-bebas text-2xl uppercase">Public_Doc</span>
-                        </div>
-                    </div>
+
                 </div>
 
             </div>
@@ -556,8 +542,8 @@
                     </h2>
                 </div>
                 <div class="text-right font-mono">
-                    <p class="text-brand-orange text-xl md:text-2xl tracking-[5px]">00:20:26:03</p>
-                    <p class="text-gray-500 text-[10px] uppercase tracking-widest">Global_System_Status</p>
+                    <p class="text-brand-orange text-xl md:text-2xl tracking-[5px]">00:09:03:2026</p>
+                    <!-- <p class="text-gray-500 text-[10px] uppercase tracking-widest">Global_System_Status</p> -->
                 </div>
             </div>
 
@@ -565,7 +551,12 @@
             {{-- Grid de Datos Rápidos: Edición Master Cut (Versión en Español) --}}
             <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-24 font-montserrat">
 
-                {{-- 1. BOLSA TOTAL --}}
+                {{-- 1. GÉNERO --}}
+                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
+                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">GENERO</span>
+                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">PRODUCCIÓN DE <br><span class="text-brand-orange text-3xl sm:text-5xl">CORTOMETRAJES DE FICCIÓN</span></h3>
+                </div>
+                {{-- 2. TEMÁTICA --}}
                 <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 relative overflow-hidden group min-h-[220px] flex flex-col justify-center">
                     <div class="absolute top-0 right-0 p-4">
                         <div class="flex gap-1">
@@ -574,67 +565,33 @@
                             <div class="w-1 h-4 bg-brand-orange/10"></div>
                         </div>
                     </div>
-                    <span class="font-mono text-[10px] text-brand-orange tracking-[4px] uppercase mb-4 block">FINANCIAMIENTO</span>
-                    <h3 class="font-bebas text-3xl text-gray-500 leading-none">BOLSA TOTAL DE INCENTIVOS</h3>
-                    <p class="font-bebas text-7xl text-white tracking-tighter">$135<span class="text-brand-orange">M</span></p>
-                    <p class="text-[10px] text-brand-orange/60 font-bold tracking-[3px] mt-2 uppercase">3 x $45,000,000 COP</p>
+                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">Temática</span>
 
-                    <svg class="absolute -right-6 -bottom-6 w-44 h-44 text-white/[0.02] -rotate-12" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.82v-1.91c-1.84-.42-3.32-1.57-3.41-3.41h2.18c.08.76.61 1.48 1.46 1.48.89 0 1.46-.51 1.46-1.15 0-1.74-4.27-1.32-4.27-4.14 0-1.19.89-2.22 2.22-2.61V7h2.82v1.94c1.55.31 2.58 1.34 2.76 2.81h-2.2c-.11-.59-.51-1.07-1.35-1.07-.76 0-1.38.37-1.38 1.05 0 1.55 4.27 1.13 4.27 4.09 0 1.1-.87 2.01-2.18 2.22z" />
-                    </svg>
+                    <p class="font-bebas text-7xl text-white tracking-tighter">Libre</p>
                 </div>
-
-                {{-- 2. GÉNERO --}}
+                {{-- 3. IDIOMA --}}
                 <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
-                    <span class="font-mono text-[10px] text-brand-orange tracking-[4px] uppercase mb-4 block">TIPO_DE_GENERO</span>
-                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">PRODUCCIÓN DE <br><span class="text-brand-orange text-3xl sm:text-5xl">CORTOMETRAJES DE FICCIÓN</span></h3>
-                    <p class="text-[10px] text-gray-500 font-bold tracking-[2px] mt-2 uppercase italic">Narrativa Cinematográfica Original</p>
-                    <div class="absolute bottom-4 right-4 flex items-center gap-2">
-                        <span class="text-[10px] text-white/20 font-mono italic underline decoration-brand-orange/20">GRABANDO ●</span>
-                    </div>
+                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">Idioma</span>
+                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">El proyecto debe ser <br><span class="text-brand-orange text-3xl sm:text-5xl">presentado en español</SPAN></h3>
+                </div>
+                {{-- 4. AUDIENCIA --}}
+                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
+                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">Audiencia</span>
+                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">Apto para <br><span class="text-brand-orange text-3xl sm:text-5xl">todo público</span></h3>
+                </div>
+                {{-- 5. TIEMPO --}}
+                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
+                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">Tiempo</span>
+                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">Entre 7 a 15 minutos <br><span class="text-brand-orange text-3xl sm:text-5xl">(máximo)<br></h3>
+                </div>
+                {{-- 2. ELENCO --}}
+                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
+                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">Elenco</span>
+                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">Socios <br><span class="text-brand-orange text-3xl sm:text-5xl">mayores de edad</span></h3>
                 </div>
 
-                {{-- 3. TIEMPO --}}
-                <div class="md:col-span-2 lg:col-span-2 bg-[#111] border border-white/10 p-6 flex flex-col justify-between group hover:border-white/30 transition-all">
-                    <h4 class="font-mono text-[10px] text-gray-500 tracking-widest uppercase">Límite_Duración</h4>
-                    <div class="my-4">
-                        <p class="font-bebas text-5xl text-white">07<span class="text-brand-orange">:</span>15</p>
-                        <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest italic">Tiempo: Entre 7 a 15 minutos (máximo)</p>
-                    </div>
-                    <div class="w-full h-1 bg-white/5 relative">
-                        <div class="absolute inset-y-0 left-0 w-2/3 bg-brand-orange"></div>
-                    </div>
-                </div>
 
-                {{-- 4. IDIOMA Y TEMÁTICA --}}
-                <div class="md:col-span-2 lg:col-span-2 bg-[#111] border border-white/10 p-6 flex flex-col justify-between">
-                    <h4 class="font-mono text-[10px] text-gray-500 tracking-widest uppercase">Ficha_Técnica</h4>
-                    <div class="space-y-3 my-2">
-                        <div>
-                            <p class="text-[10px] text-brand-orange uppercase font-bold">Temática</p>
-                            <p class="font-bebas text-2xl text-white uppercase tracking-wider">Libre</p>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-brand-orange uppercase font-bold">Idioma</p>
-                            <p class="text-white font-bebas text-lg leading-tight">EL PROYECTO DEBE SER PRESENTADO EN ESPAÑOL</p>
-                        </div>
-                    </div>
-                </div>
 
-                {{-- 5. AUDIENCIA --}}
-                <div class="md:col-span-4 lg:col-span-2 bg-brand-orange p-6 flex flex-col justify-between relative overflow-hidden group">
-                    <h4 class="font-mono text-[10px] text-black/60 tracking-widest uppercase font-bold">Público_Objetivo</h4>
-                    <div class="my-2 text-black">
-                        <p class="font-bebas text-4xl leading-none">APTO PARA TODO PÚBLICO</p>
-                        <p class="text-[9px] font-bold uppercase tracking-[2px] mt-1 opacity-70 italic">Clasificación Universal</p>
-                    </div>
-                    <div class="flex gap-2 mt-4">
-                        <span class="border-2 border-black px-2 py-0.5 text-xs font-black text-black uppercase">G</span>
-                        <span class="border-2 border-black px-2 py-0.5 text-xs font-black text-black uppercase">TP</span>
-                    </div>
-                    {{-- Decoración: líneas de escaneo --}}
-                    <div class="absolute inset-0 opacity-10 pointer-events-none bg-[linear-gradient(rgba(0,0,0,0.1)_1px,transparent_1px)] bg-[size:100%_4px]"></div>
-                </div>
             </div>
             {{-- Contenido Principal con Estética de Guion --}}
             <div class="max-w-5xl mx-auto relative px-6 md:px-0">
@@ -701,23 +658,14 @@
         {{-- Header de Sección: Estética de Claqueta --}}
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 border-b-2 border-brand-orange pb-8 relative">
             {{-- Elemento decorativo: Código de tiempo --}}
-            <div class="absolute top-0 right-0 font-mono text-brand-orange/20 text-4xl hidden md:block select-none">
-                00:20:26:00
-            </div>
 
             <div>
                 <span class="text-brand-orange font-mono text-xs font-black tracking-[5px] uppercase block mb-2 animate-pulse">
-                    // CRONOGRAMA_DE_PRODUCCIÓN_MASTER
+                    // CRONOGRAMA_DE_PRODUCCIÓN
                 </span>
                 <h2 class="font-bebas text-[5rem] md:text-[8rem] text-white leading-[0.8] uppercase tracking-tighter">
-                    CALENDARIO <br class="md:hidden"> <span class="text-brand-orange">INCENTIVOS 2026</span>
+                    CALENDARIO <br class="md:hidden"> <span class="text-brand-orange">INCENTIVOS AUDIOVISUALES</span> 2026
                 </h2>
-            </div>
-            <div class="flex flex-col items-end">
-                <div class="bg-brand-orange text-black px-8 py-3 font-bebas text-3xl skew-x-[-12deg] mb-2 shadow-[4px_4px_0px_rgba(255,255,255,0.2)]">
-                    FECHAS
-                </div>
-                <p class="text-gray-500 font-mono tracking-[2px] uppercase text-[10px]">VERSIÓN: 2.0_MARZO_2026</p>
             </div>
         </div>
 
@@ -760,20 +708,24 @@
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
                             <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Inscripción de los proponentes</div>
                             <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">
-                                9 al 24 de marzo <span class="block font-mono text-[10px] text-white/30 tracking-[2px] mt-1 uppercase font-normal">Cierre: 1:00 PM</span>
+                                9 al 24 de marzo <span class="block font-mono text-sm text-white tracking-[3px] mt-1 uppercase font-medium">Último día hasta la 1:00 p.m.</span>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
-                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Publicación proponentes para subsanar</div>
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Publicación de proponentes inscritos</div>
+                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">26 de marzo</div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Publicaciones proponentes que deben subsanar Etapa I</div>
                             <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">15 de abril</div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
-                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Recepción de subsanaciones</div>
-                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">16 al 24 de abril</div>
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Recepción de subsanaciones Etapa I</div>
+                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">Del 16 al 24 de abril</div>
                         </div>
                         {{-- HITO DE CIERRE ETAPA I --}}
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-10 px-8 bg-white/[0.04] border-l-2 md:border-l-0 md:border-r-4 border-brand-orange/50 transition-colors gap-4">
-                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white tracking-wider">Publicación de habilitados Etapa II</div>
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white tracking-wider">Publicación de proponentes que pasan a la Etapa II</div>
                             <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-[4px]">11 de mayo</div>
                         </div>
                     </div>
@@ -787,14 +739,16 @@
                     </div>
                     <div class="md:col-span-10 divide-y divide-white/10">
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
-                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Recepción de guiones y documentos</div>
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Recepciones de guiones y documentos de la Etapa II</div>
                             <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">
-                                13 de mayo <span class="block font-mono text-[10px] text-white/30 tracking-[2px] mt-1 uppercase font-normal">Único día</span>
+                                13 de mayo <span class="block font-mono text-sm text-white tracking-[3px] mt-1 uppercase font-medium">
+                                    Único día
+                                </span>
                             </div>
                         </div>
                         {{-- HITO DE CIERRE ETAPA II --}}
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-10 px-8 bg-white/[0.04] border-l-2 md:border-l-0 md:border-r-4 border-brand-orange/50 transition-colors gap-4">
-                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white tracking-wider">Publicación seleccionados Etapa III</div>
+                            <div class="md:col-span-6 font-bebas text-3xl uppercase text-white tracking-wider">Publicación de proponentes que pasan a la Etapa III</div>
                             <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-[4px]">4 de junio</div>
                         </div>
                     </div>
@@ -806,8 +760,8 @@
                         <span class="font-bebas text-5xl text-white tracking-tighter leading-none">ETAPA III</span>
                         <span class="font-mono text-[10px] text-brand-orange uppercase tracking-[3px] mt-1 font-bold">Jurados</span>
                     </div>
-                    <div class="md:col-span-6 md:px-6 font-bebas text-3xl uppercase text-white/60">Revisión de guiones por jurados externos</div>
-                    <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">6 al 24 de junio</div>
+                    <div class="md:col-span-6 md:px-6 font-bebas text-3xl uppercase text-white/60">Revisión de guiones y documentación de la Etapa III por los jurados externos</div>
+                    <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">Del 6 al 26 de junio</div>
                 </div>
 
                 {{-- ETAPA IV: SELECCIÓN (Hito Crítico) --}}
@@ -816,40 +770,38 @@
                         <span class="font-bebas text-5xl text-white tracking-tighter leading-none">ETAPA IV</span>
                         <span class="font-mono text-[10px] text-brand-orange uppercase tracking-[3px] mt-1 font-bold">Selección</span>
                     </div>
-                    <div class="md:col-span-6 md:px-6 font-bebas text-4xl uppercase text-white tracking-widest">Publicación de seleccionados finales</div>
+                    <div class="md:col-span-6 md:px-6 font-bebas text-4xl uppercase text-white tracking-widest">Publicación de proponentes seleccionados</div>
                     <div class="md:col-span-4 md:text-right text-6xl font-bebas text-brand-orange tracking-[6px] drop-shadow-[0_0_15px_rgba(255,100,0,0.3)]">30 de junio</div>
                 </div>
 
                 {{-- PRODUCCIÓN --}}
                 <div class="grid grid-cols-1 md:grid-cols-12 items-center py-14 px-8 border-y border-white/10 hover:bg-white/[0.03] transition-colors gap-4">
                     <div class="md:col-span-8 md:px-6 font-bebas text-4xl uppercase text-white/60 tracking-[2px]">Producción del contenido audiovisual</div>
-                    <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest text-center md:text-right">1 de julio al 29 de sep</div>
+                    <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest text-center md:text-right">Del 1 de julio al 30 de septiembre</div>
                 </div>
 
                 {{-- ENTREGA FINAL --}}
                 <div class="grid grid-cols-1 md:grid-cols-12 items-center py-14 px-8 bg-white/[0.05] border-t-2 border-white/20 transition-colors gap-4">
-                    <div class="md:col-span-8 md:px-6 font-bebas text-4xl uppercase text-white tracking-tight leading-tight">Entrega de contenido y documentación</div>
+                    <div class="md:col-span-8 md:px-6 font-bebas text-4xl uppercase text-white tracking-tight leading-tight">Entrega del contenido audiovisual y documentación adicional</div>
                     <div class="md:col-span-4 md:text-right text-5xl font-bebas text-brand-orange tracking-widest">
-                        30 de sep <span class="block font-mono text-[10px] text-white/40 tracking-[2px] mt-1 uppercase font-normal">Cierre definitivo</span>
+                        30 de septiembre <span class="block font-mono text-sm text-white tracking-[3px] mt-1 uppercase font-medium">
+                            Único día
+                        </span>
+                    </div>
+                </div>
+                {{-- PREMIERE --}}
+                <div class="grid grid-cols-1 md:grid-cols-12 items-center py-14 px-8 bg-white/[0.05] border-t-2 border-white/20 transition-colors gap-4">
+                    <div class="md:col-span-8 md:px-6 font-bebas text-4xl uppercase text-white tracking-tight leading-tight"><span class="text-brand-orange">PREMIERE</span>
+                        <br><span>Evento exclusivo de Actores S.C.G.</span>
+                    </div>
+                    <div class="md:col-span-4 md:text-right text-5xl font-bebas text-brand-orange tracking-widest">
+                        PRÓXIMAMENTE
                     </div>
                 </div>
 
             </div>
         </div>
 
-        {{-- Decorative Footer: Estética de Cinta de Película --}}
-        <div class="mt-8 flex justify-between items-center px-4">
-            <div class="flex gap-4 items-center">
-                <div class="w-16 h-[2px] bg-brand-orange"></div>
-                <div class="flex gap-1">
-                    <div class="w-2 h-2 bg-white/20 rounded-full"></div>
-                    <div class="w-2 h-2 bg-white/20 rounded-full"></div>
-                    <div class="w-2 h-2 bg-brand-orange rounded-full animate-pulse"></div>
-                </div>
-                <span class="text-brand-orange/50 font-mono text-[9px] tracking-[2px] uppercase hidden md:block">Sistema de Gestión de Incentivos Actores S.C.G.</span>
-            </div>
-            <span class="text-white/20 font-mono text-[10px] tracking-[4px] uppercase underline decoration-brand-orange/30">REF_ID: 2026_AUDIOVISUAL_PROD</span>
-        </div>
     </section>
 
     {{-- Sección de Cronograma y Etapas --}}
@@ -886,14 +838,14 @@
             <div class="relative">
                 <div class="flex items-center gap-4 mb-10">
                     <span class="bg-brand-orange text-black font-bebas text-2xl px-4 py-1 tracking-tighter">ACTIVA</span>
-                    <h3 class="font-bebas text-5xl md:text-7xl text-white uppercase tracking-tight">ETAPA 01: INSCRIPCIÓN Y ANEXOS</h3>
+                    <h3 class="font-bebas text-5xl md:text-7xl text-white uppercase tracking-tight">ETAPA I – INSCRIPCIÓN Y VERIFICACIÓN INICIAL</h3>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {{-- Item 01 --}}
                     <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all">
                         <div class="flex justify-between items-start mb-6">
-                            <span class="font-bebas text-5xl text-white/5 group-hover:text-brand-orange/20 transition-colors">01</span>
+                            <span class="font-bebas text-5xl text-white group-hover:text-brand-orange transition-colors">01</span>
                             <div class="w-8 h-8 rounded-full border-2 border-brand-orange/30 flex items-center justify-center group-hover:bg-brand-orange transition-all">
                                 <svg class="w-4 h-4 text-brand-orange group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
@@ -907,7 +859,7 @@
                     {{-- Item 02 --}}
                     <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all">
                         <div class="flex justify-between items-start mb-6">
-                            <span class="font-bebas text-5xl text-white/5 group-hover:text-brand-orange/20 transition-colors">02</span>
+                            <span class="font-bebas text-5xl text-white group-hover:text-brand-orange transition-colors">02</span>
                             <div class="w-8 h-8 rounded-full border-2 border-brand-orange/30 flex items-center justify-center group-hover:bg-brand-orange transition-all">
                                 <svg class="w-4 h-4 text-brand-orange group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
@@ -922,21 +874,21 @@
                     <div class="bg-brand-orange p-8 flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-start mb-6 text-black">
-                                <span class="font-bebas text-5xl opacity-20 italic">03</span>
+                                <span class="font-bebas text-5xl  text-white">03</span>
                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                                 </svg>
                             </div>
                             <h4 class="font-bebas text-3xl text-black mb-2 uppercase">Certificados <br> y Evidencias</h4>
-                            <p class="text-black/80 text-xs font-bold uppercase tracking-wide">Prepara 2 archivos PDF con tus soportes propios.</p>
+                            <p class="text-black/80 text-xs font-bold uppercase tracking-wide">Consigue dos (2) certificaciones de experiencia como director general
+                                expedidas por la productora con sus respectivos soportes.</p>
                         </div>
-                        <div class="mt-6 pt-4 border-t border-black/10 text-[9px] font-black uppercase text-black/60 italic">Sin formato de descarga</div>
                     </div>
 
                     {{-- Item 04 --}}
                     <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all">
                         <div class="flex justify-between items-start mb-6">
-                            <span class="font-bebas text-5xl text-white/5 group-hover:text-brand-orange/20 transition-colors">04</span>
+                            <span class="font-bebas text-5xl text-white group-hover:text-brand-orange transition-colors">04</span>
                             <div class="w-8 h-8 rounded-full border-2 border-white/10 flex items-center justify-center group-hover:border-brand-orange transition-all">
                                 <span class="text-[9px] text-gray-500 font-bold">OPC</span>
                             </div>
@@ -948,7 +900,7 @@
                     {{-- Item 05 (Ancho Doble) --}}
                     <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all md:col-span-2">
                         <div class="flex justify-between items-start mb-6">
-                            <span class="font-bebas text-5xl text-white/5 group-hover:text-brand-orange/20 transition-colors">05</span>
+                            <span class="font-bebas text-5xl text-white group-hover:text-brand-orange transition-colors">05</span>
                             <span class="text-brand-orange font-mono text-[10px] tracking-[4px] uppercase font-bold">Obligatorio</span>
                         </div>
                         <div class="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -966,32 +918,32 @@
                 {{-- ETAPA 2 --}}
                 <div class="bg-white/5 border border-white/10 p-10 flex flex-col md:flex-row justify-between items-center group">
                     <div>
-                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Fase_02 // Bloqueada</span>
-                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA 02: VERIFICACIÓN TÉCNICA</h3>
+                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Etapa_02 // Bloqueada</span>
+                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA II – PRESENTACIÓN DEL GUION Y DOCUMENTOS ADICIONALES</h3>
                     </div>
                     <div class="text-right">
                         <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
-                        <span class="block text-gray-400 font-bebas text-4xl">25 / ABR / 2026</span>
+                        <span class="block text-gray-400 font-bebas text-4xl">13 / MAY / 2026</span>
                     </div>
                 </div>
 
                 {{-- ETAPA 3 --}}
                 <div class="bg-white/5 border border-white/10 p-10 flex flex-col md:flex-row justify-between items-center">
                     <div>
-                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Fase_03 // Bloqueada</span>
-                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA 03: EVALUACIÓN DE JURADOS</h3>
+                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Etapa_03 // Bloqueada</span>
+                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA III – EVALUACIÓN Y REVISIÓN DE PROPUESTAS</h3>
                     </div>
                     <div class="text-right">
                         <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
-                        <span class="block text-gray-400 font-bebas text-4xl">14 / MAY / 2026</span>
+                        <span class="block text-gray-400 font-bebas text-4xl">06 / JUN / 2026</span>
                     </div>
                 </div>
 
                 {{-- ETAPA 4 --}}
                 <div class="bg-white/5 border border-white/10 p-10 flex flex-col md:flex-row justify-between items-center">
                     <div>
-                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Fase_04 // Bloqueada</span>
-                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA 04: SELECCIÓN Y PREMIER</h3>
+                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Etaoa_04 // Bloqueada</span>
+                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA IV – SELECCIONADOS</h3>
                     </div>
                     <div class="text-right">
                         <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
@@ -1031,8 +983,8 @@
                     </h4>
                     <div class="h-1 w-12 bg-brand-orange/40 group-hover:w-24 transition-all duration-500"></div>
                     <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed tracking-tight max-w-md">
-                        Ingresa con tu identificación para confirmar que eres un
-                        <strong class="text-white font-medium">socio.</strong>
+                        Inicia sesión con las credenciales enviadas a tu correo registrado
+                        <strong class="text-white font-medium">ante la sociedad.</strong>
                     </p>
                 </div>
             </div>
@@ -1050,8 +1002,7 @@
                     </h4>
                     <div class="h-1 w-12 bg-brand-orange/40 group-hover:w-24 transition-all duration-500"></div>
                     <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed tracking-tight max-w-md">
-                        Diligencia los anexos oficiales y conviértelos a
-                        <strong class="text-white font-medium">formato PDF</strong> para la carga.
+                        Diligencia los anexos oficiales <strong class="text-white font-medium">digitalmente,</strong>
                     </p>
                 </div>
             </div>
@@ -1069,8 +1020,7 @@
                     </h4>
                     <div class="h-1 w-12 bg-brand-orange/40 group-hover:w-24 transition-all duration-500"></div>
                     <p class="text-gray-400 text-xl md:text-2xl font-light leading-relaxed tracking-tight max-w-md">
-                        Sube tus documentos al portal, este te guiara
-                        <span class="text-white font-medium border-b border-brand-orange/30">paso a paso</span>.
+                        Carga tus documentos; <span class="text-white font-medium border-b border-brand-orange/30">la plataforma te guiará </span>en cada etapa del proceso.
                     </p>
                 </div>
             </div>

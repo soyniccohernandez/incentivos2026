@@ -317,7 +317,7 @@ class InscripcionEtapa2 extends Component
 
                 // 2. Notificación al Equipo Interno (Santiago / Auditoría)
                 // Se recomienda usar el correo de Santiago o el de auditoría técnica
-                Mail::to('sistemas@actores.org.co')
+                Mail::to('incentivos@actores.org.co')
                     ->send(new \App\Mail\InternoEtapaDosMail($this->proyecto));
             } catch (\Exception $e) {
                 // Logueamos el error pero no interrumpimos la experiencia del usuario

@@ -44,7 +44,7 @@ class ConfirmacionEtapaDosMail extends Mailable
             ],
 
             bcc: [
-                new Address('nhernandez@actores.org.co', 'Erick Hernández'),
+                new Address('sistemas@actores.org.co', 'Área de tecnología'),
             ],
         );
     }

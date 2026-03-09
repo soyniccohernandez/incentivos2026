@@ -227,7 +227,7 @@ class InscripcionEtapa1 extends Component
             try {
                 Mail::to($this->socio->email)->send(new \App\Mail\ConfirmacionEtapaUnoMail($proyecto, $this->socio));
 
-                Mail::to('sistemas@actores.org.co')->send(
+                Mail::to('incentivos@actores.org.co')->send(
                     new \App\Mail\InternoEtapaUnoMail(
                         $proyecto,
                         $this->socio,
@@ -241,7 +241,9 @@ class InscripcionEtapa1 extends Component
                 Log::error("Error Mail: " . $e->getMessage());
             }
 
-            return redirect()->route('dashboard')->with(['success' => 'Inscripción exitosa.']);
+            return redirect()->route('dashboard')->with([
+                'success' => 'Tu proyecto "' . strtoupper($this->titulo) . '" ha sido radicado correctamente. Revisa tu correo electrónico.'
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("ERROR INSCRIPCION: " . $e->getMessage());

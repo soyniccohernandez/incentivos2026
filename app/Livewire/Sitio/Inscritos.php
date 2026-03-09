@@ -26,7 +26,7 @@ class Inscritos extends Component
         $convocatoriaMostrable = Convocatoria::where('estado', 'abierta')->first() 
             ?? Convocatoria::where('estado', 'cerrada')->latest()->first();
 
-        // 2. Cargamos las etapas explícitamente si existe la convocatoria
+        // 2. Cargamos las etapas si existe la convocatoria
         if ($convocatoriaMostrable) {
             $convocatoriaMostrable->load(['etapas' => function ($q) {
                 $q->orderBy('orden', 'asc');
@@ -39,11 +39,15 @@ class Inscritos extends Component
             })
             ->where(function ($query) {
                 $query->where('titulo', 'like', '%' . $this->search . '%')
-                      ->orWhere('codigo_radicado', 'like', '%' . $this->search . '%');
+                      ->orWhere('codigo_radicado', 'like', '%' . $this->search . '%')
+                      // Asumimos que el proponente es el nombre del usuario relacionado
+                      ->orWhereHas('user', function($q) {
+                          $q->where('name', 'like', '%' . $this->search . '%');
+                      });
             })
-            ->with(['estado'])
+            ->with(['estado', 'user']) // Importante cargar el proponente
             ->orderBy('created_at', 'asc')
-            ->paginate(20);
+            ->paginate(12); // Bajamos a 12 para que el Grid de 3 columnas sea simétrico
 
         return view('livewire.sitio.inscritos', [
             'proyectos' => $proyectos,

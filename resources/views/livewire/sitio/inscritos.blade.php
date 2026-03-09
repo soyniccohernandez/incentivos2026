@@ -1,201 +1,190 @@
-<div class="bg-black min-h-screen text-white font-montserrat antialiased selection:bg-brand-orange selection:text-white" wire:poll.10s>
-    {{-- 1. NAVEGACIÓN --}}
-    <nav class="fixed top-0 left-0 w-full z-[1000] flex justify-between items-center px-4 py-4 md:px-12 bg-black/95 border-b border-white/10 backdrop-blur-md">
-        <a href="/" class="flex items-center gap-4 no-underline">
-            <span class="font-bebas text-2xl md:text-4xl text-brand-orange tracking-[2px]">ACTORES <span class="text-white">S.C.G.</span></span>
+<div class="min-h-screen bg-[#020202] text-white font-montserrat antialiased pb-20">
+
+    <nav class="sticky top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-4 md:px-16 bg-black/95 border-b-2 border-white/5 backdrop-blur-xl transition-all duration-500 transform-gpu">
+
+        {{-- MARCAS DE ENCUADRE DECORATIVAS --}}
+        <div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-brand-orange/20 hidden md:block"></div>
+        <div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-brand-orange/20 hidden md:block"></div>
+
+        {{-- 1. LADO IZQUIERDO: LOGO Y BRANDING --}}
+        <a href="{{ url('/') }}" class="flex items-center gap-4 group no-underline shrink-0 z-[1101]">
+            <div class="relative py-1">
+                <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo Actores SCG"
+                    class="h-[45px] md:h-[60px] w-auto object-contain select-none pointer-events-none transition-transform duration-500 group-hover:scale-105">
+            </div>
+
+            <div class="h-8 w-[1px] bg-gradient-to-b from-transparent via-brand-orange/40 to-transparent hidden sm:block"></div>
+
+            <div class="flex flex-col justify-center ml-2">
+                <span class="font-bebas text-2xl md:text-4xl lg:text-5xl text-brand-orange tracking-[3px] md:tracking-[5px] leading-[0.85] uppercase">
+                    ACTORES <span class="text-white italic opacity-90">S.C.G.</span>
+                </span>              
+            </div>
         </a>
-        <a href="/" class="no-underline text-white/60 font-bebas text-lg md:text-xl tracking-[1px] md:tracking-[2px] hover:text-brand-orange transition-all flex items-center gap-2 md:gap-3 group">
-            <span class="text-xl group-hover:-translate-x-2 transition-transform">←</span> <span class="hidden xs:inline">VOLVER</span> <span class="inline">INICIO</span>
-        </a>
+
+        {{-- 2. LADO DERECHO: INICIO + BOTÓN --}}
+        <div class="flex items-center gap-6 md:gap-10">
+
+            {{-- ENLACE INICIO --}}
+            <a href="{{ url('/') }}"
+                class="font-bebas text-lg md:text-xl text-white/50 hover:text-brand-orange tracking-[3px] no-underline transition-all duration-300 relative group hidden sm:block">
+                INICIO
+                <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-brand-orange transition-all duration-300 group-hover:w-full"></span>
+            </a>
+
+            {{-- BOTÓN INSCRIBIRME --}}
+            <a href="{{ route('validar-socio') }}"
+                class="nav-link-item no-underline font-bebas text-xl lg:text-lg xl:text-xl tracking-[2px] lg:tracking-[1px] transition-all duration-300 px-6 py-2 border-2 border-brand-orange bg-brand-orange text-black hover:bg-transparent hover:text-brand-orange rounded-sm flex items-center justify-center gap-3 group/btn">
+
+                <i class="fas fa-clapperboard text-sm transition-all duration-500 group-hover/btn:rotate-[-10deg] group-hover/btn:scale-110"></i>
+
+                <span>Inscribirme</span>
+
+                <i class="fas fa-chevron-right text-[10px] opacity-0 -ml-2 transition-all duration-300 group-hover/btn:opacity-100 group-hover/btn:ml-0"></i>
+            </a>
+        </div>
     </nav>
 
-    <main class="max-w-[1400px] mx-auto pt-32 md:pt-40 pb-20 px-4 md:px-8">
-        {{-- HERO SECTION --}}
-        <div class="border-l-[8px] md:border-l-[15px] border-brand-orange pl-5 md:pl-16 mb-16 md:mb-24">
-            {{-- Ajuste de tracking para que no se salga en móvil --}}
-            <span class="text-brand-orange tracking-[4px] md:tracking-[10px] text-[9px] md:text-[10px] font-black uppercase mb-4 block opacity-80 break-words md:whitespace-nowrap">
-                // PLATAFORMA_DE_TRANSPARENCIA_2026
-            </span>
-            <h1 class="font-bebas text-[18vw] md:text-[8.5rem] leading-[0.8] mb-8 md:mb-12 tracking-tighter uppercase">
-                MONITOR <br><span class="text-brand-orange">DE PROYECTOS</span>
-            </h1>
+    <script>
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+        const body = document.body;
 
-            <div class="flex flex-col md:flex-row items-stretch gap-0 border border-white/10 bg-white/[0.02]">
-                {{-- BLOQUE A: MÉTRICA --}}
-                <div class="flex items-center justify-between md:justify-start gap-4 md:gap-8 px-6 md:px-10 py-6 md:py-8 border-b md:border-b-0 md:border-r border-white/10 bg-white/[0.01]">
-                    <div class="relative">
-                        <span class="text-white font-bebas text-7xl md:text-9xl leading-none tracking-tighter block">
-                            {{ $total }}
-                        </span>
-                        <span class="absolute -top-1 -right-2 md:-top-2 md:-right-4 bg-brand-orange text-black font-black text-[7px] md:text-[8px] px-1.5 md:px-2 py-0.5 tracking-tighter uppercase">Live_Data</span>
-                    </div>
-                    <div class="flex flex-col border-l border-brand-orange/30 pl-4 md:pl-6">
-                        <span class="text-brand-orange text-[10px] md:text-[11px] font-black uppercase tracking-[3px] md:tracking-[5px] leading-tight">Proyectos</span>
-                        <span class="text-white/40 text-[10px] md:text-[11px] font-black uppercase tracking-[3px] md:tracking-[5px] leading-tight italic">Registrados</span>
-                    </div>
-                </div>
+        function toggleMenu() {
+            navLinks.classList.toggle('-right-full');
+            navLinks.classList.toggle('right-0');
+            body.style.overflow = navLinks.classList.contains('right-0') ? 'hidden' : 'auto';
+        }
 
-                {{-- BLOQUE B: PANEL TÉCNICO --}}
-                <div class="flex flex-1 items-center justify-between px-6 md:px-12 py-6 md:py-8 relative overflow-hidden group">
-                    <div class="relative z-10">
-                        <h2 class="font-bebas text-3xl md:text-5xl text-white leading-[0.8] uppercase tracking-tighter">
-                            REGISTRO <span class="text-brand-orange italic">CONSOLIDADO</span>
-                        </h2>
-                        <div class="flex items-center gap-2 md:gap-3 mt-3">
-                            <span class="text-white/30 font-mono text-[8px] md:text-[9px] uppercase tracking-[2px] md:tracking-[3px]">Protocolo: SCG-V.26</span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/50 animate-pulse"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        menuBtn.addEventListener('click', toggleMenu);
 
-        {{-- GRID DE CRONOGRAMA: TRANSFORMADO A SLIDER EN MÓVIL --}}
-        <div class="mb-12 md:mb-32">
-            {{-- Label técnico para la sección --}}
-            <span class="text-[8px] font-mono text-white/20 tracking-[4px] uppercase mb-4 block md:hidden">// TIMELINE_ESTATUS</span>
+        document.querySelectorAll('.nav-link-item').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) toggleMenu();
+            });
+        });
 
-            <div class="flex overflow-x-auto md:grid md:grid-cols-4 gap-4 snap-x snap-mandatory hide-scrollbar pb-4 md:pb-0">
-                @if($convocatoriaActual)
-                @foreach($convocatoriaActual->etapas->sortBy('orden') as $etapa)
-                @php $activa = $etapa->estaActiva(); @endphp
-
-                {{-- Tarjeta: En móvil es más angosta (w-[280px]) para permitir el scroll horizontal --}}
-                <div class="relative p-6 md:p-8 border min-w-[260px] md:min-w-full snap-center {{ $activa ? 'border-brand-orange bg-brand-orange/5' : 'border-white/5 bg-white/[0.01] opacity-40' }}">
-
-                    @if($activa)
-                    <div class="absolute top-0 right-0 bg-brand-orange text-black font-black text-[8px] px-2 py-0.5 tracking-widest uppercase">
-                        LIVE
-                    </div>
-                    @endif
-
-                    <span class="font-bebas text-lg text-brand-orange block mb-2 md:mb-6 tracking-[2px]">ETAPA 0{{ $etapa->orden }}</span>
-
-                    <h4 class="font-bebas text-xl md:text-3xl text-white mb-3 uppercase tracking-tighter leading-none truncate">
-                        {{ $etapa->nombre }}
-                    </h4>
-
-                    <div class="flex items-end justify-between md:block border-t border-white/10 pt-4 md:space-y-1">
-                        <div>
-                            <p class="text-[8px] uppercase font-black tracking-[1px] text-gray-500 md:block hidden">Cierre de fase:</p>
-                            <p class="font-bebas text-3xl md:text-5xl text-white leading-none tracking-tighter">
-                                {{ $etapa->fecha_fin->format('d / M') }}
-                            </p>
-                        </div>
-                        <p class="font-mono text-[10px] md:text-[11px] font-bold text-brand-orange uppercase">
-                            {{ $etapa->fecha_fin->format('h:i A') }}
-                        </p>
-                    </div>
-                </div>
-                @endforeach
-                @endif
-            </div>
-        </div>
-
-        {{-- BÚSQUEDA (AHORA MUCHO MÁS ARRIBA EN MÓVIL) --}}
-        <div class="mb-16 md:mb-20">
-            <div class="max-w-7xl">
-                <p class="text-brand-orange font-black text-[10px] md:text-[11px] tracking-[6px] md:tracking-[8px] uppercase mb-4 md:mb-6">
-                    <span class="animate-pulse">●</span> BUSCADOR_DE_RADICADOS
-                </p>
-                <div class="relative group">
-                    <input type="text"
-                        wire:model.live="search"
-                        placeholder="BUSCAR PROYECTO..."
-                        class="w-full bg-transparent border-b-2 border-brand-orange/30 py-4 md:py-6 text-4xl md:text-6xl font-bebas tracking-widest outline-none focus:border-brand-orange transition-all placeholder:text-white/10 uppercase focus:placeholder:opacity-0">
-
-                    <div class="absolute right-0 bottom-4 md:bottom-6 text-brand-orange">
-                        <svg class="w-8 h-8 md:w-12 md:h-12 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <style>
-            /* Oculta el scrollbar pero permite el scroll en el timeline móvil */
-            .hide-scrollbar::-webkit-scrollbar {
-                display: none;
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.replace('py-4', 'py-2');
+                nav.classList.replace('bg-black/95', 'bg-black');
+            } else {
+                nav.classList.replace('py-2', 'py-4');
+                nav.classList.replace('bg-black', 'bg-black/95');
             }
+        });
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
 
-            .hide-scrollbar {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
+        /* Tipografía fluida y más grande */
+        .nav-link-item {
+            font-size: clamp(2.2rem, 5vw, 2.5rem);
+            /* Móvil */
+        }
+
+        @media (min-width: 1024px) {
+            .nav-link-item {
+                font-size: clamp(1.1rem, 1.2vw, 1.4rem);
+                /* Escritorio: un poco más grande que antes */
             }
-        </style>
+        }
+    </style>
 
-        {{-- BÚSQUEDA (PROTAGONISTA) --}}
-        <div class="mb-16 md:mb-20">
-            <div class="max-w-7xl">
-                <p class="text-brand-orange font-black text-[9px] md:text-[11px] tracking-[4px] md:tracking-[8px] uppercase mb-4 md:mb-6">// BUSCADOR_DE_RADICADOS</p>
-                <div class="relative group">
-                    <input type="text" wire:model.live="search" placeholder="BUSCAR..." class="w-full bg-transparent border-b-2 border-white/10 py-4 md:py-6 text-3xl md:text-6xl font-bebas tracking-widest outline-none focus:border-brand-orange transition-all placeholder:text-white/5 uppercase">
-                    <div class="absolute right-0 bottom-4 md:bottom-6 text-white/20 group-focus-within:text-brand-orange">
-                        <svg class="w-8 h-8 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
+    <main class="max-w-[1500px] mx-auto px-8 pt-16">
+
+        {{-- CABECERA --}}
+        <div class="mb-20 max-w-4xl">
+            <span class="text-brand-orange font-mono text-xs tracking-[8px] uppercase mb-4 block">Fase de Selección {{ $ahora->year }}</span>
+            <h1 class="font-bebas text-7xl md:text-9xl leading-[0.8] mb-8 uppercase">ARCHIVO DE <br><span class="text-brand-orange text-opacity-80">POSTULACIONES</span></h1>
+
+            <div class="relative group">
+                <input type="text" wire:model.live="search"
+                    placeholder="BUSCAR POR NOMBRE, RADICADO O PROPONENTE..."
+                    class="w-full bg-[#0a0a0a] border border-white/10 p-6 text-xl md:text-3xl font-bebas tracking-widest outline-none focus:border-brand-orange transition-all placeholder:text-white/5 uppercase shadow-2xl">
+                <div class="absolute right-6 top-1/2 -translate-y-1/2 text-brand-orange opacity-20 group-focus-within:opacity-100 transition-opacity">
+                    <i class="fas fa-search text-2xl"></i>
                 </div>
             </div>
         </div>
 
-        {{-- LISTADO DE PROYECTOS --}}
-        <div class="border border-white/10 bg-[#080808]">
-            <div class="hidden md:grid grid-cols-12 gap-4 px-10 py-5 bg-white/[0.03] border-b border-white/10">
-                <div class="col-span-2 text-white/40 font-mono text-[10px] font-black tracking-[3px]">REFERENCIA</div>
-                <div class="col-span-7 text-white/40 font-mono text-[10px] font-black tracking-[3px]">DETALLES DEL PROYECTO</div>
-                <div class="col-span-3 text-right text-white/40 font-mono text-[10px] font-black tracking-[3px]">ESTADO</div>
-            </div>
-
+        {{-- GRID DE PROYECTOS REALES --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             @forelse($proyectos as $proyecto)
-            <div class="group relative flex flex-col md:grid md:grid-cols-12 gap-4 px-6 md:px-10 py-8 md:py-12 items-start md:items-center hover:bg-white/[0.01] transition-all border-b border-white/5">
+            <a href="{{ route('validar-socio', ['radicado' => $proyecto->codigo_radicado]) }}" class="group relative flex flex-col bg-[#0a0a0a] border border-white/5 hover:border-brand-orange/50 transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:-translate-y-2 no-underline overflow-hidden">
 
-                {{-- Radicado de fondo (Solo Desktop para evitar ruido en móvil) --}}
-                <span class="hidden md:block absolute right-10 top-1/2 -translate-y-1/2 font-bebas text-[11rem] text-white/[0.01] pointer-events-none uppercase tracking-tighter">
-                    {{ $proyecto->codigo_radicado }}
-                </span>
+                {{-- Barra superior dinámica según estado --}}
+                <div class="h-2 w-full {{ $proyecto->estado?->nombre == 'SELECCIONADO' ? 'bg-brand-orange' : 'bg-white/5' }} group-hover:bg-brand-orange transition-colors duration-500"></div>
 
-                {{-- 1. Info de Referencia --}}
-                <div class="md:col-span-2 relative z-10">
-                    <span class="text-brand-orange font-mono text-sm font-black italic">#{{ $proyecto->codigo_radicado }}</span>
-                </div>
-
-                {{-- 2. Título --}}
-                <div class="md:col-span-7 relative z-10 w-full">
-                    <h3 class="text-white text-2xl md:text-5xl font-bebas tracking-wider group-hover:text-brand-orange transition-colors uppercase leading-none break-words">
-                        {{ $proyecto->titulo }}
-                    </h3>
-                </div>
-
-                {{-- 3. Estatus --}}
-                <div class="md:col-span-3 w-full md:text-right relative z-10 mt-4 md:mt-0">
-                    @if($proyecto->publicado)
-                    <div class="inline-flex flex-col items-start md:items-end border-l-2 md:border-l-0 md:border-r-2 border-brand-orange pl-4 md:pr-4">
-                        <span class="text-white font-bebas text-2xl md:text-3xl tracking-widest uppercase leading-none">{{ $proyecto->estado->nombre }}</span>
-                        <span class="text-white/20 font-mono text-[8px] md:text-[9px] font-black uppercase tracking-[2px] mt-1 italic">Trámite Activo</span>
+                <div class="p-8">
+                    {{-- Radicado y Fecha --}}
+                    <div class="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+                        <span class="font-mono text-[10px] text-brand-orange tracking-[3px] font-bold uppercase">#{{ $proyecto->codigo_radicado }}</span>
+                        <span class="font-mono text-[10px] text-white/30 tracking-[2px] uppercase">{{ $proyecto->created_at->format('d/m/Y') }}</span>
                     </div>
-                    @else
-                    <span class="text-white/20 font-bebas text-2xl tracking-widest uppercase italic">EN REVISIÓN</span>
-                    @endif
+
+                    {{-- Título --}}
+                    <h2 class="font-bebas text-4xl md:text-5xl text-white leading-tight uppercase mb-6 min-h-[120px] group-hover:text-brand-orange transition-colors duration-500 italic">
+                        {{ $proyecto->titulo }}
+                    </h2>
+
+                    {{-- Proponente (Nombre del Usuario) --}}
+                    <div class="mb-10">
+                        <span class="text-[9px] font-mono text-white/20 uppercase tracking-[3px] mb-1 block">Postulado por:</span>
+                        <span class="font-bebas text-2xl text-white/80 tracking-widest uppercase group-hover:text-white transition-colors">
+                            {{ $proyecto->user?->name ?? 'N/A' }}
+                        </span>
+                    </div>
+
+                    {{-- Footer: Estado y Acción --}}
+                    <div class="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
+                        <div class="flex flex-col">
+                            <span class="font-mono text-[8px] text-white/20 uppercase tracking-[4px] mb-1">Estatus_</span>
+                            <span class="font-bebas text-2xl tracking-[2px] {{ $proyecto->estado?->nombre == 'SELECCIONADO' ? 'text-brand-orange' : 'text-white/40' }} uppercase">
+                                {{ $proyecto->estado?->nombre ?? 'RECIBIDO' }}
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-brand-orange opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
+                            <span class="font-bebas text-xl tracking-widest">VALIDAR</span>
+                            <i class="fas fa-arrow-right text-sm"></i>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <div class="absolute inset-0 bg-gradient-to-tr from-brand-orange/[0.05] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            </a>
             @empty
-            <div class="py-20 md:py-40 text-center px-6">
-                <span class="block font-bebas text-5xl md:text-8xl text-white/5 uppercase tracking-tighter">DATA_NOT_FOUND</span>
+            <div class="col-span-full py-20 text-center border border-dashed border-white/10 bg-white/[0.02]">
+                <i class="fas fa-film text-white/10 text-6xl mb-4"></i>
+                <p class="font-bebas text-3xl text-white/20 tracking-widest uppercase">No se encontraron proyectos registrados</p>
             </div>
             @endforelse
         </div>
+
+        {{-- PAGINACIÓN LIVEWIRE CUSTOM --}}
+        <div class="mt-20">
+            <div class="mt-20">
+                {{ $proyectos->links('livewire.custom-pagination') }}
+            </div>
+
+            {{-- En caso de no tener el vendor publicado, el texto informativo --}}
+            <div class="mt-8 bg-[#0a0a0a] border border-white/10 p-8 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="font-mono text-[10px] text-white/40 tracking-[5px] uppercase">
+                    Mostrando <span class="text-white">{{ $proyectos->firstItem() ?? 0 }} - {{ $proyectos->lastItem() ?? 0 }}</span> de <span class="text-brand-orange">{{ $total }}</span> proyectos
+                </div>
+                <div class="hidden lg:block">
+                    <span class="font-bebas text-xl text-white/20 tracking-[4px]">ARCHIVO_ACTORES_SCG_V.26</span>
+                </div>
+            </div>
+        </div>
     </main>
 
-    {{-- FOOTER --}}
-    <footer class="p-8 md:p-16 border-t-[6px] md:border-t-[10px] border-brand-orange flex flex-col md:flex-row justify-between items-start md:items-center gap-8 bg-[#050505]">
-        <span class="font-bebas text-3xl md:text-5xl text-white uppercase">Actores <span class="text-brand-orange">SCG</span></span>
-        <div class="flex items-center gap-4 md:gap-8 border-l border-white/10 pl-4 md:pl-8">
-            <div class="w-10 h-10 md:w-14 md:h-14 border border-brand-orange/20 flex items-center justify-center">
-                <div class="w-2 h-2 bg-brand-orange animate-ping rounded-full"></div>
-            </div>
-            <span class="font-mono text-[9px] md:text-[11px] text-white/40 uppercase tracking-[2px]">SISTEMA 24/7</span>
-        </div>
+    <footer class="mt-32 py-16 bg-[#050505] border-t border-white/5 text-center">
+        <p class="font-mono text-[9px] text-white/20 tracking-[4px] uppercase italic">Sistema de Gestión Audiovisual // Bogotá, Colombia // {{ $ahora->year }}</p>
     </footer>
 </div>

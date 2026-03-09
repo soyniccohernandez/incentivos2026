@@ -19,7 +19,131 @@
         }
     </style>
 
-    @livewire('layout.navigation')
+    {{-- Elemento invisible que transporta el mensaje de Laravel a JS --}}
+    @if(session('success'))
+    <div id="swal-payload" data-message="{{ session('success') }}"></div>
+    @endif
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const payload = document.getElementById('swal-payload');
+
+            if (payload && payload.dataset.message) {
+                Swal.fire({
+                    title: '¡RADICACIÓN EXITOSA!',
+                    text: payload.dataset.message,
+                    icon: 'success',
+                    confirmButtonText: 'ENTENDIDO',
+                    confirmButtonColor: '#ff6600',
+                    background: '#ffffff',
+                    // Diseño premium y limpio
+                    customClass: {
+                        popup: 'rounded-[2rem] border-4 border-slate-900 shadow-2xl',
+                        title: 'font-bebas text-4xl tracking-tight text-slate-900',
+                        htmlContainer: 'font-inter text-slate-600 font-medium',
+                        confirmButton: 'rounded-xl px-12 py-3 font-bebas text-xl tracking-widest hover:scale-105 transition-transform'
+                    },
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInUp animate__faster'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutDown animate__faster'
+                    }
+                }).then(() => {
+                    // Opcional: Limpiar el rastro del DOM después de mostrarlo
+                    payload.remove();
+                });
+
+
+                history.replaceState(null, null, window.location.href);
+            }
+        });
+    </script>
+
+    <nav x-data="{ dropdownOpen: false }" class="bg-black border-b border-white/10 sticky top-0 z-[1000] antialiased">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;800;900&display=swap');
+
+            .font-outfit {
+                font-family: 'Outfit', sans-serif;
+            }
+
+            .font-inter {
+                font-family: 'Inter', sans-serif;
+            }
+
+            [x-cloak] {
+                display: none !important;
+            }
+
+            .animate-fade-in {
+                animation: fadeIn 0.5s ease-out forwards;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        </style>
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center gap-8">
+                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-4 no-underline group">
+                        <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo" class="h-9 w-auto object-contain brightness-200 group-hover:scale-105 transition-transform">
+                        <div class="flex flex-col border-l border-white/10 pl-4">
+                            <span class="font-outfit text-lg font-900 text-white tracking-tight leading-none group-hover:text-[#ff6600] transition-colors uppercase">
+                                PORTAL <span class="text-[#ff6600]">POSTULACIÓN</span>
+                            </span>
+                            <span class="text-[9px] font-semibold text-gray-500 uppercase tracking-[2px] mt-1 font-inter">
+                                Incentivos 2026
+                            </span>
+                        </div>
+                    </a>
+                    <div class="hidden lg:flex items-center gap-3 ml-4 bg-white/[0.03] px-4 py-1.5 rounded-full border border-white/5">
+                        <div class="w-1.5 h-1.5 bg-[#ff6600] rounded-full animate-pulse shadow-[0_0_8px_#ff6600]"></div>
+                        <span class="font-inter text-[11px] font-bold text-gray-400 tracking-wider uppercase">Inscripción</span>
+                    </div>
+                </div>
+                <div class="flex items-center font-inter">
+                    <div class="relative">
+                        <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-3 px-2 py-1.5 hover:bg-white/5 transition-all duration-300 rounded-lg group">
+                            <div class="w-9 h-9 bg-gradient-to-br from-[#ff6600] to-[#cc5200] rounded-lg flex items-center justify-center text-black font-outfit font-800 text-sm shadow-[0_0_15px_rgba(255,102,0,0.2)] overflow-hidden">
+                                @if($foto_url) <img src="{{ $foto_url }}" class="w-full h-full object-cover"> @else {{ $iniciales }} @endif
+                            </div>
+                            <div class="text-left hidden sm:block">
+                                <span class="text-sm font-700 text-white block leading-none">{{ auth()->user()->name }}</span>
+                                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider mt-1 block">
+                                    {{ auth()->user()->tipo_socio === 'Administrador' ? 'Administrador' : 'Socio Proponente' }}
+                                </span>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-600 group-hover:text-white transition-colors" :class="dropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div x-show="dropdownOpen" @click.away="dropdownOpen = false" x-transition class="absolute right-0 mt-3 w-64 bg-[#0a0a0a] border border-white/10 shadow-2xl rounded-xl overflow-hidden z-[1100]">
+                            <div class="px-5 py-4 bg-white/[0.02] border-b border-white/5">
+                                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Usuario Conectado</p>
+                                <p class="text-xs font-medium text-gray-300 truncate">{{ auth()->user()->email }}</p>
+                            </div>
+                            <div class="p-2">
+                                <button wire:click="logout" class="w-full flex items-center gap-3 text-left px-4 py-3 text-[13px] font-bold text-red-500/80 hover:text-red-500 hover:bg-red-500/5 rounded-lg transition-all">
+                                    Cerrar Sesión
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
     <div class="max-w-7xl mx-auto px-6 pt-10 relative z-10">
         {{-- BREADCRUMB --}}
@@ -80,7 +204,7 @@
                                 <div class="bg-slate-50 border-l-4 border-slate-900 p-6 rounded-r-3xl">
                                     <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Observación de Registro</p>
                                     <p class="text-lg font-medium text-slate-700 leading-relaxed italic">
-                                        "{{ $proyecto->observacion_general ?? 'Su solicitud se encuentra en etapa de revisión por el comité técnico de incentivos.' }}"
+                                        "{{ $proyecto->observacion_general ?? 'Su solicitud se encuentra en etapa de revisión.' }}"
                                     </p>
                                 </div>
                             </div>
@@ -130,9 +254,67 @@
                                 <span class="text-slate-900">Etapa {{ $proyecto->etapa_id }} de 4</span>
                             </div>
                             <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden p-0.5">
-                                <div class="h-full bg-slate-950 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(0,0,0,0.1)]" style="width: {{ ($proyecto->etapa_id / 4) * 100 }}%"></div>
+                                <div class="h-full bg-slate-950 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(0,0,0,0.1)]"
+                                    @style([ 'width: ' . (($proyecto->etapa_id ?? 0) / 4 * 100) . '%'
+                                    ])>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="mt-10 mb-6">
+                            <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-blue-200 group">
+
+                                <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
+
+                                <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+
+                                    <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                                        <div class="flex-shrink-0 w-24 h-24 bg-white/20 backdrop-blur-md border border-white/30 rounded-[2rem] flex items-center justify-center text-white shadow-inner">
+                                            <svg class="w-12 h-12 animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <p class="text-xs font-black text-blue-100 uppercase tracking-[4px] opacity-90">Acción Recomendada</p>
+                                            <h3 class="font-outfit text-2xl md:text-4xl font-900 text-white leading-tight tracking-tighter uppercase">
+                                                Ve alistando la documentación <br class="hidden md:block"> de la <span class="underline decoration-white/30 underline-offset-4">Etapa 2</span>
+                                            </h3>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-shrink-0">
+                                        <a href="https://incentivos.actores.tech/#anexos"
+                                            target="_blank"
+                                            class="inline-flex items-center gap-3 px-10 py-5 bg-white text-blue-700 hover:bg-slate-900 hover:text-white text-lg font-900 rounded-full shadow-xl shadow-blue-900/20 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 no-underline uppercase tracking-tighter">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            </svg>
+                                            Ver requisitos aquí
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <style>
+                            @keyframes bounce-slow {
+
+                                0%,
+                                100% {
+                                    transform: translateY(-5%);
+                                }
+
+                                50% {
+                                    transform: translateY(5%);
+                                }
+                            }
+
+                            .animate-bounce-slow {
+                                animation: bounce-slow 3s ease-in-out infinite;
+                            }
+                        </style>
                     </div>
                 </div>
             </div>
@@ -171,6 +353,7 @@
                         $idDirector = trim((string)($proyecto->director->identificacion ?? ''));
                         $esMismoDirector = ($idSocio === $idDirector && $idSocio !== '');
                         @endphp
+
 
                         {{-- DATOS DEL PROPONENTE --}}
                         <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden group mb-10">

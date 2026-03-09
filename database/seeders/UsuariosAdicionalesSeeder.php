@@ -28,7 +28,7 @@ class UsuariosAdicionalesSeeder extends Seeder
             ['1023019881', 'Erick Nicolás Hernández Díaz', 'Masculino', 'P. Derecho', '1997-03-16', '28', 'Dig 77 BIS sur No. 14P – 75 Barrio Miravalle', '3229356936', 'nhernandez@actores.org.co', 'activo'],
             ['1007540351', 'Laura Margarita León Contreras', 'Femenino', 'P. Derecho', '2000-09-28', '25', 'Carrera 21 #145-50 - El cedrito, Usaquen', '3224461850', 'Maleon@actores.org.co', 'activo'],
             ['52357816', 'Elva Lucero Mariño Parra', 'Femenino', 'Adherido', '1972-11-10', '53', 'Calle 128b# 93 a 43 Casa 41', '3166905085', 'eluparra@hotmail.com', 'activo'],
-            ['1000687271', 'Marisol Mayorga Romero', 'Femenino', 'Administrador', '1999-04-17', '26', 'Cl 40a #13-24', '3204610316', 'mmayorga@actores.org.co', 'activo'],
+            ['1000687271', 'Marisol Mayorga Romero', 'Femenino', 'Adherido', '1999-04-17', '26', 'Cl 40a #13-24', '3204610316', 'mmayorga@actores.org.co', 'activo'],
             ['1022436183', 'Angie Susana Orozco Castellar', 'Femenino', 'Adherido', '1998-05-06', '27', 'Calle 12a #71b-61 - Villa Alsacia', '3229029625', 'sorozco@actores.org.co', 'activo'],
             ['1013619273', 'Catalina Parra García', 'Femenino', 'P. Derecho', '1991-02-12', '35', 'Cra 80 N 8 - 11 Castilla, Kennedy', '3208146155', 'cparra@actores.org.co', 'activo'],
             ['52793890', 'Eunise Pedreros López', 'Femenino', 'P. Derecho', '1981-07-28', '44', 'Calle 66 #103-37', '3115103355', 'epedreros@actores.org.co', 'activo'],

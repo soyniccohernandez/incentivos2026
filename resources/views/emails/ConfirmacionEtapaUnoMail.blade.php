@@ -88,7 +88,7 @@
         <div class="main-card">
 
             <div class="industrial-header">
-                <div class="hud-tag">● REC_STATE: SUCCESSFUL</div>
+                <div class="hud-tag">● REC_2026</div>
                 <h1 class="font-bebas main-title">REGISTRO<br><span style="color: #ffffff;">COMPLETO</span></h1>
                 <div style="font-size: 10px; color: #000; letter-spacing: 6px; margin-top: 20px; font-weight: 900; text-transform: uppercase; opacity: 0.7;">
                     INCENTIVOS AUDIOVISUALES 2026
@@ -111,17 +111,14 @@
                 </div>
 
                 <div class="action-container">
-                    <div class="font-bebas action-title">HAZ SEGUIMIENTO A TU POSTULACIÓN</div>
-                    <p style="color: #666; font-size: 12px; margin-bottom: 30px; text-transform: uppercase; font-weight: 700;">
-                        REVISA EL ESTADO DE TU PROYECTO EN TIEMPO REAL DESDE NUESTRO PORTAL.
-                    </p>
+                    <div class="font-bebas action-title">HAZ SEGUIMIENTO A TU POSTULACIÓN POR CADA ETAPA</div>
                     
-                    <a href="https://incentivos.actores.tech/proyectos-inscritos" class="font-bebas btn-industrial">
+                    <a href="https://incentivos.actores.tech/convocatoria/validar" class="font-bebas btn-industrial">
                         VER MI PANEL →
                     </a>
 
                     <div style="margin-top: 40px;">
-                        <a href="https://incentivos.actores.tech" style="color: #000; font-size: 10px; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid #ff6600;">Regresar al portal principal</a>
+                        <a href="https://incentivos.actores.tech/proyectos-inscritos" style="color: #000; font-size: 10px; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; text-decoration: none; border-bottom: 2px solid #ff6600;">Regresar al portal principal</a>
                     </div>
                 </div>
             </div>

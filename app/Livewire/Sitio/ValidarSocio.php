@@ -53,11 +53,11 @@ class ValidarSocio extends Component
             return;
         }
 
-        // --- ACCESO VIP PARA ADMINISTRADORES ---
+        // --- ACCESO PARA ADMINISTRADORES ---
         if ($user->tipo_socio === 'Administrador') {
             $this->nombreSocio = $user->name;
             $this->paso = empty($user->password) ? 'verificar' : 'login';
-            return; 
+            return;
         }
 
         // 2. Verificación de estado para socios normales
@@ -66,13 +66,13 @@ class ValidarSocio extends Component
             return;
         }
 
-        // --- NUEVA VALIDACIÓN: MAYORÍA DE EDAD ---
+        // 3. Validación de mayoría de edad
         if (!$user->fecha_nacimiento || Carbon::parse($user->fecha_nacimiento)->age < 18) {
             $this->addError('identificacion', "Debe ser mayor de edad para participar en la convocatoria.");
             return;
         }
 
-        // 3. Validación de Convocatoria para socios
+        // 4. Validación de Convocatoria para socios
         $convocatoria = Convocatoria::where('estado', 'abierta')->with('etapas')->first();
 
         if (!$convocatoria) {
@@ -85,24 +85,33 @@ class ValidarSocio extends Component
             return $ahora->between($etapa->fecha_inicio, $etapa->fecha_fin);
         });
 
-        // --- VALIDACIÓN DE ETAPA ACTIVA ---
+        // 5. Validación de Etapa Activa
         if (!$etapaActiva) {
             $this->addError('identificacion', "El sistema no se encuentra en una etapa activa de la convocatoria.");
             return;
         }
 
-        // 4. Validación de Subsanación para socios
-        if ($etapaActiva && str_contains(strtolower($etapaActiva->nombre), 'subsanación')) {
-            $tieneProyecto = Proyecto::where('user_id', $user->id)
-                ->where('convocatoria_id', $convocatoria->id)
-                ->exists();
-            if (!$tieneProyecto) {
+        // --- NUEVA VALIDACIÓN: ESTADO DE PUBLICACIÓN ---
+        // Buscamos si el socio tiene un proyecto en esta convocatoria
+        $proyecto = Proyecto::where('user_id', $user->id)
+            ->where('convocatoria_id', $convocatoria->id)
+            ->first();
+
+        // Si el proyecto existe pero el administrador NO lo ha publicado:
+        if ($proyecto && !$proyecto->publicado) {
+            $this->addError('identificacion', "Su proyecto se encuentra en revisión, esté atento al cronograma de la convocatoria.");
+            return;
+        }
+
+        // 6. Validación de Subsanación (Solo si el proyecto existe y ya pasó el filtro de publicación)
+        if (str_contains(strtolower($etapaActiva->nombre), 'subsanación')) {
+            if (!$proyecto) {
                 $this->addError('identificacion', "Fase de Subsanación: Solo para socios con proyectos registrados.");
                 return;
             }
         }
 
-        // 5. Preparar siguiente paso
+        // 7. Preparar siguiente paso
         $this->nombreSocio = $user->name;
         $this->paso = empty($user->password) ? 'verificar' : 'login';
     }
@@ -150,7 +159,7 @@ class ValidarSocio extends Component
 
         // Refuerzo de seguridad: solo permitir login si el usuario sigue activo
         $user = User::where('identificacion', $this->identificacion)->first();
-        
+
         if ($user && $user->tipo_socio !== 'Administrador') {
             // Validar estado
             if (strtolower($user->estado ?? '') !== 'activo') {

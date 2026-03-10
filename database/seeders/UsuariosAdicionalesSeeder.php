@@ -48,7 +48,7 @@ class UsuariosAdicionalesSeeder extends Seeder
             ['1018508368', 'Laura Esmeralda Vasquez Cely', 'Femenino', 'P. Derecho', '1999-01-11', '27', 'CRR 18 # 67 - 23 SUR, LUCERO MEDIO', '3058273561', 'lvasquez@actores.org.co', 'activo'],
             ['1007159100', 'Jonathan Steven Vega Yepes', 'Masculino', 'P. Derecho', '2002-12-20', '23', 'Ciudad Verde, Soacha', '3125447699', 'Jvega@actores.org.co', 'activo'],
             ['1018440741', 'Leidy Lised Zambrano Arévalo', 'Femenino', 'P. Derecho', '1991-01-06', '35', 'Cra 8 B # 107 - 41 Santa Ana occidental', '3108824912', 'lzambrano@actores.org.co', 'activo'],
-            ['1023033067', 'Anguie Guiowanna Rivera Carrero', 'Femenino', 'P. Derecho', '1999-01-23', '27', 'Cra 8 B # 107 - 41 Santa Ana occidental', '3134150631', 'angierivera23@gmail.com', 'activo'],
+            ['1023033067', 'Anguie Guiowanna Rivera Carrero', 'Femenino', 'Administrador', '1999-01-23', '27', 'Cra 8 B # 107 - 41 Santa Ana occidental', '3134150631', 'angierivera23@gmail.com', 'activo'],
         ];
 
         foreach ($usuarios as $u) {

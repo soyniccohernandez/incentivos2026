@@ -3087,7 +3087,7 @@ class InitialSetupSeeder extends Seeder
             [
                 'id' => 1,
                 'convocatoria_id' => 1,
-                'nombre' => 'CONVOCATORIA Y SUBSANACIÓN', // Agrupamos todo lo inicial
+                'nombre' => 'ETAPA 1', // Agrupamos todo lo inicial
                 'orden' => 1,
                 'es_subsanable' => 1,
                 'fecha_inicio' => '2026-03-09 00:00:00',
@@ -3096,7 +3096,7 @@ class InitialSetupSeeder extends Seeder
             [
                 'id' => 2,
                 'convocatoria_id' => 1,
-                'nombre' => 'VERIFICACIÓN TÉCNICA',
+                'nombre' => 'ETAPA 2',
                 'orden' => 2,
                 'es_subsanable' => 0,
                 'fecha_inicio' => '2026-04-25 00:00:00',
@@ -3105,7 +3105,7 @@ class InitialSetupSeeder extends Seeder
             [
                 'id' => 3,
                 'convocatoria_id' => 1,
-                'nombre' => 'EVALUACIÓN DE JURADOS',
+                'nombre' => 'ETAPA 3',
                 'orden' => 3,
                 'es_subsanable' => 0,
                 'fecha_inicio' => '2026-05-14 00:00:00',
@@ -3114,7 +3114,7 @@ class InitialSetupSeeder extends Seeder
             [
                 'id' => 4,
                 'convocatoria_id' => 1,
-                'nombre' => 'SELECCIÓN Y PREMIER', // El hito final
+                'nombre' => 'ETAPA 4', // El hito final
                 'orden' => 4,
                 'es_subsanable' => 0,
                 'fecha_inicio' => '2026-06-25 00:00:00',

@@ -18,7 +18,7 @@
             <div class="flex flex-col justify-center ml-2">
                 <span class="font-bebas text-2xl md:text-4xl lg:text-5xl text-brand-orange tracking-[3px] md:tracking-[5px] leading-[0.85] uppercase">
                     ACTORES <span class="text-white italic opacity-90">S.C.G.</span>
-                </span>              
+                </span>
             </div>
         </a>
 
@@ -115,48 +115,71 @@
         {{-- GRID DE PROYECTOS REALES --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             @forelse($proyectos as $proyecto)
-            <a href="{{ route('validar-socio', ['radicado' => $proyecto->codigo_radicado]) }}" class="group relative flex flex-col bg-[#0a0a0a] border border-white/5 hover:border-brand-orange/50 transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:-translate-y-2 no-underline overflow-hidden">
+            <a href="{{ route('validar-socio', ['radicado' => $proyecto->codigo_radicado]) }}"
+                class="group relative flex flex-col bg-[#050505] border border-white/10 hover:border-brand-orange/40 transition-all duration-500 shadow-[0_40px_80px_rgba(0,0,0,0.9)] hover:-translate-y-2 no-underline overflow-hidden min-h-[600px]">
 
-                {{-- Barra superior dinámica según estado --}}
-                <div class="h-2 w-full {{ $proyecto->estado?->nombre == 'SELECCIONADO' ? 'bg-brand-orange' : 'bg-white/5' }} group-hover:bg-brand-orange transition-colors duration-500"></div>
+                {{-- Barra de estado superior --}}
+                <div class="h-2 w-full {{ ($proyecto->estado->nombre ?? '') == 'SELECCIONADO' ? 'bg-brand-orange shadow-[0_0_25px_rgba(255,102,0,0.6)]' : 'bg-white/10' }} group-hover:bg-brand-orange transition-all duration-500"></div>
 
-                <div class="p-8">
-                    {{-- Radicado y Fecha --}}
-                    <div class="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
-                        <span class="font-mono text-[10px] text-brand-orange tracking-[3px] font-bold uppercase">#{{ $proyecto->codigo_radicado }}</span>
-                        <span class="font-mono text-[10px] text-white/30 tracking-[2px] uppercase">{{ $proyecto->created_at->format('d/m/Y') }}</span>
-                    </div>
+                <div class="p-6 md:p-10 flex flex-col h-full flex-1">
 
-                    {{-- Título --}}
-                    <h2 class="font-bebas text-4xl md:text-5xl text-white leading-tight uppercase mb-6 min-h-[120px] group-hover:text-brand-orange transition-colors duration-500 italic">
-                        {{ $proyecto->titulo }}
-                    </h2>
-
-                    {{-- Proponente (Nombre del Usuario) --}}
-                    <div class="mb-10">
-                        <span class="text-[9px] font-mono text-white/20 uppercase tracking-[3px] mb-1 block">Postulado por:</span>
-                        <span class="font-bebas text-2xl text-white/80 tracking-widest uppercase group-hover:text-white transition-colors">
-                            {{ $proyecto->user?->name ?? 'N/A' }}
-                        </span>
-                    </div>
-
-                    {{-- Footer: Estado y Acción --}}
-                    <div class="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
-                        <div class="flex flex-col">
-                            <span class="font-mono text-[8px] text-white/20 uppercase tracking-[4px] mb-1">Estatus_</span>
-                            <span class="font-bebas text-2xl tracking-[2px] {{ $proyecto->estado?->nombre == 'SELECCIONADO' ? 'text-brand-orange' : 'text-white/40' }} uppercase">
-                                {{ $proyecto->estado?->nombre ?? 'RECIBIDO' }}
+                    {{-- 1. HEADER: RADICADO Y FECHA (Con Wrap Inteligente) --}}
+                    <div class="flex flex-wrap items-end justify-between gap-6 mb-12 border-b border-white/5 pb-8">
+                        <div class="flex flex-col min-w-[280px] flex-1">
+                            <span class="font-mono text-[10px] text-brand-orange tracking-[5px] mb-2 font-black uppercase">IDENTIFICADOR_ÚNICO</span>
+                            <span class="font-mono text-4xl md:text-5xl text-white tracking-[6px] md:tracking-[10px] font-black uppercase leading-none group-hover:text-brand-orange transition-colors break-all">
+                                #{{ $proyecto->codigo_radicado }}
                             </span>
                         </div>
 
-                        <div class="flex items-center gap-2 text-brand-orange opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
-                            <span class="font-bebas text-xl tracking-widest">VALIDAR</span>
-                            <i class="fas fa-arrow-right text-sm"></i>
+                        <div class="flex flex-col items-start md:items-end bg-white/5 md:bg-transparent p-3 md:p-0 rounded-lg md:rounded-none">
+                            <span class="font-mono text-[9px] text-white/20 tracking-[3px] uppercase mb-1">REGISTRO_DATE</span>
+                            <span class="font-mono text-lg text-white/50 font-bold border-b border-brand-orange/30 pb-1">
+                                {{ $proyecto->created_at->format('d.m.Y') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {{-- 2. CUERPO: TÍTULO (Ajuste de tamaño dinámico) --}}
+                    <div class="flex-1 flex flex-col justify-center py-4">
+                        <h2 class="font-bebas text-5xl md:text-7xl lg:text-8xl text-white leading-[0.85] uppercase mb-6 group-hover:text-white transition-colors duration-500 italic tracking-tighter break-words">
+                            {{ $proyecto->titulo }}
+                        </h2>
+
+                        <div class="flex items-start gap-4">
+                            <div class="h-10 w-1.5 bg-brand-orange/50 shrink-0"></div>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-mono text-white/20 uppercase tracking-[4px]">SOLICITANTE_OFICIAL</span>
+                                <span class="font-bebas text-3xl md:text-4xl text-white/80 tracking-widest uppercase leading-tight">
+                                    {{ $proyecto->user?->name ?? 'SISTEMA_UNDEFINED' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- 3. FOOTER: ESTATUS Y ACCIÓN (Layout Responsivo) --}}
+                    <div class="mt-12 pt-8 border-t-2 border-white/10">
+                        <div class="flex flex-wrap items-center justify-between gap-8">
+                            <div class="flex flex-col min-w-[250px]">
+                                <span class="font-mono text-[11px] text-brand-orange tracking-[6px] mb-3 font-black">DICTAMEN_ACTUAL</span>
+                                <span class="font-bebas text-5xl md:text-7xl tracking-[4px] uppercase leading-none transition-all duration-500
+                        {{ $proyecto->color_clase }} 
+                        {{ !$proyecto->publicado ? 'animate-pulse' : 'drop-shadow-[0_0_25px_rgba(255,255,255,0.1)]' }}">
+                                    {{ $proyecto->estado_final }}
+                                </span>
+                            </div>
+
+                            {{-- Botón que invita al clic --}}
+                            <div class="group/btn flex items-center gap-4 bg-brand-orange text-black px-8 py-4 rounded-full transform transition-all duration-300 hover:scale-105 shadow-xl shadow-brand-orange/10 shrink-0">
+                                <span class="font-bebas text-2xl tracking-widest">VER EXPEDIENTE</span>
+                                <i class="fas fa-arrow-right transform group-hover/btn:translate-x-2 transition-transform"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="absolute inset-0 bg-gradient-to-tr from-brand-orange/[0.05] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                {{-- Efecto de resplandor --}}
+                <div class="absolute inset-0 bg-gradient-to-tr from-brand-orange/[0.1] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
             </a>
             @empty
             <div class="col-span-full py-20 text-center border border-dashed border-white/10 bg-white/[0.02]">
@@ -187,4 +210,54 @@
     <footer class="mt-32 py-16 bg-[#050505] border-t border-white/5 text-center">
         <p class="font-mono text-[9px] text-white/20 tracking-[4px] uppercase italic">Sistema de Gestión Audiovisual // Bogotá, Colombia // {{ $ahora->year }}</p>
     </footer>
+
+    {{-- En tu welcome.blade.php o layout principal --}}
+    @if(session('success'))
+    <div id="swal-payload" data-message="{{ session('success') }}"></div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const payload = document.getElementById('swal-payload');
+            if (payload && payload.dataset.message) {
+                Swal.fire({
+                    title: '¡RADICACIÓN EXITOSA!',
+                    text: payload.dataset.message,
+                    icon: 'success',
+                    background: '#ffffff',
+                    // Configuramos dos botones
+                    showCancelButton: true,
+                    confirmButtonText: 'VER MI POSTULACIÓN',
+                    cancelButtonText: 'CERRAR',
+                    confirmButtonColor: '#ff6600',
+                    cancelButtonColor: '#0f172a', // slate-900
+
+                    customClass: {
+                        popup: 'rounded-[2rem] border-4 border-slate-900 shadow-2xl',
+                        title: 'font-bebas text-4xl tracking-tight text-slate-900',
+                        htmlContainer: 'font-inter text-slate-600 font-medium',
+                        confirmButton: 'rounded-xl px-8 py-3 font-bebas text-lg tracking-widest hover:scale-105 transition-transform order-2',
+                        cancelButton: 'rounded-xl px-8 py-3 font-bebas text-lg tracking-widest hover:scale-105 transition-transform order-1'
+                    },
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInUp animate__faster'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutDown animate__faster'
+                    },
+                    buttonsStyling: true, // Usamos los estilos de SWAL pero con nuestras clases
+                }).then((result) => {
+                    // Si el usuario hace clic en "VER MI POSTULACIÓN"
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('inscritos.publico') }}";
+                    }
+                });
+
+                // Limpia la URL para evitar que el modal salga al recargar
+                history.replaceState(null, null, window.location.href);
+            }
+        });
+    </script>
+    @endif
 </div>

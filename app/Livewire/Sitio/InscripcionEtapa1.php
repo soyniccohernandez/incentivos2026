@@ -225,25 +225,34 @@ class InscripcionEtapa1 extends Component
 
             // 3. Email
             try {
-                Mail::to($this->socio->email)->send(new \App\Mail\ConfirmacionEtapaUnoMail($proyecto, $this->socio));
+                // Mail::to($this->socio->email)->send(new \App\Mail\ConfirmacionEtapaUnoMail($proyecto, $this->socio));
 
-                Mail::to('incentivos@actores.org.co')->send(
-                    new \App\Mail\InternoEtapaUnoMail(
-                        $proyecto,
-                        $this->socio,
-                        [
-                            'autoria'        => $this->autoria,
-                            'directorPropio' => $this->directorPropio
-                        ]
-                    )
-                );
+                // Mail::to('incentivos@actores.org.co')->send(
+                //     new \App\Mail\InternoEtapaUnoMail(
+                //         $proyecto,
+                //         $this->socio,
+                //         [
+                //             'autoria'        => $this->autoria,
+                //             'directorPropio' => $this->directorPropio
+                //         ]
+                //     )
+                // );
             } catch (\Exception $e) {
                 Log::error("Error Mail: " . $e->getMessage());
             }
 
-            return redirect()->route('dashboard')->with([
-                'success' => 'Tu proyecto "' . strtoupper($this->titulo) . '" ha sido radicado correctamente. Revisa tu correo electrónico.'
-            ]);
+            // Guardamos el mensaje antes de destruir la sesión
+            $mensaje = 'Tu proyecto "' . strtoupper($this->titulo) . '" ha sido radicado correctamente. Revisa tu correo electrónico.';
+
+            // 1. Cerrar la sesión del usuario
+            Auth::logout();
+
+            // 2. Invalidar la sesión actual y regenerar el token (Buenas prácticas de seguridad)
+            session()->invalidate();
+            session()->regenerateToken();
+
+            // 3. Redirigir al home (o la ruta welcome) con el mensaje de éxito
+            return redirect()->to('/proyectos-inscritos')->with('success', $mensaje);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("ERROR INSCRIPCION: " . $e->getMessage());

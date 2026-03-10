@@ -25,61 +25,58 @@ class DashboardSocio extends Component
         // 1. Buscamos la convocatoria abierta con sus etapas
         $this->convocatoria = Convocatoria::where('estado', 'abierta')->with('etapas')->first();
 
-        // Seguridad: Si no hay convocatoria, cerramos sesión por integridad de datos
+        // Seguridad: Si no hay convocatoria, cerramos sesión
         if (!$this->convocatoria) {
-            Auth::logout();
-            return redirect()->to('/');
+            return $this->logout();
         }
 
         $ahora = now();
 
-        // 2. Identificamos si hay una etapa activa en este momento
+        // 2. Identificamos si hay una etapa activa
         $this->etapaActiva = $this->convocatoria->etapas
             ->filter(fn($e) => $ahora->between($e->fecha_inicio, $e->fecha_fin))
             ->first();
 
-        // 3. Buscamos el proyecto del socio incluyendo TODAS las relaciones para el Dashboard
+        // 3. Buscamos el proyecto del socio
         $this->proyecto = Proyecto::with([
                 'director', 
                 'documentos.tipoDocumento', 
                 'estado', 
-                'elenco' // Cargamos el elenco para las nuevas tarjetas
+                'elenco'
             ])
             ->where('user_id', $user->id)
             ->where('convocatoria_id', $this->convocatoria->id)
             ->first();
 
-        // --- LÓGICA DE PERFIL (FOTO E INICIALES) ---
-        $nameParts = explode(' ', trim($user->name));
-        $this->iniciales = strtoupper(substr($nameParts[0] ?? 'U', 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : ''));
-
-        if ($user->identificacion) {
-            $extensiones = ['jpg', 'jpeg', 'png', 'webp'];
-            foreach ($extensiones as $ext) {
-                $ruta = "socios/{$user->identificacion}.{$ext}";
-                if (Storage::disk('public')->exists($ruta)) {
-                    $this->foto_url = asset("storage/" . $ruta);
-                    break;
-                }
-            }
+        // --- VALIDACIÓN OBLIGATORIA: Si tiene proyecto pero NO está publicado, cerrar sesión ---
+        if ($this->proyecto && !$this->proyecto->publicado) {
+            return $this->logout();
         }
+
+        // --- LÓGICA DE PERFIL ---
+        $this->cargarDatosPerfil($user);
     }
 
     #[Layout('layouts.guest')]
     public function render()
     {
+        // VALIDACIÓN EN TIEMPO REAL: Verifica si el admin ocultó el proyecto mientras el socio está en el dashboard
+        if ($this->proyecto) {
+            $todaviaPublicado = Proyecto::where('id', $this->proyecto->id)->value('publicado');
+            if (!$todaviaPublicado) {
+                return $this->logout();
+            }
+        }
+
         $user = Auth::user();
         $ahora = now();
         $etapas = $this->convocatoria->etapas->sortBy('orden');
 
-        // Identificamos las etapas clave para validaciones de flujo
         $etapaInscripcion = $etapas->filter(fn($e) => str_contains(strtolower($e->nombre), 'inscripción') || str_contains(strtolower($e->nombre), 'registro'))->first();
         $etapaSubsanacion = $etapas->filter(fn($e) => str_contains(strtolower($e->nombre), 'subsanación'))->first();
 
         // --- ESCENARIO 1: EL SOCIO NO TIENE PROYECTO PROPIO REGISTRADO ---
         if (!$this->proyecto) {
-
-            // VALIDACIÓN DE EXCLUSIVIDAD: ¿Ya es director o elenco en otro proyecto?
             $proyectoAjenoDirector = Proyecto::where('convocatoria_id', $this->convocatoria->id)
                 ->whereHas('director', function ($q) use ($user) {
                     $q->where('identificacion', $user->identificacion);
@@ -102,7 +99,6 @@ class DashboardSocio extends Component
                 );
             }
 
-            // Validaciones de fechas para nuevos registros
             if ($etapaInscripcion && $ahora->gt($etapaInscripcion->fecha_fin)) {
                 return $this->viewFeedback("Inscripciones Finalizadas", "El periodo para registrar nuevos proyectos terminó el " . $etapaInscripcion->fecha_fin->format('d/m/Y') . ".");
             }
@@ -146,25 +142,29 @@ class DashboardSocio extends Component
         ]);
     }
 
+    private function cargarDatosPerfil($user)
+    {
+        $nameParts = explode(' ', trim($user->name));
+        $this->iniciales = strtoupper(substr($nameParts[0] ?? 'U', 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : ''));
+
+        if ($user->identificacion) {
+            $extensiones = ['jpg', 'jpeg', 'png', 'webp'];
+            foreach ($extensiones as $ext) {
+                $ruta = "socios/{$user->identificacion}.{$ext}";
+                if (Storage::disk('public')->exists($ruta)) {
+                    $this->foto_url = asset("storage/" . $ruta);
+                    break;
+                }
+            }
+        }
+    }
+
     private function viewFeedback($titulo, $mensaje)
     {
-        $html = <<<HTML
-        <div class="flex items-center justify-center min-h-screen bg-slate-950 text-white p-10 font-sans">
-            <div class="max-w-md w-full bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 text-center shadow-2xl">
-                <div class="w-20 h-20 bg-orange-500/10 text-orange-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </div>
-                <h1 class="text-2xl font-black uppercase tracking-tight mb-4">{$titulo}</h1>
-                <div class="text-slate-400 text-sm leading-relaxed mb-8">{$mensaje}</div>
-                <button wire:click="logout" class="w-full py-4 bg-white text-black rounded-2xl font-black uppercase text-[11px] tracking-[2px] hover:bg-[#ff6600] hover:text-white transition-all">
-                    Cerrar Sesión
-                </button>
-            </div>
-        </div>
-HTML;
-        return $html;
+        return view('livewire.sitio.feedback-dashboard', [
+            'titulo' => $titulo,
+            'mensaje' => $mensaje
+        ]);
     }
 
     public function logout()
@@ -172,6 +172,6 @@ HTML;
         Auth::logout();
         session()->invalidate();
         session()->regenerateToken();
-        return redirect()->to('/');
+        return redirect()->to('/')->with('message', 'Sesión cerrada por seguridad o cambios en los resultados.');
     }
 }

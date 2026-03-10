@@ -125,44 +125,48 @@ class InscripcionEtapa2 extends Component
     {
         $this->resetErrorBag();
 
-        // 1. Validar que no haya filas incompletas pendientes
-        if (!$this->puedeProcederConElenco()) return;
+        // 1. Evitar duplicados: Si el proponente ya está en el elenco, no hacer nada.
+        if (collect($this->elenco)->contains('identificacion', $this->socio->identificacion)) {
+            return;
+        }
 
-        // 2. Evitar duplicados
-        if (collect($this->elenco)->contains('identificacion', $this->socio->identificacion)) return;
-
-        // 3. Validar Estado del Proponente
+        // 2. Validar Estado del Proponente
         if (strtolower($this->socio->estado ?? '') !== 'activo') {
             $this->addError('elenco_incompleto', 'Su cuenta no está activa para participar.');
             return;
         }
 
-        // 4. Validar Edad del Proponente
-        if ($this->socio->fecha_nacimiento && Carbon::parse($this->socio->fecha_nacimiento)->age < 18) {
+        // 3. Validar Edad del Proponente
+        if ($this->socio->fecha_nacimiento && \Carbon\Carbon::parse($this->socio->fecha_nacimiento)->age < 18) {
             $this->addError('elenco_incompleto', 'Debe ser mayor de edad.');
             return;
         }
 
+        // 4. Preparar datos del proponente (Usuario logueado)
         $datosProponente = [
-            'identificacion' => $this->socio->identificacion,
-            'nombre' => strtoupper($this->socio->name),
-            'user_id' => $this->socio->id,
-            'archivo_autorizacion' => null,
-            'encontrado' => true,
-            'buscando' => false,
-            'foto_url' => $this->foto_url,
-            'iniciales' => $this->iniciales
+            'identificacion'       => $this->socio->identificacion,
+            'nombre'               => strtoupper($this->socio->name),
+            'user_id'              => $this->socio->id,
+            'archivo_autorizacion' => null, // El archivo siempre debe subirlo manualmente
+            'encontrado'           => true,
+            'buscando'             => false,
+            'foto_url'             => $this->foto_url,
+            'iniciales'            => $this->iniciales
         ];
 
-        // Reemplazar fila vacía si existe, o agregar nueva
-        $indexDisponible = collect($this->elenco)->search(fn($m) => empty($m['identificacion']));
+        // 5. Lógica de inserción:
+        // Buscamos si hay alguna fila que esté totalmente vacía (sin identificación)
+        $indexVacio = collect($this->elenco)->search(fn($m) => empty($m['identificacion']));
 
-        if ($indexDisponible !== false) {
-            $this->elenco[$indexDisponible] = $datosProponente;
+        if ($indexVacio !== false) {
+            // Si hay una fila vacía (como la que se crea en el mount), la rellenamos
+            $this->elenco[$indexVacio] = $datosProponente;
         } else {
+            // Si todas las filas actuales ya tienen datos de alguien más, creamos una nueva
             $this->elenco[] = $datosProponente;
         }
 
+        // 6. Limpiar cualquier error de validación previo para que la interfaz se vea limpia
         $this->resetValidation();
     }
 
@@ -304,6 +308,7 @@ class InscripcionEtapa2 extends Component
             $this->proyecto->update([
                 'estado_id'           => 5,
                 'etapa_id'            => 2,
+                'publicado'           => false,
                 'observacion_general' => "Su solicitud se encuentra en etapa de revisión por el comité técnico de incentivos."
             ]);
 
@@ -312,20 +317,30 @@ class InscripcionEtapa2 extends Component
             // --- INICIO LÓGICA DE CORREOS ETAPA 2 ---
             try {
                 // 1. Notificación al Usuario
-                Mail::to($this->proyecto->socio->email)
-                    ->send(new \App\Mail\ConfirmacionEtapaDosMail($this->proyecto));
+                // Mail::to($this->proyecto->socio->email)
+                //     ->send(new \App\Mail\ConfirmacionEtapaDosMail($this->proyecto));
 
                 // 2. Notificación al Equipo Interno (Santiago / Auditoría)
                 // Se recomienda usar el correo de Santiago o el de auditoría técnica
-                Mail::to('incentivos@actores.org.co')
-                    ->send(new \App\Mail\InternoEtapaDosMail($this->proyecto));
+                // Mail::to('incentivos@actores.org.co')
+                //     ->send(new \App\Mail\InternoEtapaDosMail($this->proyecto));
             } catch (\Exception $e) {
                 // Logueamos el error pero no interrumpimos la experiencia del usuario
                 Log::error("Error enviando correos Etapa 2 [" . $this->proyecto->codigo_radicado . "]: " . $e->getMessage());
             }
             // --- FIN LÓGICA DE CORREOS ETAPA 2 ---
+            // Guardamos el mensaje antes de destruir la sesión
+            $mensaje = 'Tu proyecto "' . strtoupper($this->proyecto->titulo) . '" ha sido radicado correctamente en Etapa 2. Revisa tu correo electrónico.';
 
-            return redirect()->route('dashboard')->with('success', 'Inscripción de Etapa 2 completada con éxito.');
+            // 1. Cerrar la sesión del usuario
+            Auth::logout();
+
+            // 2. Invalidar la sesión actual y regenerar el token (Buenas prácticas de seguridad)
+            session()->invalidate();
+            session()->regenerateToken();
+
+            // 3. Redirigir al home (o la ruta welcome) con el mensaje de éxito
+            return redirect()->to('/proyectos-inscritos')->with('success', $mensaje);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Error Crítico en Guardado Etapa 2: " . $e->getMessage());

@@ -42,52 +42,62 @@
 </head>
 
 <body class="bg-black text-white font-montserrat antialiased leading-relaxed" id="inicio">
-    {{-- TOOLBAR LATERAL: SINGLE COMMS LINK // INTERFAZ DE CONTACTO UNIFICADA --}}
-    <div class="fixed right-6 top-1/2 -translate-y-1/2 z-[100] flex flex-col items-center gap-6">
+    {{-- TOOLBAR LATERAL: POTENCIADO --}}
+    <div class="fixed right-8 top-1/2 -translate-y-1/2 z-[100] flex flex-col items-center gap-8">
 
-        {{-- Etiqueta de señal vertical --}}
-        <div class="flex flex-col items-center gap-2 mb-4">
-            <span class="font-mono text-[8px] text-brand-orange tracking-[4px] uppercase rotate-180 [writing-mode:vertical-lr] font-bold animate-pulse">
-                Signal_Stable
+        {{-- Etiqueta de señal vertical (Más visible) --}}
+        <div class="flex flex-col items-center gap-3 mb-2">
+            <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase rotate-180 [writing-mode:vertical-lr] font-black animate-pulse">
+                System_Online
             </span>
-            <div class="w-[2px] h-12 bg-gradient-to-t from-brand-orange to-transparent"></div>
+            <div class="w-[3px] h-16 bg-gradient-to-t from-brand-orange via-brand-orange/50 to-transparent rounded-full"></div>
         </div>
 
-        {{-- BOTÓN: WHATSAPP & LLAMADA (UNIFICADO) --}}
+        {{-- BOTÓN: WHATSAPP CON MENSAJE PREDETERMINADO --}}
         <div class="group relative flex flex-col items-center">
-            <a href="https://wa.me/573156896774" target="_blank"
-                class="relative flex items-center justify-center w-14 h-14 bg-black/90 backdrop-blur-xl border-2 border-white/10 text-white hover:text-brand-orange hover:border-brand-orange hover:scale-110 transition-all duration-500 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+            <a href="https://wa.me/573156896774?text=Hola,%20me%20gustaría%20más%20información%20sobre%20los%20incentivos%20audiovisuales"
+                target="_blank"
+                class="relative flex items-center justify-center w-16 h-16 bg-[#25D366] text-white rounded-2xl hover:scale-110 hover:rotate-3 transition-all duration-500 shadow-[0_10px_20px_rgba(37,211,102,0.3)] hover:shadow-[#25D366]/50 border-b-4 border-black/20">
 
-                {{-- Tooltip técnico --}}
-                <span class="absolute right-16 bg-black border border-brand-orange/40 text-white font-mono text-[10px] px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 tracking-[2px]">
-                    [ LINK_WA: +57 315 689 6774 ]
+                {{-- Tooltip --}}
+                <span class="absolute right-20 bg-black border-2 border-[#25D366] text-white font-bold font-mono text-xs px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                    [ WHATSAPP DIRECTO ]
                 </span>
 
-                <i class="fa-brands fa-whatsapp text-2xl"></i>
+                {{-- Icono SVG --}}
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+                    <path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+                </svg>
             </a>
-            <span class="font-mono text-[8px] text-white/30 uppercase mt-2 tracking-[2px]">Comms</span>
+            <span class="font-mono text-[9px] text-[#25D366] font-bold uppercase mt-2 tracking-[2px]">WhatsApp</span>
         </div>
 
         {{-- BOTÓN: CORREO ELECTRÓNICO --}}
         <div class="group relative flex flex-col items-center">
             <a href="mailto:incentivos@actores.org.co"
-                class="relative flex items-center justify-center w-14 h-14 bg-black/90 backdrop-blur-xl border-2 border-white/10 text-white hover:text-brand-orange hover:border-brand-orange hover:scale-110 transition-all duration-500 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+                class="relative flex items-center justify-center w-16 h-16 bg-[#3b82f6] text-white rounded-2xl hover:scale-110 hover:-rotate-3 transition-all duration-500 shadow-[0_10px_20px_rgba(59,130,246,0.3)] hover:shadow-[#3b82f6]/50 border-b-4 border-black/20">
 
-                {{-- Tooltip técnico --}}
-                <span class="absolute right-16 bg-black border border-brand-orange/40 text-white font-mono text-[10px] px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 tracking-[2px]">
-                    [ MAIL: INCENTIVOS@ACTORES ]
+                {{-- Tooltip --}}
+                <span class="absolute right-20 bg-black border-2 border-[#3b82f6] text-white font-bold font-mono text-xs px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                    [ ENVIAR E-MAIL ]
                 </span>
 
-                <i class="fa-regular fa-envelope text-2xl"></i>
+                {{-- Icono SVG --}}
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10" />
+                    <path d="M3 7l9 6l9 -6" />
+                </svg>
             </a>
-            <span class="font-mono text-[8px] text-white/30 uppercase mt-2 tracking-[2px]">Email</span>
+            <span class="font-mono text-[9px] text-[#3b82f6] font-bold uppercase mt-2 tracking-[2px]">E-mail</span>
         </div>
 
-        {{-- Decoración inferior: Pulso de datos --}}
-        <div class="mt-4 flex flex-col items-center gap-1">
-            <div class="w-1 h-1 bg-brand-orange rounded-full animate-ping"></div>
-            <div class="w-1 h-1 bg-brand-orange/40 rounded-full"></div>
-            <div class="w-1 h-1 bg-brand-orange/10 rounded-full"></div>
+        {{-- Decoración inferior: Pulso de datos mejorado --}}
+        <div class="mt-2 flex flex-col items-center gap-2">
+            <div class="w-2 h-2 bg-brand-orange rounded-full animate-ping"></div>
+            <div class="w-[1px] h-10 bg-gradient-to-b from-brand-orange to-transparent"></div>
         </div>
     </div>
 
@@ -218,7 +228,7 @@
         </div>
 
         {{-- ENLACES --}}
-        <ul id="nav-links" class="fixed lg:static top-0 -right-full lg:right-0 w-full lg:w-auto h-screen lg:h-auto bg-[#0a0a0a] lg:bg-transparent flex flex-col lg:flex-row justify-center lg:justify-end items-center gap-8 lg:gap-6 xl:gap-10 transition-all duration-500 z-[1100] list-none px-10 lg:px-0 overflow-y-auto lg:overflow-visible">
+        <ul id="nav-links" class="fixed lg:static top-0 -right-full lg:right-0 w-full lg:w-auto h-screen lg:h-auto bg-[#0a0a0a] lg:bg-transparent flex flex-col lg:flex-row justify-center lg:justify-end items-center gap-8 lg:gap-4 xl:gap-8 transition-all duration-500 z-[1100] list-none px-10 lg:px-0 overflow-y-auto lg:overflow-visible">
 
             <div class="absolute top-10 left-10 opacity-5 font-bebas text-7xl text-white pointer-events-none lg:hidden uppercase tracking-tighter">SCENE_01</div>
 
@@ -229,39 +239,51 @@
             ['url' => '#convocatoria', 'label' => 'PARÁMETROS'],
             ['url' => '#cronograma', 'label' => 'CALENDARIO'],
             ['url' => '#anexos', 'label' => 'PREPÁRATE'],
-            ['url' => '#pasos', 'label' => '¿CÓMO POSTULARSE?'],
             ['url' => route('inscritos.publico'), 'label' => 'VER INSCRITOS'],
+            ['url' => '#pasos', 'label' => '¿CÓMO POSTULARSE?', 'cta' => true],
             ];
             @endphp
 
             @foreach($navItems as $item)
+            @if(isset($item['cta']) && $item['cta'])
+            {{-- BOTÓN CTA: CINEMA STYLE --}}
+            <li class="relative w-full lg:w-auto mt-4 lg:mt-0">
+                <a href="{{ $item['url'] }}"
+                    class="flex items-center justify-center gap-3 bg-brand-orange text-black font-bebas text-lg px-7 py-3 rounded-none hover:bg-white transition-all duration-500 transform hover:scale-105 shadow-[0_0_25px_rgba(255,102,0,0.4)] group border-r-4 border-b-4 border-black/20">
+
+                    {{-- Icono Cámara de Cine (Tabler Icon) --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:rotate-12 transition-transform duration-300">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                        <path d="M8 4l0 16" />
+                        <path d="M16 4l0 16" />
+                        <path d="M4 8l4 0" />
+                        <path d="M4 16l4 0" />
+                        <path d="M4 12l16 0" />
+                        <path d="M16 8l4 0" />
+                        <path d="M16 16l4 0" />
+                    </svg>
+
+                    <span class="tracking-[2px]">{{ $item['label'] }}</span>
+
+                    {{-- Punto de "Grabación" parpadeante --}}
+                    <span class="flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-red-600 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+                    </span>
+                </a>
+               
+            </li>
+            @else
+            {{-- LINKS NORMALES --}}
             <li class="relative group w-full lg:w-auto text-center">
                 <a href="{{ $item['url'] }}" class="nav-link-item no-underline text-white font-bebas tracking-[3px] lg:tracking-[1px] hover:text-brand-orange transition-all duration-300 block py-2 uppercase">
                     {{ $item['label'] }}
                 </a>
                 <span class="absolute bottom-0 left-0 w-full h-[2px] bg-brand-orange scale-x-0 lg:group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
             </li>
+            @endif
             @endforeach
-
-            {{-- BOTÓN VER INSCRITOS: NARANJA ACTIVO --}}
-            <!-- <li class="lg:border-l lg:border-white/20 lg:pl-6 w-full lg:w-auto text-center">
-                <a href="{{ route('inscritos.publico') }}"
-                    class="nav-link-item no-underline font-bebas text-xl lg:text-lg xl:text-xl tracking-[2px] lg:tracking-[1px] transition-all duration-300 px-6 py-2 border-2 border-brand-orange bg-brand-orange text-black hover:bg-transparent hover:text-brand-orange rounded-sm flex items-center justify-center gap-3 group/btn">
-                    <i class="fas fa-user-check text-sm transition-transform group-hover/btn:scale-110"></i>
-                    VER INSCRITOS
-                </a>
-            </li> -->
-            <li class="lg:border-l lg:border-white/20 lg:pl-6 w-full lg:w-auto text-center">
-                <a href="#pasos"
-                    class="nav-link-item no-underline font-bebas text-xl lg:text-lg xl:text-xl tracking-[2px] lg:tracking-[1px] transition-all duration-300 px-6 py-2 border-2 border-brand-orange bg-brand-orange text-black hover:bg-transparent hover:text-brand-orange rounded-sm flex items-center justify-center gap-3 group/btn">
-
-                    <i class="fas fa-clapperboard text-sm transition-all duration-500 group-hover/btn:rotate-[-10deg] group-hover/btn:scale-110"></i>
-
-                    <span>Inscribirme</span>
-
-                    <i class="fas fa-chevron-right text-[10px] opacity-0 -ml-2 transition-all duration-300 group-hover/btn:opacity-100 group-hover/btn:ml-0"></i>
-                </a>
-            </li>
         </ul>
     </nav>
 
@@ -542,7 +564,7 @@
                     </h2>
                 </div>
                 <div class="text-right font-mono">
-                    <p class="text-brand-orange text-xl md:text-2xl tracking-[5px]">00:09:03:2026</p>
+                    <p class="text-brand-orange text-xl md:text-2xl tracking-[5px]">00:16:03:2026</p>
                     <!-- <p class="text-gray-500 text-[10px] uppercase tracking-widest">Global_System_Status</p> -->
                 </div>
             </div>
@@ -708,20 +730,20 @@
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
                             <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Inscripción de los proponentes</div>
                             <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">
-                                9 al 24 de marzo <span class="block font-mono text-sm text-white tracking-[3px] mt-1 uppercase font-medium">Último día hasta la 1:00 p.m.</span>
+                                16 al 30 de marzo <span class="block font-mono text-sm text-white tracking-[3px] mt-1 uppercase font-medium">Último día hasta la 1:00 p.m.</span>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
+                        <!-- <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
                             <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Publicación de proponentes inscritos</div>
                             <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">26 de marzo</div>
-                        </div>
+                        </div> -->
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
                             <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Publicaciones proponentes que deben subsanar Etapa I</div>
-                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">15 de abril</div>
+                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">18 de abril</div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-8 px-8 hover:bg-white/[0.03] transition-colors gap-4">
                             <div class="md:col-span-6 font-bebas text-3xl uppercase text-white/60">Recepción de subsanaciones Etapa I</div>
-                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">Del 16 al 24 de abril</div>
+                            <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest">Del 19 al 26 de abril</div>
                         </div>
                         {{-- HITO DE CIERRE ETAPA I --}}
                         <div class="grid grid-cols-1 md:grid-cols-10 items-center py-10 px-8 bg-white/[0.04] border-l-2 md:border-l-0 md:border-r-4 border-brand-orange/50 transition-colors gap-4">
@@ -777,7 +799,7 @@
                 {{-- PRODUCCIÓN --}}
                 <div class="grid grid-cols-1 md:grid-cols-12 items-center py-14 px-8 border-y border-white/10 hover:bg-white/[0.03] transition-colors gap-4">
                     <div class="md:col-span-8 md:px-6 font-bebas text-4xl uppercase text-white/60 tracking-[2px]">Producción del contenido audiovisual</div>
-                    <div class="md:col-span-4 md:text-right text-4xl font-bebas text-brand-orange tracking-widest text-center md:text-right">Del 1 de julio al 30 de septiembre</div>
+                    <div class="md:col-span-4 text-4xl font-bebas text-brand-orange tracking-widest text-center md:text-right">Del 1 de julio al 29 de septiembre</div>
                 </div>
 
                 {{-- ENTREGA FINAL --}}
@@ -1304,7 +1326,7 @@
         </div>
     </footer>
 
-   
+
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

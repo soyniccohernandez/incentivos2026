@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Livewire\Actions\Logout;
+use App\Models\Convocatoria;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
@@ -259,6 +260,25 @@ class InscripcionEtapa2 extends Component
 
     public function guardar()
     {
+        // --- 0. VALIDACIÓN DE SEGURIDAD POR CRONOGRAMA (EL CANDADO) ---
+        $convocatoria = Convocatoria::where('estado', 'abierta')->with('etapas')->first();
+        $ahora = now();
+
+        if (!$convocatoria) {
+            $this->addError('error', 'No hay ninguna convocatoria abierta en este momento.');
+            return;
+        }
+
+        // Buscamos específicamente la Etapa 2 (Requisitos Técnicos / Selección)
+        // Ajusta el 'orden', 2 si esa es la posición en tu BD
+        $etapa2 = $convocatoria->etapas->where('orden', 2)->first();
+
+        if (!$etapa2 || !$ahora->between($etapa2->fecha_inicio, $etapa2->fecha_fin)) {
+            session()->flash('error', 'Lo sentimos, el periodo para cargar requisitos de la Etapa 2 ha finalizado o no está activo según el cronograma.');
+            return redirect()->to('/');
+        }
+        // --------------------------------------------------------------
+
         $this->validate([
             'guionFinal'         => 'required|mimes:pdf|max:20480',
             'radicadoGuion'      => 'required|mimes:pdf|max:10240',
@@ -276,6 +296,7 @@ class InscripcionEtapa2 extends Component
         try {
             DB::beginTransaction();
 
+            // 8, 9, 10, 11, 12 son los IDs de tipos_documento según tu lógica
             $this->upload($this->proyecto, $this->guionFinal, 8, 'GUION');
             $this->upload($this->proyecto, $this->radicadoGuion, 9, 'DNDA');
             $this->upload($this->proyecto, $this->propuestaCreativa, 10, 'CREATIVA');
@@ -314,32 +335,19 @@ class InscripcionEtapa2 extends Component
 
             DB::commit();
 
-            // --- INICIO LÓGICA DE CORREOS ETAPA 2 ---
+            // --- LÓGICA DE CORREOS ---
             try {
-                // 1. Notificación al Usuario
-                // Mail::to($this->proyecto->socio->email)
-                //     ->send(new \App\Mail\ConfirmacionEtapaDosMail($this->proyecto));
-
-                // 2. Notificación al Equipo Interno (Santiago / Auditoría)
-                // Se recomienda usar el correo de Santiago o el de auditoría técnica
-                // Mail::to('incentivos@actores.org.co')
-                //     ->send(new \App\Mail\InternoEtapaDosMail($this->proyecto));
+                // Mail::to($this->proyecto->socio->email)->send(...);
             } catch (\Exception $e) {
-                // Logueamos el error pero no interrumpimos la experiencia del usuario
                 Log::error("Error enviando correos Etapa 2 [" . $this->proyecto->codigo_radicado . "]: " . $e->getMessage());
             }
-            // --- FIN LÓGICA DE CORREOS ETAPA 2 ---
-            // Guardamos el mensaje antes de destruir la sesión
+
             $mensaje = 'Tu proyecto "' . strtoupper($this->proyecto->titulo) . '" ha sido radicado correctamente en Etapa 2. Revisa tu correo electrónico.';
 
-            // 1. Cerrar la sesión del usuario
             Auth::logout();
-
-            // 2. Invalidar la sesión actual y regenerar el token (Buenas prácticas de seguridad)
             session()->invalidate();
             session()->regenerateToken();
 
-            // 3. Redirigir al home (o la ruta welcome) con el mensaje de éxito
             return redirect()->to('/proyectos-inscritos')->with('success', $mensaje);
         } catch (\Exception $e) {
             DB::rollBack();

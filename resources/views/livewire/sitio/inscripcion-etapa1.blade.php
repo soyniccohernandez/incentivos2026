@@ -37,19 +37,16 @@
             <div class="flex justify-between h-20">
                 <div class="flex items-center gap-8">
                     <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-4 no-underline group">
-                        <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo" class="h-9 w-auto object-contain brightness-200 group-hover:scale-105 transition-transform">
+                        <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo" class="h-9 w-auto object-contain group-hover:scale-105 transition-transform">
                         <div class="flex flex-col border-l border-white/10 pl-4">
                             <span class="font-outfit text-lg font-900 text-white tracking-tight leading-none group-hover:text-[#ff6600] transition-colors uppercase">
-                                PORTAL <span class="text-[#ff6600]">POSTULACIÓN</span>
-                            </span>
-                            <span class="text-[9px] font-semibold text-gray-500 uppercase tracking-[2px] mt-1 font-inter">
-                                Incentivos 2026
+                                MI <span class="text-[#ff6600]">PANEL</span>
                             </span>
                         </div>
                     </a>
                     <div class="hidden lg:flex items-center gap-3 ml-4 bg-white/[0.03] px-4 py-1.5 rounded-full border border-white/5">
                         <div class="w-1.5 h-1.5 bg-[#ff6600] rounded-full animate-pulse shadow-[0_0_8px_#ff6600]"></div>
-                        <span class="font-inter text-[11px] font-bold text-gray-400 tracking-wider uppercase">Etapa 01: Inscripción</span>
+                        <span class="font-inter text-[11px] font-bold text-white tracking-wider uppercase">Etapa 01: Inscripción</span>
                     </div>
                 </div>
                 <div class="flex items-center font-inter">
@@ -96,10 +93,7 @@
                         INSCRIPCIÓN <span class="text-[#ff6600]">INCENTIVOS</span>
                     </h1>
                 </div>
-                <div class="hidden md:block text-right">
-                    <p class="text-slate-400 font-bold text-[10px] uppercase tracking-[2px]">Módulo de Registro</p>
-                    <p class="font-outfit text-xl font-800 text-slate-700 uppercase">Expediente Digital</p>
-                </div>
+               
             </header>
 
             {{-- CONTENEDOR ONBOARDING --}}
@@ -133,10 +127,10 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto mb-10">
                                     <div class="bg-slate-50 border-2 border-black p-6 text-center">
                                         <p class="font-bebas text-5xl text-black">3 INCENTIVOS</p>
-                                        <p class="font-inter text-[10px] font-black text-slate-400 uppercase tracking-widest">Cupos Disponibles</p>
+                                        <p class="font-inter text-[10px] font-black text-slate-400 uppercase tracking-widest">Para apoyar nuevas historias</p>
                                     </div>
                                     <div class="bg-black text-[#ff6600] p-6 shadow-xl text-center">
-                                        <p class="font-bebas text-5xl">$45.000.000</p>
+                                        <p class="font-bebas text-5xl">$45 MILLONES</p>
                                         <p class="font-inter text-[10px] font-black text-white/50 uppercase tracking-widest">Por cada Proyecto</p>
                                     </div>
                                 </div>
@@ -149,45 +143,53 @@
                             </div>
                         </div>
 
-                        {{-- PASO 2: ACTUALIZACIÓN Y CIERRE --}}
-                        <div x-show="step === 2" x-transition:enter="transition duration-500" x-transition:enter-start="opacity-0 scale-95" class="relative max-w-6xl mx-auto px-4 text-center">
+                        
+                        {{-- PASO 2: GESTIÓN Y ACTUALIZACIÓN --}}
+                        <div x-show="step === 2" x-transition:enter="transition duration-500" x-transition:enter-start="opacity-0 scale-95" class="relative">
+                            <div class="text-center py-6">
 
-                            <div class="py-6">
                                 {{-- Identificador Institucional Paso 2 --}}
-                                <div class="inline-flex items-center gap-3 mb-12 bg-slate-100 px-6 py-2 rounded-full">
+                                <div class="inline-flex items-center gap-3 mb-8 bg-slate-100 px-6 py-2 rounded-full">
                                     <span class="w-2 h-2 bg-[#ff6600] rounded-full"></span>
                                     <span class="text-black font-inter text-[10px] font-black tracking-[3px] uppercase">Gestión y Actualización</span>
                                 </div>
 
-                                <div class="max-w-4xl mx-auto space-y-8">
-                                    <p class="font-inter text-slate-800 text-xl md:text-2xl font-bold uppercase tracking-tight leading-tight max-w-2xl mx-auto">
-                                        Es fundamental que tus datos estén <span class="text-[#ff6600] underline decoration-black decoration-4">actualizados</span> ante la Sociedad.
-                                    </p>
+                                {{-- Título Principal con el bloque inclinado característico --}}
+                                <h2 class="font-bebas text-[4.5rem] md:text-[7rem] leading-[0.85] text-slate-900 mb-8 uppercase tracking-tighter">
+                                    ¿TUS DATOS ESTÁN AL <br>
+                                    <span class="text-[#ff6600] bg-black px-6 py-2 inline-block my-2 transform rotate-1">DÍA?</span>
+                                </h2>
 
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div class="bg-slate-50 border-2 border-black p-8 group hover:bg-[#25D366] transition-all duration-300">
-                                            <p class="font-bebas text-4xl text-black mb-3">¿DATOS AL DÍA?</p>
-                                            <p class="font-inter text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 group-hover:text-black">Valida tu estado antes de postularte</p>
-                                            <a href="https://wa.me/573174188415?text=Hola,%20quiero%20ver%20si%20mis%20datos%20están%20OK%20para%20la%20convocatoria%20de%20incentivos" target="_blank"
-                                                class="inline-block bg-black text-white font-bebas text-lg px-6 py-2 shadow-[4px_4px_0px_0px_rgba(37,211,102,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:bg-white group-hover:text-black transition-all">
-                                                WHATSAPP: 317 4188415
-                                            </a>
-                                        </div>
+                                <p class="font-inter text-slate-800 text-xl md:text-2xl font-bold uppercase tracking-tight leading-tight max-w-2xl mx-auto mb-10">
+                                    Es fundamental que tu información esté <span class="text-[#ff6600] underline decoration-black decoration-4">actualizada</span> ante la Sociedad. Actualizalos aquí.
+                                </p>
 
-                                        <div class="bg-black text-white p-8 border-2 border-black shadow-xl relative overflow-hidden group text-left">
-                                            <p class="font-bebas text-4xl text-[#ff6600] mb-3">TU DASHBOARD</p>
-                                            <p class="font-inter text-[10px] font-black text-white/50 uppercase tracking-widest mb-4">Panel de Control en tiempo real</p>
-                                            <p class="font-inter text-xs font-bold uppercase leading-relaxed text-white/80">
-                                                Usa tu usuario y contraseña para acceder al tablero y monitorear el <span class="text-[#ff6600]">Estado de Postulación</span>.
-                                            </p>
-                                        </div>
-                                    </div>
+                                {{-- Bloques de Contacto Estilo Brutalista --}}
+                                <div class="grid grid-cols-1 gap-4 max-w-xl mx-auto mb-12">
 
-                                    <div class="pt-12">
-                                        <p class="font-bebas text-6xl md:text-8xl text-slate-900 tracking-tighter">
-                                            ¡MUCHA <span class="text-[#ff6600]">SUERTE!</span>
+                                    {{-- Opción WhatsApp --}}
+                                    <a href="https://wa.me/573174188415?text=Hola,%20quiero%20ver%20si%20mis%20datos%20están%20OK%20para%20la%20convocatoria%20de%20incentivos" target="_blank"
+                                        class="bg-slate-50 border-2 border-black p-6 group hover:bg-[#25D366] transition-all duration-300 flex flex-col items-center">
+                                        <p class="font-bebas text-4xl text-black">WHATSAPP: 317 4188415</p>
+                                        <p class="font-inter text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-black">
+                                            Área de socios
                                         </p>
-                                    </div>
+                                    </a>
+
+                                    {{-- Opción Correo --}}
+                                    <a href="mailto:socios@actores.org.co"
+                                        class="bg-black text-white p-6 shadow-xl group hover:bg-slate-800 transition-all duration-300 flex flex-col items-center">
+                                        <p class="font-bebas text-4xl text-[#ff6600]">SOCIOS@ACTORES.ORG.CO</p>
+                                        <p class="font-inter text-[10px] font-black text-white/50 uppercase tracking-widest">Atención por correo electrónico</p>
+                                    </a>
+
+                                </div>
+
+                                {{-- Cierre con Frase de Poder --}}
+                                <div class="pt-6">
+                                    <h3 class="font-bebas text-6xl md:text-8xl text-slate-900 tracking-tighter uppercase">
+                                        <span class="text-[#ff6600]">¡</span>TU HISTORIA <span class="text-[#ff6600]">IMPORTA</span><span>!</span>
+                                    </h3>
                                 </div>
                             </div>
                         </div>
@@ -216,7 +218,7 @@
                                     class="flex-1 md:flex-none px-14 py-4 bg-[#ff6600] text-white rounded-2xl font-bebas text-2xl tracking-[2px] hover:bg-slate-800 transition-all shadow-xl shadow-orange-100 disabled:opacity-70 disabled:cursor-not-allowed">
 
                                     {{-- Texto normal --}}
-                                    <span wire:loading.remove>¡COMENZAR INSCRIPCIÓN!</span>
+                                    <span wire:loading.remove>POSTULARME AHORA</span>
 
                                     {{-- Texto mientras procesa --}}
                                     <span wire:loading class="flex items-center gap-2">
@@ -264,7 +266,7 @@
                                 <p class="font-outfit text-3xl font-800 text-slate-700 uppercase leading-none">{{ mb_strtoupper($socio->name) }}</p>
                                 <p class="text-slate-400 font-mono text-sm mt-2">IDENTIFICACIÓN: {{ $socio->identificacion }}</p>
                             </div>
-                            <div class="md:text-right"> <label class="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] mb-1 block">Notificación</label>
+                            <div class="md:text-right"> <label class="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] mb-1 block">Datos</label>
                                 <p class="font-inter text-lg font-bold text-[#ff6600]">{{ $socio->email }}</p>
                                 <p class="font-inter text-lg font-bold text-[#ff6600]">{{ $socio->telefono }}</p>
                             </div>
@@ -273,8 +275,8 @@
                     </div>
                 </section> {{-- 2. DETALLES DE PROPUESTA --}}
                 <section class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm text-left">
-                    <h2 class="font-outfit text-2xl font-800 text-slate-800 uppercase tracking-tight mb-8">2. Detalles de la Propuesta</h2>
-                    <div class="text-left"> <label class="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] mb-3 block">Título oficial del proyecto <span class="text-red-500">*</span></label> <input type="text" wire:model.blur="titulo" placeholder="Ej: Mi Gran Documental" class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 font-bold text-slate-700 focus:ring-4 focus:ring-orange-50 focus:border-[#ff6600] outline-none transition-all uppercase"> @error('titulo') <span class="text-red-500 text-[10px] font-bold mt-2 block uppercase animate-fade-in">{{ $message }}</span> @enderror </div>
+                    <h2 class="font-outfit text-2xl font-800 text-slate-800 uppercase tracking-tight mb-8">2. Título oficial del proyecto</h2>
+                    <div class="text-left"> <label class="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] mb-3 block">No incluir el nombre del proponente <span class="text-red-500">*</span></label> <input type="text" wire:model.blur="titulo" placeholder="Ej: Mi Gran Documental" class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 font-bold text-slate-700 focus:ring-4 focus:ring-orange-50 focus:border-[#ff6600] outline-none transition-all uppercase"> @error('titulo') <span class="text-red-500 text-[10px] font-bold mt-2 block uppercase animate-fade-in">{{ $message }}</span> @enderror </div>
                 </section> {{-- 3. PERFIL DEL DIRECTOR --}}
                 <section class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm text-left">
                     <div class="mb-8">
@@ -352,7 +354,7 @@
                     </div>
 
                     {{-- Grid de Documentos Director --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> @php $docsDirector = [ [ 'model' => 'docDirectorCompromiso', 'label' => 'ANEXO 1: MANIFESTACIÓN DEL DIRECTOR', 'desc' => 'Aceptación del cargo de director', 'formato' => 'etapa_01/anexo-01-manifestacion-del-director.pdf', 'hasDownload' => true ], [ 'model' => 'docDirectorExperiencia', 'label' => 'ANEXO 2: EXPERIENCIA COMO DIRECTOR GENERAL', 'desc' => 'Experiencia general', 'formato' => 'etapa_01/anexo-02-experiencia-director-general.pdf', 'hasDownload' => true ], [ 'model' => 'docDirectorEvidencia1', 'label' => 'Certificado de experiencia 1', 'desc' => 'Adjunte en un solo archivo PDF el certificado contractual y las evidencias correspondientes a la primera experiencia de dirección relacionada anteriormente en el anexo 2.', 'formato' => null, 'hasDownload' => false ], [ 'model' => 'docDirectorEvidencia2', 'label' => 'Certificado de experiencia 2', 'desc' => 'Adjunte en un solo archivo PDF el certificado contractual y las evidencias correspondientes a la segunda experiencia de dirección relacionada anteriormente en el anexo 2.', 'formato' => null, 'hasDownload' => false ], ]; @endphp @foreach($docsDirector as $doc) <div class="p-6 bg-slate-50/50 rounded-[2rem] border border-slate-100 flex flex-col justify-between group hover:border-orange-200 transition-all" x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true" x-on:livewire-upload-finish="isUploading = false" x-on:livewire-upload-error="isUploading = false" x-on:livewire-upload-progress="progress = $event.detail.progress">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> @php $docsDirector = [ [ 'model' => 'docDirectorCompromiso', 'label' => 'ANEXO 1: MANIFESTACIÓN DEL DIRECTOR', 'desc' => 'Aceptación del cargo de director', 'formato' => 'etapa_01/anexo-01-manifestacion-del-director.pdf', 'hasDownload' => true ], [ 'model' => 'docDirectorExperiencia', 'label' => 'ANEXO 2: EXPERIENCIA COMO DIRECTOR GENERAL', 'desc' => 'Experiencia general', 'formato' => 'etapa_01/anexo-02-experiencia-director-general.pdf', 'hasDownload' => true ], [ 'model' => 'docDirectorEvidencia1', 'label' => 'Certificado de experiencia 1', 'desc' => 'Adjunte en un solo archivo PDF el certificado de experiencia expedido por la producción y las evidencias correspondientes al primer proyecto de dirección relacionado anteriormente en el Anexo 2.', 'formato' => null, 'hasDownload' => false ], [ 'model' => 'docDirectorEvidencia2', 'label' => 'Certificado de experiencia 2', 'desc' => 'Adjunte en un solo archivo PDF el certificado de experiencia expedido por la producción y las evidencias correspondientes al segundo proyecto de dirección relacionado anteriormente en el Anexo 2.', 'formato' => null, 'hasDownload' => false ], ]; @endphp @foreach($docsDirector as $doc) <div class="p-6 bg-slate-50/50 rounded-[2rem] border border-slate-100 flex flex-col justify-between group hover:border-orange-200 transition-all" x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true" x-on:livewire-upload-finish="isUploading = false" x-on:livewire-upload-error="isUploading = false" x-on:livewire-upload-progress="progress = $event.detail.progress">
                             <div class="mb-6">
                                 <h4 class="font-outfit text-sm font-800 text-slate-700 uppercase mb-1 text-center"> {{ $doc['label'] }} <span class="text-red-500">*</span> </h4>
                                 <p class="text-[10px] text-slate-400 font-medium uppercase tracking-tighter text-center"> {{ $doc['desc'] }} </p>
@@ -509,7 +511,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="space-y-4 max-w-2xl mx-auto"> <label class="flex items-center gap-5 p-5 bg-white rounded-2xl border border-slate-100 cursor-pointer hover:border-[#ff6600]/30 transition-all group"> <input type="checkbox" wire:model.live="aceptaTerminos" class="w-6 h-6 accent-[#ff6600] cursor-pointer"> <span class="text-xs md:text-sm font-semibold text-slate-600 uppercase tracking-tight">Acepto, de manera voluntaria, previa, explícita e informada los términos y ondiciones establecidos en la presente convocatoria.</span> </label> @error('aceptaTerminos') <span class="text-red-500 text-[10px] font-bold ml-5 uppercase block animate-fade-in">{{ $message }}</span> @enderror <label class="flex items-center gap-5 p-5 bg-white rounded-2xl border border-slate-100 cursor-pointer hover:border-[#ff6600]/30 transition-all group"> <input type="checkbox" wire:model.live="aceptaDatos" class="w-6 h-6 accent-[#ff6600] cursor-pointer"> <span class="text-xs md:text-sm font-semibold text-slate-600 uppercase tracking-tight">Autorizo de manera voluntaria, previa, explícita e informada a Actores Sociedad
+                        <div class="space-y-4 max-w-2xl mx-auto"> <label class="flex items-center gap-5 p-5 bg-white rounded-2xl border border-slate-100 cursor-pointer hover:border-[#ff6600]/30 transition-all group"> <input type="checkbox" wire:model.live="aceptaTerminos" class="w-6 h-6 accent-[#ff6600] cursor-pointer"> <span class="text-xs md:text-sm font-semibold text-slate-600 uppercase tracking-tight">Acepto, de manera voluntaria, previa, explícita e informada los términos y condiciones establecidos en la presente convocatoria.</span> </label> @error('aceptaTerminos') <span class="text-red-500 text-[10px] font-bold ml-5 uppercase block animate-fade-in">{{ $message }}</span> @enderror <label class="flex items-center gap-5 p-5 bg-white rounded-2xl border border-slate-100 cursor-pointer hover:border-[#ff6600]/30 transition-all group"> <input type="checkbox" wire:model.live="aceptaDatos" class="w-6 h-6 accent-[#ff6600] cursor-pointer"> <span class="text-xs md:text-sm font-semibold text-slate-600 uppercase tracking-tight">Autorizo de manera voluntaria, previa, explícita e informada a Actores Sociedad
                                     Colombiana de Gestión (ACTORES S.C.G.) para tratar mis datos personales de
                                     acuerdo con la Política de Tratamiento de Datos Personales de la Sociedad, lo
                                     establecido en la presente convocatoria y para los fines relacionados con su objeto
@@ -523,7 +525,7 @@
 
                     <button type="submit" wire:loading.attr="disabled" wire:target="guardar" class="w-full max-w-xl h-24 bg-[#ff6600] text-white rounded-[2rem] font-outfit shadow-2xl shadow-orange-100 hover:bg-slate-800 transition-all mx-auto cursor-pointer disabled:opacity-80 flex items-center justify-center overflow-hidden">
                         <div class="relative w-full h-full flex items-center justify-center">
-                            <div wire:loading.remove wire:target="guardar" class="flex items-center justify-center gap-3 px-4"> <span class="text-2xl font-900 uppercase tracking-[2px] whitespace-nowrap"> Finalizar e Inscribir </span> <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div wire:loading.remove wire:target="guardar" class="flex items-center justify-center gap-3 px-4"> <span class="text-2xl font-900 uppercase tracking-[2px] whitespace-nowrap"> Enviar </span> <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="3" stroke-linecap="round" />
                                 </svg> </div>
                             <div wire:loading.flex wire:target="guardar" class="absolute inset-0 items-center justify-center gap-4 px-4 bg-inherit rounded-[2rem]"> <svg class="animate-spin h-7 w-7 text-white flex-shrink-0" fill="none" viewBox="0 0 24 24">

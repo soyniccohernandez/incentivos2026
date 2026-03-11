@@ -115,7 +115,7 @@ class InscripcionEtapa1 extends Component
         if (!$phone) return 'N/A';
         return substr($phone, 0, 3) . '***' . substr($phone, -3);
     }
-    public $mostrarOnboarding = true;
+    public $mostrarOnboarding = FALSE;
 
     public function completarOnboarding()
     {
@@ -145,13 +145,26 @@ class InscripcionEtapa1 extends Component
 
     public function guardar()
     {
-        $this->validate();
+        // --- 0. VALIDACIÓN DE SEGURIDAD POR CRONOGRAMA (EL CANDADO) ---
+        $convocatoria = Convocatoria::where('estado', 'abierta')->with('etapas')->first();
+        $ahora = now();
 
-        $convocatoria = Convocatoria::where('estado', 'abierta')->first();
         if (!$convocatoria) {
-            $this->addError('error', 'No hay convocatoria abierta.');
+            $this->addError('error', 'No hay ninguna convocatoria abierta en este momento.');
             return;
         }
+
+        // Buscamos específicamente la Etapa 1 (Inscripciones)
+        $etapa1 = $convocatoria->etapas->where('orden', 1)->first();
+
+        if (!$etapa1 || !$ahora->between($etapa1->fecha_inicio, $etapa1->fecha_fin)) {
+            // Si el usuario intenta guardar fuera de las fechas de la Etapa 1
+            session()->flash('error', 'Lo sentimos, el periodo de inscripción para la Etapa 1 ha finalizado o no está activo.');
+            return redirect()->to('/'); // Lo sacamos al inicio
+        }
+        // --------------------------------------------------------------
+
+        $this->validate();
 
         // 1. Validación de Exclusividad
         $idDirectorValidar = ($this->directorPropio === 'si') ? $this->socio->identificacion : $this->directorIdentificacion;
@@ -194,7 +207,6 @@ class InscripcionEtapa1 extends Component
             ]);
 
             // --- LÓGICA DE NOMBRES DE ARCHIVOS ---
-            // Creamos un slug del nombre del socio para que el archivo no tenga espacios ni caracteres raros
             $nombreSocioSaneado = Str::slug($this->socio->name, '_');
 
             $mapeoDocs = [
@@ -207,7 +219,6 @@ class InscripcionEtapa1 extends Component
 
             foreach ($mapeoDocs as $doc) {
                 if ($doc['file'] && isset($tiposDoc[$doc['tipo']])) {
-                    // Nombre resultante: RAD-2026-001_ANEXO_1_MANIFESTACION_erick_hernandez.pdf
                     $nombreFinal = $proyecto->codigo_radicado . '_' . $doc['pfx'] . '_' . $nombreSocioSaneado;
                     $this->upload($proyecto, $doc['file'], $tiposDoc[$doc['tipo']], $nombreFinal);
                 }
@@ -223,35 +234,30 @@ class InscripcionEtapa1 extends Component
 
             DB::commit();
 
-            // 3. Email
+            // 3. Email (Opcional)
             try {
-                // Mail::to($this->socio->email)->send(new \App\Mail\ConfirmacionEtapaUnoMail($proyecto, $this->socio));
+                Mail::to($this->socio->email)->send(new \App\Mail\ConfirmacionEtapaUnoMail($proyecto, $this->socio));
 
-                // Mail::to('incentivos@actores.org.co')->send(
-                //     new \App\Mail\InternoEtapaUnoMail(
-                //         $proyecto,
-                //         $this->socio,
-                //         [
-                //             'autoria'        => $this->autoria,
-                //             'directorPropio' => $this->directorPropio
-                //         ]
-                //     )
-                // );
+                Mail::to('incentivos@actores.org.co')->send(
+                    new \App\Mail\InternoEtapaUnoMail(
+                        $proyecto,
+                        $this->socio,
+                        [
+                            'autoria'        => $this->autoria,
+                            'directorPropio' => $this->directorPropio
+                        ]
+                    )
+                );
             } catch (\Exception $e) {
                 Log::error("Error Mail: " . $e->getMessage());
             }
 
-            // Guardamos el mensaje antes de destruir la sesión
-            $mensaje = 'Tu proyecto "' . strtoupper($this->titulo) . '" ha sido radicado correctamente. Revisa tu correo electrónico.';
+            $mensaje = 'Tu proyecto "' . strtoupper($this->titulo) . '" ha sido registrado correctamente. Revisa tu correo electrónico.';
 
-            // 1. Cerrar la sesión del usuario
             Auth::logout();
-
-            // 2. Invalidar la sesión actual y regenerar el token (Buenas prácticas de seguridad)
             session()->invalidate();
             session()->regenerateToken();
 
-            // 3. Redirigir al home (o la ruta welcome) con el mensaje de éxito
             return redirect()->to('/proyectos-inscritos')->with('success', $mensaje);
         } catch (\Exception $e) {
             DB::rollBack();

@@ -27,13 +27,13 @@
 
             {{-- ENLACE INICIO --}}
             <a href="{{ url('/') }}"
-                class="font-bebas text-lg md:text-xl text-white/50 hover:text-brand-orange tracking-[3px] no-underline transition-all duration-300 relative group hidden sm:block">
+                class="font-bebas text-lg md:text-xl text-brand-orange hover:text-white tracking-[3px] no-underline transition-all duration-300 relative group hidden sm:block">
                 INICIO
                 <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-brand-orange transition-all duration-300 group-hover:w-full"></span>
             </a>
 
             {{-- BOTÓN INSCRIBIRME --}}
-            <a href="{{ route('validar-socio') }}"
+            <!-- <a href="{{ route('validar-socio') }}"
                 class="nav-link-item no-underline font-bebas text-xl lg:text-lg xl:text-xl tracking-[2px] lg:tracking-[1px] transition-all duration-300 px-6 py-2 border-2 border-brand-orange bg-brand-orange text-black hover:bg-transparent hover:text-brand-orange rounded-sm flex items-center justify-center gap-3 group/btn">
 
                 <i class="fas fa-clapperboard text-sm transition-all duration-500 group-hover/btn:rotate-[-10deg] group-hover/btn:scale-110"></i>
@@ -41,7 +41,7 @@
                 <span>Inscribirme</span>
 
                 <i class="fas fa-chevron-right text-[10px] opacity-0 -ml-2 transition-all duration-300 group-hover/btn:opacity-100 group-hover/btn:ml-0"></i>
-            </a>
+            </a> -->
         </div>
     </nav>
 
@@ -99,12 +99,12 @@
 
         {{-- CABECERA --}}
         <div class="mb-20 max-w-4xl">
-            <span class="text-brand-orange font-mono text-xs tracking-[8px] uppercase mb-4 block">Fase de Selección {{ $ahora->year }}</span>
-            <h1 class="font-bebas text-7xl md:text-9xl leading-[0.8] mb-8 uppercase">ARCHIVO DE <br><span class="text-brand-orange text-opacity-80">POSTULACIONES</span></h1>
+            <span class="text-brand-orange font-mono text-md tracking-[8px] uppercase mb-4 block">PROYECTOS</span>
+            <h1 class="font-bebas text-7xl md:text-9xl leading-[0.8] mb-8 uppercase">INSCRITOS</h1>
 
             <div class="relative group">
                 <input type="text" wire:model.live="search"
-                    placeholder="BUSCAR POR NOMBRE, RADICADO O PROPONENTE..."
+                    placeholder="BUSCAR POR NOMBRE O RADICADO..."
                     class="w-full bg-[#0a0a0a] border border-white/10 p-6 text-xl md:text-3xl font-bebas tracking-widest outline-none focus:border-brand-orange transition-all placeholder:text-white/5 uppercase shadow-2xl">
                 <div class="absolute right-6 top-1/2 -translate-y-1/2 text-brand-orange opacity-20 group-focus-within:opacity-100 transition-opacity">
                     <i class="fas fa-search text-2xl"></i>
@@ -112,77 +112,57 @@
             </div>
         </div>
 
-        {{-- GRID DE PROYECTOS REALES --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {{-- CONTENEDOR DE LISTA DE PROYECTOS --}}
+        <div class="flex flex-col gap-6">
             @forelse($proyectos as $proyecto)
             <a href="{{ route('validar-socio', ['radicado' => $proyecto->codigo_radicado]) }}"
-                class="group relative flex flex-col bg-[#050505] border border-white/10 hover:border-brand-orange/40 transition-all duration-500 shadow-[0_40px_80px_rgba(0,0,0,0.9)] hover:-translate-y-2 no-underline overflow-hidden min-h-[600px]">
+                class="group relative flex flex-col md:flex-row bg-[#050505] border-l-4 {{ ($proyecto->estado->nombre ?? '') == 'SELECCIONADO' ? 'border-brand-orange shadow-[0_10px_30px_rgba(255,102,0,0.1)]' : 'border-white/10' }} hover:border-brand-orange border-y border-r border-white/5 transition-all duration-500 hover:bg-[#0a0a0a] no-underline overflow-hidden">
 
-                {{-- Barra de estado superior --}}
-                <div class="h-2 w-full {{ ($proyecto->estado->nombre ?? '') == 'SELECCIONADO' ? 'bg-brand-orange shadow-[0_0_25px_rgba(255,102,0,0.6)]' : 'bg-white/10' }} group-hover:bg-brand-orange transition-all duration-500"></div>
+                <div class="p-6 md:p-8 flex flex-col md:flex-row items-center justify-between w-full gap-8">
 
-                <div class="p-6 md:p-10 flex flex-col h-full flex-1">
-
-                    {{-- 1. HEADER: RADICADO Y FECHA (Con Wrap Inteligente) --}}
-                    <div class="flex flex-wrap items-end justify-between gap-6 mb-12 border-b border-white/5 pb-8">
-                        <div class="flex flex-col min-w-[280px] flex-1">
-                            <span class="font-mono text-[10px] text-brand-orange tracking-[5px] mb-2 font-black uppercase">IDENTIFICADOR_ÚNICO</span>
-                            <span class="font-mono text-4xl md:text-5xl text-white tracking-[6px] md:tracking-[10px] font-black uppercase leading-none group-hover:text-brand-orange transition-colors break-all">
-                                #{{ $proyecto->codigo_radicado }}
-                            </span>
-                        </div>
-
-                        <div class="flex flex-col items-start md:items-end bg-white/5 md:bg-transparent p-3 md:p-0 rounded-lg md:rounded-none">
-                            <span class="font-mono text-[9px] text-white/20 tracking-[3px] uppercase mb-1">REGISTRO_DATE</span>
-                            <span class="font-mono text-lg text-white/50 font-bold border-b border-brand-orange/30 pb-1">
-                                {{ $proyecto->created_at->format('d.m.Y') }}
-                            </span>
-                        </div>
+                    {{-- 1. IDENTIFICADOR (Lado izquierdo) --}}
+                    <div class="flex flex-col min-w-[180px]">
+                        <span class="font-mono text-[9px] text-brand-orange tracking-[4px] mb-1 font-black uppercase">IDENTIFICADOR_ID</span>
+                        <span class="font-mono text-3xl text-white tracking-widest font-black uppercase group-hover:text-brand-orange transition-colors">
+                            #{{ $proyecto->codigo_radicado }}
+                        </span>
+                        <span class="font-mono text-[10px] text-white/30 mt-2 font-bold uppercase tracking-widest">
+                            {{ $proyecto->created_at->format('d.m.Y') }}
+                        </span>
                     </div>
 
-                    {{-- 2. CUERPO: TÍTULO (Ajuste de tamaño dinámico) --}}
-                    <div class="flex-1 flex flex-col justify-center py-4">
-                        <h2 class="font-bebas text-5xl md:text-7xl lg:text-8xl text-white leading-[0.85] uppercase mb-6 group-hover:text-white transition-colors duration-500 italic tracking-tighter break-words">
+                    {{-- 2. TÍTULO DEL PROYECTO (Centro - Expansible) --}}
+                    <div class="flex-1 text-center md:text-left border-l border-white/5 md:pl-8">
+                        <span class="font-mono text-[9px] text-white/20 tracking-[4px] mb-1 uppercase block">NOMBRE_DEL_PROYECTO</span>
+                        <h2 class="font-bebas text-4xl md:text-5xl text-white leading-none uppercase group-hover:translate-x-2 transition-transform duration-500 italic tracking-tighter">
                             {{ $proyecto->titulo }}
                         </h2>
-
-                        <div class="flex items-start gap-4">
-                            <div class="h-10 w-1.5 bg-brand-orange/50 shrink-0"></div>
-                            <div class="flex flex-col">
-                                <span class="text-[10px] font-mono text-white/20 uppercase tracking-[4px]">SOLICITANTE_OFICIAL</span>
-                                <span class="font-bebas text-3xl md:text-4xl text-white/80 tracking-widest uppercase leading-tight">
-                                    {{ $proyecto->user?->name ?? 'SISTEMA_UNDEFINED' }}
-                                </span>
-                            </div>
-                        </div>
                     </div>
 
-                    {{-- 3. FOOTER: ESTATUS Y ACCIÓN (Layout Responsivo) --}}
-                    <div class="mt-12 pt-8 border-t-2 border-white/10">
-                        <div class="flex flex-wrap items-center justify-between gap-8">
-                            <div class="flex flex-col min-w-[250px]">
-                                <span class="font-mono text-[11px] text-brand-orange tracking-[6px] mb-3 font-black">DICTAMEN_ACTUAL</span>
-                                <span class="font-bebas text-5xl md:text-7xl tracking-[4px] uppercase leading-none transition-all duration-500
-                        {{ $proyecto->color_clase }} 
-                        {{ !$proyecto->publicado ? 'animate-pulse' : 'drop-shadow-[0_0_25px_rgba(255,255,255,0.1)]' }}">
-                                    {{ $proyecto->estado_final }}
-                                </span>
-                            </div>
+                    {{-- 3. DICTAMEN / ESTADO (Lado derecho) --}}
+                    <div class="flex flex-col items-center md:items-end min-w-[200px] border-l border-white/5 md:pl-8">
+                        <span class="font-mono text-[9px] text-brand-orange tracking-[4px] mb-2 font-black uppercase">STATUS_FINAL</span>
+                        <span class="font-bebas text-4xl tracking-[2px] uppercase leading-none transition-all duration-500
+                    {{ $proyecto->color_clase }} 
+                    {{ !$proyecto->publicado ? 'animate-pulse opacity-60' : 'drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]' }}">
+                            {{ $proyecto->estado_final }}
+                        </span>
+                    </div>
 
-                            {{-- Botón que invita al clic --}}
-                            <div class="group/btn flex items-center gap-4 bg-brand-orange text-black px-8 py-4 rounded-full transform transition-all duration-300 hover:scale-105 shadow-xl shadow-brand-orange/10 shrink-0">
-                                <span class="font-bebas text-2xl tracking-widest">VER EXPEDIENTE</span>
-                                <i class="fas fa-arrow-right transform group-hover/btn:translate-x-2 transition-transform"></i>
-                            </div>
+                    {{-- 4. ACCIÓN (Botón Final) --}}
+                    <div class="shrink-0">
+                        <div class="bg-white/5 group-hover:bg-brand-orange text-white group-hover:text-black p-4 rounded-full transition-all duration-300">
+                            <i class="fas fa-arrow-right transform group-hover:rotate-[-45deg] transition-transform"></i>
                         </div>
                     </div>
                 </div>
 
-                {{-- Efecto de resplandor --}}
-                <div class="absolute inset-0 bg-gradient-to-tr from-brand-orange/[0.1] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                {{-- Efecto de Barrido de Luz --}}
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none"></div>
             </a>
+
             @empty
-            <div class="col-span-full py-20 text-center border border-dashed border-white/10 bg-white/[0.02]">
+            <div class="py-20 text-center border border-dashed border-white/10 bg-white/[0.02]">
                 <i class="fas fa-film text-white/10 text-6xl mb-4"></i>
                 <p class="font-bebas text-3xl text-white/20 tracking-widest uppercase">No se encontraron proyectos registrados</p>
             </div>
@@ -197,19 +177,16 @@
 
             {{-- En caso de no tener el vendor publicado, el texto informativo --}}
             <div class="mt-8 bg-[#0a0a0a] border border-white/10 p-8 flex flex-col md:flex-row items-center justify-between gap-8">
-                <div class="font-mono text-[10px] text-white/40 tracking-[5px] uppercase">
+                <div class="font-mono text-[16px] text-white/40 tracking-[5px] uppercase">
                     Mostrando <span class="text-white">{{ $proyectos->firstItem() ?? 0 }} - {{ $proyectos->lastItem() ?? 0 }}</span> de <span class="text-brand-orange">{{ $total }}</span> proyectos
                 </div>
                 <div class="hidden lg:block">
-                    <span class="font-bebas text-xl text-white/20 tracking-[4px]">ARCHIVO_ACTORES_SCG_V.26</span>
+                    <span class="font-bebas text-xl text-white/20 tracking-[4px]">PROYECTOS INCENTIVOS AUDIOVISUALES</span>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="mt-32 py-16 bg-[#050505] border-t border-white/5 text-center">
-        <p class="font-mono text-[9px] text-white/20 tracking-[4px] uppercase italic">Sistema de Gestión Audiovisual // Bogotá, Colombia // {{ $ahora->year }}</p>
-    </footer>
 
     {{-- En tu welcome.blade.php o layout principal --}}
     @if(session('success'))
@@ -222,7 +199,7 @@
             const payload = document.getElementById('swal-payload');
             if (payload && payload.dataset.message) {
                 Swal.fire({
-                    title: '¡RADICACIÓN EXITOSA!',
+                    title: '¡REGISTRO EXITOSO!',
                     text: payload.dataset.message,
                     icon: 'success',
                     background: '#ffffff',

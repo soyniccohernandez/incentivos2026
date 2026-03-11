@@ -3054,12 +3054,12 @@ class InitialSetupSeeder extends Seeder
         // 2. Estados (Mantenemos tu lógica de 9 estados para que coincida con Proyecto.php)
         $estados = [
             ['id' => 1, 'nombre' => 'Inscrito / En Revisión', 'descripcion' => 'Socio completó Etapa 1. Auditor validando.', 'es_final' => 0],
-            ['id' => 2, 'nombre' => 'En Subsanación', 'descripcion' => 'Socio debe corregir documentos de Etapa 1.', 'es_final' => 0],
+            ['id' => 2, 'nombre' => 'Debe subsanar', 'descripcion' => 'Socio debe corregir documentos de Etapa 1.', 'es_final' => 0],
             ['id' => 3, 'nombre' => 'En revisión de subsanación', 'descripcion' => 'Socio envió correcciones de Etapa 1.', 'es_final' => 0],
-            ['id' => 4, 'nombre' => 'En Etapa 2', 'descripcion' => 'Habilitado para subir Formulario Técnico y Elenco.', 'es_final' => 0],
+            ['id' => 4, 'nombre' => 'Pasa a etapa 2', 'descripcion' => 'Habilitado para subir Formulario Técnico y Elenco.', 'es_final' => 0],
             ['id' => 5, 'nombre' => 'Etapa 2 - En Revisión', 'descripcion' => 'Formulario técnico enviado. Revisión definitiva.', 'es_final' => 0],
-            ['id' => 6, 'nombre' => 'Etapa 3 - Revisión Jurados', 'descripcion' => 'Proyecto en evaluación por jurados.', 'es_final' => 0],
-            ['id' => 7, 'nombre' => 'Seleccionado (Ganador)', 'descripcion' => 'Proyecto premiado.', 'es_final' => 1],
+            ['id' => 6, 'nombre' => 'Pasa a etapa 3 - Revisión Jurados', 'descripcion' => 'Proyecto en evaluación por jurados.', 'es_final' => 0],
+            ['id' => 7, 'nombre' => 'Seleccionado', 'descripcion' => 'Proyecto premiado.', 'es_final' => 1],
             ['id' => 8, 'nombre' => 'Eliminado', 'descripcion' => 'No superó los filtros técnicos o de documentos.', 'es_final' => 1],
             ['id' => 9, 'nombre' => 'No seleccionado', 'descripcion' => 'Completó el proceso pero no alcanzó el puntaje.', 'es_final' => 1],
         ];

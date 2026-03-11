@@ -97,19 +97,16 @@
             <div class="flex justify-between h-20">
                 <div class="flex items-center gap-8">
                     <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-4 no-underline group">
-                        <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo" class="h-9 w-auto object-contain brightness-200 group-hover:scale-105 transition-transform">
+                        <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo" class="h-9 w-auto object-contain group-hover:scale-105 transition-transform">
                         <div class="flex flex-col border-l border-white/10 pl-4">
                             <span class="font-outfit text-lg font-900 text-white tracking-tight leading-none group-hover:text-[#ff6600] transition-colors uppercase">
-                                PORTAL <span class="text-[#ff6600]">POSTULACIÓN</span>
-                            </span>
-                            <span class="text-[9px] font-semibold text-gray-500 uppercase tracking-[2px] mt-1 font-inter">
-                                Incentivos 2026
+                                MI <span class="text-[#ff6600]">PANEL</span>
                             </span>
                         </div>
                     </a>
                     <div class="hidden lg:flex items-center gap-3 ml-4 bg-white/[0.03] px-4 py-1.5 rounded-full border border-white/5">
                         <div class="w-1.5 h-1.5 bg-[#ff6600] rounded-full animate-pulse shadow-[0_0_8px_#ff6600]"></div>
-                        <span class="font-inter text-[11px] font-bold text-gray-400 tracking-wider uppercase">Inscripción</span>
+                        <span class="font-inter text-[11px] font-bold text-gray-400 tracking-wider uppercase">Seguimiento </span>
                     </div>
                 </div>
                 <div class="flex items-center font-inter">
@@ -156,165 +153,109 @@
         {{-- GRID PRINCIPAL --}}
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-            {{-- CABECERA DE ESTADO --}}
-            <div class="lg:col-span-12 space-y-8">
-                <div class="bg-white rounded-[3rem] p-8 md:p-12 border border-slate-100 shadow-sm relative overflow-hidden">
-                    <div class="absolute -right-10 -top-10 text-slate-50 pointer-events-none">
-                        <svg width="300" height="300" fill="currentColor" viewBox="0 0 24 24">
+            {{-- CABECERA DE ESTADO: VERSIÓN PULIDA DE TU DISEÑO --}}
+            <div class="lg:col-span-12">
+                <div class="bg-white rounded-[4rem] p-10 md:p-14 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.08)] border border-slate-50 relative overflow-hidden group">
+
+                    {{-- El icono de fondo que tenías, pero con opacidad controlada --}}
+                    <div class="absolute -right-12 -top-12 text-slate-100/80 pointer-events-none transform group-hover:scale-110 transition-transform duration-700">
+                        <svg width="320" height="320" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z" />
                         </svg>
                     </div>
 
                     <div class="relative z-10">
-                        <div class="flex flex-col lg:flex-row justify-between items-center gap-10">
-                            {{-- LADO IZQUIERDO: INDICADOR DE ESTADO --}}
-                            <div class="w-full lg:w-7/12 space-y-6">
-                                <div class="flex items-center gap-4">
-                                    <div class="h-16 w-16 rounded-3xl {{ $proyecto->estado_id == 2 ? 'bg-red-50 text-red-500 border-red-100' : 'bg-orange-50 text-[#ff6600] border-orange-100' }} border-2 flex items-center justify-center shadow-sm">
-                                        @if($proyecto->estado_id == 2)
-                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2.5" />
-                                        </svg>
-                                        @else
-                                        <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2.5" />
-                                        </svg>
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[4px] mb-1">Estatus del Radicado</p>
-                                        <h2 class="font-outfit text-4xl md:text-5xl font-900 uppercase tracking-tighter leading-tight text-slate-900">
-                                            @php
-                                            $estadoStr = $proyecto->estado->nombre;
-                                            $separador = strpos($estadoStr, '/') !== false ? '/' : (strpos($estadoStr, '-') !== false ? '-' : null);
-                                            if ($separador) {
-                                            [$principal, $secundario] = explode($separador, $estadoStr, 2);
-                                            } else {
-                                            $principal = $estadoStr;
-                                            $secundario = null;
-                                            }
-                                            @endphp
-                                            {{ trim($principal) }}
-                                            @if($secundario)
-                                            <span class="{{ in_array($proyecto->estado_id, [2, 8]) ? 'text-red-500' : 'text-[#ff6600]' }} opacity-80">{{ $separador }} {{ trim($secundario) }}</span>
-                                            @endif
-                                        </h2>
-                                    </div>
-                                </div>
-                                <div class="bg-slate-50 border-l-4 border-slate-900 p-6 rounded-r-3xl">
-                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Observación de Registro</p>
-                                    <p class="text-lg font-medium text-slate-700 leading-relaxed italic">
-                                        "{{ $proyecto->observacion_general ?? 'Su solicitud se encuentra en etapa de revisión.' }}"
-                                    </p>
-                                </div>
+                        {{-- BLOQUE 1: ESTADO (MANTENIENDO TU ESTRUCTURA) --}}
+                        <div class="flex flex-col md:flex-row items-center gap-10 mb-12">
+
+                            {{-- Tu contenedor de icono redondeado, más estilizado --}}
+                            <div class="h-28 w-28 rounded-[2.5rem] flex-shrink-0 flex items-center justify-center border-2 shadow-inner transition-colors duration-500 {{ $proyecto->estado_id == 2 ? 'bg-red-50 border-red-100 text-red-500' : 'bg-orange-50 border-orange-100 text-brand-orange' }}">
+                                @if($proyecto->estado_id == 2)
+                                <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2" />
+                                </svg>
+                                @else
+                                <svg class="w-14 h-14 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2" />
+                                </svg>
+                                @endif
                             </div>
 
-                            {{-- LADO DERECHO: CONTACTO --}}
-                            <div class="w-full lg:w-5/12 space-y-4">
-                                <div class="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-xl shadow-slate-200/50">
-                                    <div class="flex items-center gap-3 mb-4">
-                                        <span class="flex h-3 w-3 rounded-full bg-blue-500"></span>
-                                        <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest">Canal de Atención</p>
-                                    </div>
-                                    <p class="text-xs text-slate-500 mb-6 leading-relaxed">Para cualquier actualización, subsanación o trámite, contacte al área de <span class="font-bold text-slate-700">Incentivos</span>:</p>
-                                    <div class="space-y-4">
-                                        <a href="mailto:incentivos@actores.org.co" class="flex items-center gap-4 group no-underline">
-                                            <div class="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center text-white group-hover:bg-[#ff6600] transition-colors">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-width="2" />
-                                                </svg>
-                                            </div>
-                                            <div>
-                                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Canal Oficial</p>
-                                                <p class="text-sm font-bold text-slate-900">incentivos@actores.org.co</p>
-                                            </div>
-                                        </a>
-                                        <div class="grid grid-cols-2 gap-3 pt-2">
-                                            <a href="tel:+573174188415" class="flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-100 hover:border-slate-300 transition-all group no-underline">
-                                                <div class="text-slate-400 group-hover:text-slate-900"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                        <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
-                                                    </svg></div>
-                                                <span class="text-[11px] font-bold text-slate-700 italic">317 4188415</span>
-                                            </a>
-                                            <a href="https://wa.me/573174188415" target="_blank" class="flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-100 hover:border-green-200 hover:bg-green-50/30 transition-all group no-underline">
-                                                <div class="text-slate-400 group-hover:text-green-500"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                        <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
-                                                        <path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
-                                                    </svg></div>
-                                                <span class="text-[11px] font-bold text-slate-700 italic">WhatsApp</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-8 pt-6 border-t border-slate-50">
-                            <div class="flex items-center justify-between mb-3 text-[10px] font-black uppercase tracking-[2px]">
-                                <span class="text-slate-400">Progreso del Flujo de Trabajo</span>
-                                <span class="text-slate-900">Etapa {{ $proyecto->etapa_id }} de 4</span>
-                            </div>
-                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden p-0.5">
-                                <div class="h-full bg-slate-950 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(0,0,0,0.1)]"
-                                    @style([ 'width: ' . (($proyecto->etapa_id ?? 0) / 4 * 100) . '%'
-                                    ])>
-                                </div>
+                            <div class="flex-1 text-center md:text-left">
+                                <span class="text-[11px] font-black uppercase tracking-[5px] text-slate-400 block mb-2">ESTADO</span>
+                                <h2 class="text-5xl md:text-7xl font-black text-slate-900 leading-[0.9] tracking-tighter uppercase">
+                                    @php
+                                    $estadoStr = $proyecto->estado->nombre;
+                                    $separador = strpos($estadoStr, '/') !== false ? '/' : (strpos($estadoStr, '-') !== false ? '-' : null);
+                                    [$principal, $secundario] = $separador ? explode($separador, $estadoStr, 2) : [$estadoStr, null];
+                                    @endphp
+                                    {{ trim($principal) }}
+                                    @if($secundario)
+                                    <span class="block text-2xl md:text-4xl mt-1 {{ in_array($proyecto->estado_id, [2, 8]) ? 'text-red-500' : 'text-brand-orange' }}">
+                                        {{ $separador }} {{ trim($secundario) }}
+                                    </span>
+                                    @endif
+                                </h2>
                             </div>
                         </div>
 
-                        <div class="mt-10 mb-6">
-                            <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-blue-200 group">
+                        {{-- BLOQUE 2: ¿QUÉ HACER? (OPTIMIZADO Y 100% RESPONSIVE) --}}
+                        <div class="bg-slate-50 rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-100 mb-10 overflow-hidden">
 
-                                <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
-
-                                <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-
-                                    <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-                                        <div class="flex-shrink-0 w-24 h-24 bg-white/20 backdrop-blur-md border border-white/30 rounded-[2rem] flex items-center justify-center text-white shadow-inner">
-                                            <svg class="w-12 h-12 animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                        </div>
-
-                                        <div class="space-y-2">
-                                            <p class="text-xs font-black text-blue-100 uppercase tracking-[4px] opacity-90">Acción Recomendada</p>
-                                            <h3 class="font-outfit text-2xl md:text-4xl font-900 text-white leading-tight tracking-tighter uppercase">
-                                                Ve alistando la documentación <br class="hidden md:block"> de la <span class="underline decoration-white/30 underline-offset-4">Etapa 2</span>
-                                            </h3>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex-shrink-0">
-                                        <a href="https://incentivos.actores.tech/#anexos"
-                                            target="_blank"
-                                            class="inline-flex items-center gap-3 px-10 py-5 bg-white text-blue-700 hover:bg-slate-900 hover:text-white text-lg font-900 rounded-full shadow-xl shadow-blue-900/20 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 no-underline uppercase tracking-tighter">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                            </svg>
-                                            Ver requisitos aquí
-                                        </a>
-                                    </div>
-
-                                </div>
+                            <div class="flex items-center gap-3 mb-5">
+                                <span class="relative flex h-3 w-3 shrink-0">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-600 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-600"></span>
+                                </span>
+                                <h3 class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-900 truncate">
+                                    Instrucciones de seguimiento
+                                </h3>
                             </div>
+
+                            {{-- Contenedor de texto con control de desbordamiento --}}
+                            <div class="w-full overflow-hidden">
+                                <p class="text-lg md:text-2xl font-bold text-slate-700 leading-tight italic break-words whitespace-normal">
+                                    "{{ $proyecto->observacion_general ?? 'Su solicitud se encuentra en etapa de revisión técnica. No se requieren acciones adicionales por ahora.' }}"
+                                </p>
+                            </div>
+
                         </div>
 
-                        <style>
-                            @keyframes bounce-slow {
+                        {{-- BLOQUE 3: WHATSAPP Y HORARIOS (UNIFICADOS EN TU ESTILO) --}}
+                        <div class="grid lg:grid-cols-12 gap-6 items-stretch">
 
-                                0%,
-                                100% {
-                                    transform: translateY(-5%);
-                                }
+                            {{-- Botón WhatsApp: El CTA principal --}}
+                            <div class="lg:col-span-7 bg-white border border-slate-100 rounded-[3rem] p-8 shadow-xl shadow-slate-100/50 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-brand-orange transition-colors duration-500">
+                                <div class="text-center md:text-left">
+                                    <h4 class="text-2xl font-black text-slate-900 leading-none">¿TIENE DUDAS?</h4>
+                                    <p class="text-slate-500 text-sm mt-1 font-medium italic">Chat directo línea de Incentivos</p>
+                                </div>
+                                <a href="https://wa.me/573156896774?text=Hola,%20tengo%20una%20duda%20sobre%20mi%20proyecto" target="_blank"
+                                    class="bg-brand-orange hover:bg-black text-white px-8 py-4 rounded-2xl text-2xl font-black transition-all transform hover:scale-105 shadow-lg shadow-orange-200 flex items-center gap-3 uppercase tracking-tighter">
+                                    <i class="fa-brands fa-whatsapp text-3xl"></i>
+                                    315 6896774
+                                </a>
+                            </div>
 
-                                50% {
-                                    transform: translateY(5%);
-                                }
-                            }
+                            {{-- Horarios: El bloque de info --}}
+                            <div class="lg:col-span-5 bg-slate-900 rounded-[3rem] p-8 text-white flex flex-col justify-center">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <span class="w-6 h-[1px] bg-brand-orange"></span>
+                                    <span class="text-[9px] font-bold uppercase tracking-[3px] text-slate-400">Horarios</span>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="font-bold opacity-60">LUNE - JUEVES</span>
+                                        <span class="font-black text-lg tracking-tighter">7:30AM - 4:30PM</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="font-bold opacity-60">VIERNES</span>
+                                        <span class="font-black text-lg tracking-tighter text-brand-orange">7:30AM - 3:30PM</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                            .animate-bounce-slow {
-                                animation: bounce-slow 3s ease-in-out infinite;
-                            }
-                        </style>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -369,34 +310,70 @@
                                     </div>
                                     @endif
                                 </div>
-                                <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
-                                    <div class="shrink-0 h-24 w-24 rounded-[2rem] bg-slate-100 border-4 border-white shadow-2xl overflow-hidden flex items-center justify-center">
-                                        @if($foto_url) <img src="{{ $foto_url }}" class="h-full w-full object-cover"> @else <span class="font-outfit text-3xl font-900 text-[#ff6600] uppercase">{{ $iniciales }}</span> @endif
-                                    </div>
-                                    <div class="flex-1 w-full">
-                                        <div class="text-center lg:text-left mb-6">
-                                            <h3 class="font-outfit text-3xl font-800 text-slate-900 uppercase leading-tight">{{ Auth::user()->name }}</h3>
-                                            <p class="text-[11px] text-[#ff6600] font-bold uppercase mt-2 tracking-[0.3em]">Socio Proponente</p>
+                                <div class="flex flex-col lg:flex-row items-center lg:items-start gap-10">
+                                    {{-- AVATAR / INICIALES --}}
+                                    <div class="shrink-0 h-28 w-28 rounded-[2.5rem] bg-white border-4 border-slate-50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] overflow-hidden flex items-center justify-center transition-transform hover:scale-105 duration-500">
+                                        @if($foto_url)
+                                        <img src="{{ $foto_url }}" class="h-full w-full object-cover">
+                                        @else
+                                        <div class="h-full w-full bg-slate-50 flex items-center justify-center">
+                                            <span class="font-outfit text-4xl font-900 text-[#ff6600] tracking-tighter">{{ $iniciales }}</span>
                                         </div>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 pt-8 border-t border-slate-50">
-                                            <div class="flex items-center gap-4">
-                                                <div class="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-4 0H5m14 0h-5" stroke-width="2" />
-                                                    </svg></div>
-                                                <div>
-                                                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Identificación</p>
-                                                    <p class="text-sm font-bold text-slate-700">{{ Auth::user()->identificacion }}</p>
+                                        @endif
+                                    </div>
+
+                                    {{-- INFORMACIÓN PRINCIPAL --}}
+                                    <div class="flex-1 w-full">
+                                        <div class="text-center lg:text-left mb-8">
+                                            <h3 class="font-outfit text-4xl font-800 text-slate-900 uppercase leading-none tracking-tighter">{{ Auth::user()->name }}</h3>
+                                            <div class="flex items-center justify-center lg:justify-start gap-2 mt-3">
+                                                <span class="h-[1px] w-4 bg-[#ff6600]/40"></span>
+                                                <p class="text-[11px] text-[#ff6600] font-black uppercase tracking-[0.3em]">Socio Proponente</p>
+                                            </div>
+                                        </div>
+
+                                        {{-- GRID DE DATOS: 3 COLUMNAS EN DESKTOP --}}
+                                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pt-8 border-t border-slate-100">
+
+                                            {{-- Identificación --}}
+                                            <div class="flex items-center gap-4 group">
+                                                <div class="h-12 w-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-[#ff6600]/10 group-hover:text-[#ff6600] transition-colors duration-300">
+                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-4 0H5m14 0h-5" stroke-width="1.5" />
+                                                    </svg>
+                                                </div>
+                                                <div class="overflow-hidden">
+                                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Identificación</p>
+                                                    <p class="text-base font-bold text-slate-700 truncate">{{ Auth::user()->identificacion }}</p>
                                                 </div>
                                             </div>
-                                            <div class="flex items-center gap-4">
-                                                <div class="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-width="2" />
-                                                    </svg></div>
-                                                <div>
-                                                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Teléfono</p>
-                                                    <p class="text-sm font-bold text-slate-700">{{ Auth::user()->telefono ?? '---' }}</p>
+
+                                            {{-- Teléfono --}}
+                                            <div class="flex items-center gap-4 group">
+                                                <div class="h-12 w-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-[#ff6600]/10 group-hover:text-[#ff6600] transition-colors duration-300">
+                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-width="1.5" />
+                                                    </svg>
+                                                </div>
+                                                <div class="overflow-hidden">
+                                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Teléfono</p>
+                                                    <p class="text-base font-bold text-slate-700 truncate">{{ Auth::user()->telefono ?? '---' }}</p>
                                                 </div>
                                             </div>
+
+                                            {{-- Correo --}}
+                                            <div class="flex items-center gap-4 group md:col-span-2 xl:col-span-1">
+                                                <div class="h-12 w-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-[#ff6600]/10 group-hover:text-[#ff6600] transition-colors duration-300">
+                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                                <div class="overflow-hidden">
+                                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Correo Electrónico</p>
+                                                    <p class="text-base font-bold text-slate-700 truncate" title="{{ Auth::user()->email }}">{{ Auth::user()->email ?? '---' }}</p>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>

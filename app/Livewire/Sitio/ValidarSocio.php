@@ -47,71 +47,75 @@ class ValidarSocio extends Component
         $this->validate(['identificacion' => 'required|numeric']);
         $user = User::where('identificacion', $this->identificacion)->first();
 
-        // 1. Verificación básica de existencia
         if (!$user) {
             $this->addError('identificacion', 'Esta identificación no corresponde a un socio registrado.');
             return;
         }
 
-        // --- ACCESO PARA ADMINISTRADORES ---
+        // --- ADMIN: Siempre entra ---
         if ($user->tipo_socio === 'Administrador') {
             $this->nombreSocio = $user->name;
             $this->paso = empty($user->password) ? 'verificar' : 'login';
             return;
         }
 
-        // 2. Verificación de estado para socios normales
         if (strtolower($user->estado ?? '') !== 'activo') {
-            $this->addError('identificacion', "Su cuenta no está activa para participar.");
+            $this->addError('identificacion', "Su cuenta no está activa.");
             return;
         }
 
-        // 3. Validación de mayoría de edad
-        if (!$user->fecha_nacimiento || Carbon::parse($user->fecha_nacimiento)->age < 18) {
-            $this->addError('identificacion', "Debe ser mayor de edad para participar en la convocatoria.");
-            return;
-        }
-
-        // 4. Validación de Convocatoria para socios
+        // 3. Obtener Convocatoria y Etapa Actual
         $convocatoria = Convocatoria::where('estado', 'abierta')->with('etapas')->first();
-
         if (!$convocatoria) {
             $this->addError('identificacion', "No hay convocatorias abiertas actualmente.");
             return;
         }
 
         $ahora = now();
-        $etapaActiva = $convocatoria->etapas->first(function ($etapa) use ($ahora) {
-            return $ahora->between($etapa->fecha_inicio, $etapa->fecha_fin);
-        });
+        $etapaActiva = $convocatoria->etapas->first(fn($e) => $ahora->between($e->fecha_inicio, $e->fecha_fin));
 
-        // 5. Validación de Etapa Activa
         if (!$etapaActiva) {
-            $this->addError('identificacion', "El sistema no se encuentra en una etapa activa de la convocatoria.");
+            $this->addError('identificacion', "Actualmente no hay una etapa activa. Consulte el cronograma.");
             return;
         }
 
-        // --- NUEVA VALIDACIÓN: ESTADO DE PUBLICACIÓN ---
-        // Buscamos si el socio tiene un proyecto en esta convocatoria
+        // 4. Buscar Proyecto
         $proyecto = Proyecto::where('user_id', $user->id)
             ->where('convocatoria_id', $convocatoria->id)
             ->first();
 
-        // Si el proyecto existe pero el administrador NO lo ha publicado:
-        if ($proyecto && !$proyecto->publicado) {
-            $this->addError('identificacion', "Su proyecto se encuentra en revisión, esté atento al cronograma de la convocatoria.");
-            return;
-        }
+        // --- LÓGICA BASADA EN ESTADOS DEL PROYECTO ---
 
-        // 6. Validación de Subsanación (Solo si el proyecto existe y ya pasó el filtro de publicación)
-        if (str_contains(strtolower($etapaActiva->nombre), 'subsanación')) {
-            if (!$proyecto) {
-                $this->addError('identificacion', "Fase de Subsanación: Solo para socios con proyectos registrados.");
+        if ($proyecto) {
+            // REGLA DE ORO: Si el estado es 2 (Debe subsanar), entra directo.
+            // (Verifica si tu columna se llama 'estado_id' o solo 'estado')
+            if ($proyecto->estado_id == 2) {
+                $this->nombreSocio = $user->name;
+                $this->paso = empty($user->password) ? 'verificar' : 'login';
+                return;
+            }
+
+            // Si está en la Etapa 1 del calendario y ya tiene proyecto (pero NO está para subsanar)
+            if ($etapaActiva->orden == 1) {
+                $this->addError('identificacion', "Usted ya completó su inscripción. Por favor, espere la publicación de resultados.");
+                return;
+            }
+
+            // Si está en Etapas posteriores y el proyecto está en revisión (Estado 1, 3 o 5)
+            $estadosEnRevision = [1, 3, 5];
+            if ($etapaActiva->orden > 1 && in_array($proyecto->estado_id, $estadosEnRevision)) {
+                $this->addError('identificacion', "Su proyecto está en revisión técnica. Por favor espere los resultados.");
                 return;
             }
         }
 
-        // 7. Preparar siguiente paso
+        // REGLA PARA NUEVOS: Si no tiene proyecto y la etapa 1 ya pasó
+        if (!$proyecto && $etapaActiva->orden > 1) {
+            $this->addError('identificacion', "El periodo de inscripciones ha finalizado y usted no registró ningún proyecto.");
+            return;
+        }
+
+        // Si pasó los filtros, definir el siguiente paso
         $this->nombreSocio = $user->name;
         $this->paso = empty($user->password) ? 'verificar' : 'login';
     }
@@ -119,7 +123,6 @@ class ValidarSocio extends Component
     private function verificarAnio()
     {
         $key = 'verificar-anio:' . $this->identificacion . request()->ip();
-
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
             $this->addError('anio_nacimiento', "Demasiados intentos. Intente en {$seconds} segundos.");
@@ -127,7 +130,6 @@ class ValidarSocio extends Component
         }
 
         $this->validate(['anio_nacimiento' => 'required|numeric|digits:4']);
-
         $user = User::where('identificacion', $this->identificacion)->first();
         $anioCorrecto = $user->fecha_nacimiento ? Carbon::parse($user->fecha_nacimiento)->year : null;
 
@@ -145,9 +147,7 @@ class ValidarSocio extends Component
     {
         $this->validate(['password' => 'required|min:6|confirmed']);
         $user = User::where('identificacion', $this->identificacion)->first();
-
         $user->update(['password' => Hash::make($this->password)]);
-
         Auth::login($user, true);
         session()->regenerate();
         return $this->redireccionar();
@@ -156,24 +156,11 @@ class ValidarSocio extends Component
     private function acceder()
     {
         $this->validate(['password' => 'required']);
-
-        // Refuerzo de seguridad: solo permitir login si el usuario sigue activo
         $user = User::where('identificacion', $this->identificacion)->first();
 
         if ($user && $user->tipo_socio !== 'Administrador') {
-            // Validar estado
             if (strtolower($user->estado ?? '') !== 'activo') {
                 $this->addError('identificacion', 'Su cuenta ya no se encuentra activa.');
-                return;
-            }
-
-            // Validar si la etapa sigue abierta al momento de intentar el login
-            $convocatoria = Convocatoria::where('estado', 'abierta')->with('etapas')->first();
-            $ahora = now();
-            $etapaActiva = $convocatoria ? $convocatoria->etapas->first(fn($e) => $ahora->between($e->fecha_inicio, $e->fecha_fin)) : null;
-
-            if (!$etapaActiva) {
-                $this->addError('identificacion', 'La convocatoria o etapa actual ha finalizado.');
                 return;
             }
         }
@@ -188,17 +175,9 @@ class ValidarSocio extends Component
     private function redireccionar()
     {
         $user = Auth::user();
-
         if ($user->tipo_socio === 'Administrador') {
             return redirect()->route('admin.dashboard');
         }
-
-        $convocatoria = Convocatoria::where('estado', 'abierta')->first();
-        if (!$convocatoria) {
-            Auth::logout();
-            return redirect()->to('/')->with('error', 'No hay convocatorias activas.');
-        }
-
         return redirect()->route('dashboard');
     }
 

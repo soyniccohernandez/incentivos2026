@@ -335,7 +335,12 @@ class InscripcionEtapa2 extends Component
 
             DB::commit();
 
-            // --- LÓGICA DE CORREOS ---
+            // Mail::to($this->proyecto->socio->email)
+            //     ->send(new \App\Mail\ConfirmacionEtapaDosMail($this->proyecto));
+
+            // Mail::to('incentivos@actores.org.co')
+            //     ->send(new \App\Mail\InternoEtapaDosMail($this->proyecto));
+
             try {
                 // Mail::to($this->proyecto->socio->email)->send(...);
             } catch (\Exception $e) {

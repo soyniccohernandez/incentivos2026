@@ -60,7 +60,7 @@ class ValidarSocio extends Component
         }
 
         if (strtolower($user->estado ?? '') !== 'activo') {
-            $this->addError('identificacion', "Su cuenta no está activa.");
+            $this->addError('identificacion', "Tu cuenta no está activa.");
             return;
         }
 
@@ -75,7 +75,7 @@ class ValidarSocio extends Component
         $etapaActiva = $convocatoria->etapas->first(fn($e) => $ahora->between($e->fecha_inicio, $e->fecha_fin));
 
         if (!$etapaActiva) {
-            $this->addError('identificacion', "Actualmente no hay una etapa activa. Consulte el cronograma.");
+            $this->addError('identificacion', "Actualmente no hay una etapa activa. Consulta el cronograma.");
             return;
         }
 
@@ -97,21 +97,21 @@ class ValidarSocio extends Component
 
             // Si está en la Etapa 1 del calendario y ya tiene proyecto (pero NO está para subsanar)
             if ($etapaActiva->orden == 1) {
-                $this->addError('identificacion', "Usted ya completó su inscripción. Por favor, espere la publicación de resultados.");
+                $this->addError('identificacion', "Ya completaste tu inscripción. Tu documentación se encuentra en revisión.");
                 return;
             }
 
             // Si está en Etapas posteriores y el proyecto está en revisión (Estado 1, 3 o 5)
             $estadosEnRevision = [1, 3, 5];
             if ($etapaActiva->orden > 1 && in_array($proyecto->estado_id, $estadosEnRevision)) {
-                $this->addError('identificacion', "Su proyecto está en revisión técnica. Por favor espere los resultados.");
+                $this->addError('identificacion', "Tu proyecto está en revisión técnica. Por favor espera los resultados.");
                 return;
             }
         }
 
         // REGLA PARA NUEVOS: Si no tiene proyecto y la etapa 1 ya pasó
         if (!$proyecto && $etapaActiva->orden > 1) {
-            $this->addError('identificacion', "El periodo de inscripciones ha finalizado y usted no registró ningún proyecto.");
+            $this->addError('identificacion', "El periodo de inscripciones ha finalizado y no registraste ningún proyecto.");
             return;
         }
 
@@ -125,7 +125,7 @@ class ValidarSocio extends Component
         $key = 'verificar-anio:' . $this->identificacion . request()->ip();
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
-            $this->addError('anio_nacimiento', "Demasiados intentos. Intente en {$seconds} segundos.");
+            $this->addError('anio_nacimiento', "Demasiados intentos. Intenta en {$seconds} segundos.");
             return;
         }
 
@@ -160,7 +160,7 @@ class ValidarSocio extends Component
 
         if ($user && $user->tipo_socio !== 'Administrador') {
             if (strtolower($user->estado ?? '') !== 'activo') {
-                $this->addError('identificacion', 'Su cuenta ya no se encuentra activa.');
+                $this->addError('identificacion', 'Tu cuenta ya no se encuentra activa.');
                 return;
             }
         }

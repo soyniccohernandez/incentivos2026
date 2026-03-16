@@ -236,18 +236,18 @@ class InscripcionEtapa1 extends Component
 
             // 3. Email (Opcional)
             try {
-                Mail::to($this->socio->email)->send(new \App\Mail\ConfirmacionEtapaUnoMail($proyecto, $this->socio));
+                // Mail::to($this->socio->email)->send(new \App\Mail\ConfirmacionEtapaUnoMail($proyecto, $this->socio));
 
-                Mail::to('incentivos@actores.org.co')->send(
-                    new \App\Mail\InternoEtapaUnoMail(
-                        $proyecto,
-                        $this->socio,
-                        [
-                            'autoria'        => $this->autoria,
-                            'directorPropio' => $this->directorPropio
-                        ]
-                    )
-                );
+                // Mail::to('incentivos@actores.org.co')->send(
+                //     new \App\Mail\InternoEtapaUnoMail(
+                //         $proyecto,
+                //         $this->socio,
+                //         [
+                //             'autoria'        => $this->autoria,
+                //             'directorPropio' => $this->directorPropio
+                //         ]
+                //     )
+                // );
             } catch (\Exception $e) {
                 Log::error("Error Mail: " . $e->getMessage());
             }

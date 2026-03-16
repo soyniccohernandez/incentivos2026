@@ -42,60 +42,60 @@
 </head>
 
 <body class="bg-black text-white font-montserrat antialiased leading-relaxed" id="inicio">
-    {{-- TOOLBAR LATERAL: POTENCIADO --}}
-    <div class="fixed right-8 top-1/2 -translate-y-1/2 z-[100] flex flex-col items-center gap-8">
+    {{-- TOOLBAR: RESPONSIVO (Lateral en Desktop, Barra Inferior en Móvil) --}}
+    <div class="fixed z-[100] 
+    {{-- Comportamiento Móvil: Abajo, horizontal --}}
+    bottom-0 left-0 w-full bg-black/80 backdrop-blur-lg border-t border-white/10 px-6 py-4 flex flex-row justify-around items-center
+    {{-- Comportamiento Desktop: Lateral derecho, vertical --}}
+    md:right-8 md:top-1/2 md:-translate-y-1/2 md:bottom-auto md:left-auto md:w-auto md:bg-transparent md:backdrop-blur-none md:border-none md:flex-col md:gap-8">
 
-        {{-- Etiqueta de señal vertical (Más visible) --}}
-        <div class="flex flex-col items-center gap-3 mb-2">
+        {{-- Decoración: Solo visible en Desktop --}}
+        <div class="hidden md:flex flex-col items-center gap-3 mb-2">
             <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase rotate-180 [writing-mode:vertical-lr] font-black animate-pulse">
                 System_Online
             </span>
             <div class="w-[3px] h-16 bg-gradient-to-t from-brand-orange via-brand-orange/50 to-transparent rounded-full"></div>
         </div>
 
-        {{-- BOTÓN: WHATSAPP CON MENSAJE PREDETERMINADO --}}
-        <div class="group relative flex flex-col items-center">
+        {{-- BOTÓN: WHATSAPP --}}
+        <div class="group relative flex flex-col md:flex-col items-center gap-1 md:gap-0">
             <a href="https://wa.me/573156896774?text=Hola,%20me%20gustaría%20más%20información%20sobre%20los%20incentivos%20audiovisuales"
                 target="_blank"
-                class="relative flex items-center justify-center w-16 h-16 bg-[#25D366] text-white rounded-2xl hover:scale-110 hover:rotate-3 transition-all duration-500 shadow-[0_10px_20px_rgba(37,211,102,0.3)] hover:shadow-[#25D366]/50 border-b-4 border-black/20">
+                class="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-[#25D366] text-white rounded-xl md:rounded-2xl hover:scale-110 md:hover:rotate-3 transition-all duration-500 shadow-lg border-b-4 border-black/20">
 
-                {{-- Tooltip --}}
-                <span class="absolute right-20 bg-black border-2 border-[#25D366] text-white font-bold font-mono text-xs px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                {{-- Tooltip (Solo Desktop) --}}
+                <span class="hidden md:block absolute right-20 bg-black border-2 border-[#25D366] text-white font-bold font-mono text-xs px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
                     [ WHATSAPP DIRECTO ]
                 </span>
 
-                {{-- Icono SVG --}}
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="md:w-8 md:h-8">
                     <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
                     <path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
                 </svg>
             </a>
-            <span class="font-mono text-[9px] text-[#25D366] font-bold uppercase mt-2 tracking-[2px]">WhatsApp</span>
+            <span class="font-mono text-[8px] md:text-[9px] text-[#25D366] font-bold uppercase md:mt-2 tracking-[1px] md:tracking-[2px]">WhatsApp</span>
         </div>
 
         {{-- BOTÓN: CORREO ELECTRÓNICO --}}
-        <div class="group relative flex flex-col items-center">
+        <div class="group relative flex flex-col md:flex-col items-center gap-1 md:gap-0">
             <a href="mailto:incentivos@actores.org.co"
-                class="relative flex items-center justify-center w-16 h-16 bg-[#3b82f6] text-white rounded-2xl hover:scale-110 hover:-rotate-3 transition-all duration-500 shadow-[0_10px_20px_rgba(59,130,246,0.3)] hover:shadow-[#3b82f6]/50 border-b-4 border-black/20">
+                class="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-[#3b82f6] text-white rounded-xl md:rounded-2xl hover:scale-110 md:hover:-rotate-3 transition-all duration-500 shadow-lg border-b-4 border-black/20">
 
-                {{-- Tooltip --}}
-                <span class="absolute right-20 bg-black border-2 border-[#3b82f6] text-white font-bold font-mono text-xs px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                {{-- Tooltip (Solo Desktop) --}}
+                <span class="hidden md:block absolute right-20 bg-black border-2 border-[#3b82f6] text-white font-bold font-mono text-xs px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
                     [ ENVIAR E-MAIL ]
                 </span>
 
-                {{-- Icono SVG --}}
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="md:w-8 md:h-8">
                     <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10" />
                     <path d="M3 7l9 6l9 -6" />
                 </svg>
             </a>
-            <span class="font-mono text-[9px] text-[#3b82f6] font-bold uppercase mt-2 tracking-[2px]">E-mail</span>
+            <span class="font-mono text-[8px] md:text-[9px] text-[#3b82f6] font-bold uppercase md:mt-2 tracking-[1px] md:tracking-[2px]">E-mail</span>
         </div>
 
-        {{-- Decoración inferior: Pulso de datos mejorado --}}
-        <div class="mt-2 flex flex-col items-center gap-2">
+        {{-- Decoración: Solo Desktop --}}
+        <div class="hidden md:flex mt-2 flex-col items-center gap-2">
             <div class="w-2 h-2 bg-brand-orange rounded-full animate-ping"></div>
             <div class="w-[1px] h-10 bg-gradient-to-b from-brand-orange to-transparent"></div>
         </div>
@@ -166,252 +166,341 @@
         }
     </script>
 
+
+    @php
+    // Definición de la variable para evitar el error "Undefined variable"
+    $navItems = [
+    ['url' => '#inicio', 'label' => 'INICIO'],
+    ['url' => '#requisitos', 'label' => 'CONDICIONES'],
+    ['url' => '#convocatoria', 'label' => 'PARÁMETROS'],
+    ['url' => '#cronograma', 'label' => 'CALENDARIO'],
+    ['url' => '#anexos', 'label' => 'PREPÁRATE'],
+    ['url' => '#exclusiones', 'label' => 'EXCLUSIÓN'],
+    ['url' => route('inscritos.publico'), 'label' => 'VER INSCRITOS'],
+    ['url' => '#pasos', 'label' => '¿CÓMO POSTULARSE?', 'cta' => true],
+    ];
+    @endphp
+
     <style>
+        /* 1. NAVEGACIÓN SUAVE Y COMPENSACIÓN */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px;
+        }
+
+        @media (min-width: 768px) {
+            html {
+                scroll-padding-top: 90px;
+            }
+        }
+
         .font-bebas {
             font-family: 'Bebas Neue', sans-serif;
         }
-    </style>
 
-    {{-- NAVEGACIÓN CINEMATOGRÁFICA: THE MASTER CUT --}}
-    <style>
-        html {
-            scroll-behavior: smooth;
-            scroll-padding-top: 100px;
+        /* 2. CONGELADOR DE PANTALLA (BLOQUEO DE SCROLL) */
+        body.menu-open {
+            height: 100vh;
+            overflow: hidden !important;
+            position: fixed;
+            width: 100%;
         }
 
-        /* Tipografía fluida y más grande */
+        /* 3. ESTRUCTURA NAV FIJA */
+        #main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 2000;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-blur: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            #main-nav {
+                height: 90px;
+            }
+        }
+
+        /* 4. MENÚ MÓVIL FULLSCREEN */
+        #nav-links {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 2100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            transform: translateX(100%);
+        }
+
+        #nav-links.active {
+            transform: translateX(0);
+        }
+
         .nav-link-item {
-            font-size: clamp(2.2rem, 5vw, 2.5rem);
-            /* Móvil */
+            font-size: 2.2rem;
+            color: white;
+            text-decoration: none;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        @media (min-width: 1024px) {
+        /* Desktop Reset */
+        @media (min-width: 1280px) {
+            #nav-links {
+                position: static;
+                height: auto;
+                width: auto;
+                background: transparent;
+                flex-direction: row;
+                transform: none;
+                gap: 1.5rem;
+            }
+
             .nav-link-item {
-                font-size: clamp(1.1rem, 1.2vw, 1.4rem);
-                /* Escritorio: un poco más grande que antes */
+                font-size: 1.1rem;
+                letter-spacing: 1px;
+            }
+
+            .nav-link-item:hover {
+                color: #ff6600;
             }
         }
     </style>
 
-    @php
-    // Lógica de fecha para el bloqueo (9 de Marzo de 2026, 00:00)
-    $fechaApertura = \Carbon\Carbon::create(2026, 3, 4, 0, 0, 0);
-    $estaAbierto = \Carbon\Carbon::now()->greaterThanOrEqualTo($fechaApertura);
-    @endphp
-    <nav class="sticky top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-4 md:px-16 bg-black/95 border-b-2 border-white/5 backdrop-blur-xl transition-all duration-500 transform-gpu">
+    <nav id="main-nav">
+        <div class="w-full max-w-[1800px] mx-auto flex justify-between items-center px-6 xl:px-12">
 
-        {{-- MARCAS DE ENCUADRE DECORATIVAS --}}
-        <div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-brand-orange/20 hidden md:block"></div>
-        <div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-brand-orange/20 hidden md:block"></div>
-
-        {{-- LOGO Y BRANDING: TOTALMENTE ESTÁTICO --}}
-        <a href="#inicio" class="flex items-center gap-4 md:gap-6 group no-underline shrink-0 z-[1101]">
-            <div class="relative py-1">
-                <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo Actores SCG"
-                    class="h-[45px] md:h-[65px] lg:h-[75px] w-auto object-contain transition-none select-none pointer-events-none">
-            </div>
-
-            <div class="h-10 w-[2px] bg-gradient-to-b from-transparent via-brand-orange/40 to-transparent hidden sm:block"></div>
-
-            <div class="flex flex-col justify-center ml-2">
-                <span class="font-bebas text-2xl md:text-4xl lg:text-5xl text-brand-orange tracking-[3px] md:tracking-[5px] leading-[0.85] uppercase">
-                    ACTORES <span class="text-white italic opacity-90">S.C.G.</span>
-                </span>
-            </div>
-        </a>
-
-        {{-- BOTÓN MENÚ MÓVIL --}}
-        <div class="flex flex-col gap-[8px] cursor-pointer lg:hidden z-[1101] group" id="mobile-menu-btn">
-            <span class="w-[30px] h-[3px] bg-brand-orange transition-all duration-300"></span>
-            <span class="w-[20px] h-[3px] bg-white ml-auto transition-all duration-300 group-hover:w-[30px]"></span>
-            <span class="w-[30px] h-[3px] bg-brand-orange transition-all duration-300"></span>
-        </div>
-
-        {{-- ENLACES --}}
-        <ul id="nav-links" class="fixed lg:static top-0 -right-full lg:right-0 w-full lg:w-auto h-screen lg:h-auto bg-[#0a0a0a] lg:bg-transparent flex flex-col lg:flex-row justify-center lg:justify-end items-center gap-8 lg:gap-4 xl:gap-8 transition-all duration-500 z-[1100] list-none px-10 lg:px-0 overflow-y-auto lg:overflow-visible">
-
-            <div class="absolute top-10 left-10 opacity-5 font-bebas text-7xl text-white pointer-events-none lg:hidden uppercase tracking-tighter">SCENE_01</div>
-
-            @php
-            $navItems = [
-            ['url' => '#inicio', 'label' => 'INICIO'],
-            ['url' => '#requisitos', 'label' => 'CONDICIONES'],
-            ['url' => '#convocatoria', 'label' => 'PARÁMETROS'],
-            ['url' => '#cronograma', 'label' => 'CALENDARIO'],
-            ['url' => '#anexos', 'label' => 'PREPÁRATE'],
-            ['url' => route('inscritos.publico'), 'label' => 'VER INSCRITOS'],
-            ['url' => '#pasos', 'label' => '¿CÓMO POSTULARSE?', 'cta' => true],
-            ];
-            @endphp
-
-            @foreach($navItems as $item)
-            @if(isset($item['cta']) && $item['cta'])
-            {{-- BOTÓN CTA: CINEMA STYLE --}}
-            <li class="relative w-full lg:w-auto mt-4 lg:mt-0">
-                <a href="{{ $item['url'] }}"
-                    class="flex items-center justify-center gap-3 bg-brand-orange text-black font-bebas text-lg px-7 py-3 rounded-none hover:bg-white transition-all duration-500 transform hover:scale-105 shadow-[0_0_25px_rgba(255,102,0,0.4)] group border-r-4 border-b-4 border-black/20">
-
-                    {{-- Icono Cámara de Cine (Tabler Icon) --}}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:rotate-12 transition-transform duration-300">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
-                        <path d="M8 4l0 16" />
-                        <path d="M16 4l0 16" />
-                        <path d="M4 8l4 0" />
-                        <path d="M4 16l4 0" />
-                        <path d="M4 12l16 0" />
-                        <path d="M16 8l4 0" />
-                        <path d="M16 16l4 0" />
-                    </svg>
-
-                    <span class="tracking-[2px]">{{ $item['label'] }}</span>
-
-                    {{-- Punto de "Grabación" parpadeante --}}
-                    <span class="flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-red-600 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+            {{-- LOGO --}}
+            <a href="#inicio" class="flex items-center gap-4 z-[2200] no-underline">
+                <img src="{{ asset('resources/imagenes/logo.png') }}" alt="Logo" class="h-[40px] md:h-[60px] w-auto">
+                <div class="hidden 2xl:flex flex-col border-l border-white/20 pl-4">
+                    <span class="font-bebas text-2xl text-brand-orange tracking-[3px] leading-none uppercase">
+                        ACTORES <span class="text-white italic">S.C.G.</span>
                     </span>
-                </a>
-               
-            </li>
-            @else
-            {{-- LINKS NORMALES --}}
-            <li class="relative group w-full lg:w-auto text-center">
-                <a href="{{ $item['url'] }}" class="nav-link-item no-underline text-white font-bebas tracking-[3px] lg:tracking-[1px] hover:text-brand-orange transition-all duration-300 block py-2 uppercase">
-                    {{ $item['label'] }}
-                </a>
-                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-brand-orange scale-x-0 lg:group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
-            </li>
-            @endif
-            @endforeach
-        </ul>
+                </div>
+            </a>
+
+            {{-- HAMBURGUESA --}}
+            <button id="mobile-menu-btn" class="xl:hidden z-[2200] flex flex-col gap-1.5 focus:outline-none p-2">
+                <span class="w-8 h-0.5 bg-brand-orange transition-all duration-300" id="line1"></span>
+                <span class="w-5 h-0.5 bg-white ml-auto transition-all duration-300" id="line2"></span>
+                <span class="w-8 h-0.5 bg-brand-orange transition-all duration-300" id="line3"></span>
+            </button>
+
+            {{-- LISTA --}}
+            <ul id="nav-links">
+                @foreach($navItems as $item)
+                <li class="w-full xl:w-auto text-center px-6 xl:px-0">
+                    <a href="{{ $item['url'] }}"
+                        class="{{ isset($item['cta']) 
+        ? 'flex items-center justify-center gap-3 bg-brand-orange text-black px-6 py-3 w-full max-w-[260px] font-bebas text-lg tracking-[2px] transition-all duration-300 hover:bg-white border-2 border-brand-orange hover:border-black active:scale-95 group no-underline' 
+        : 'nav-link-item' }}">
+
+                        {{-- Icono de Cámara de Cine Profesional --}}
+                        @if(isset($item['cta']))
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="12" height="10" rx="2" ry="2"></rect>
+                            <path d="M22 7l-8 5 8 5V7z"></path>
+                            <circle cx="5" cy="4" r="1.5" fill="currentColor"></circle>
+                            <circle cx="11" cy="4" r="1.5" fill="currentColor"></circle>
+                        </svg>
+                        @endif
+
+                        <span>{{ $item['label'] }}</span>
+                    </a>
+                </li>
+                @endforeach
+            </ul>
+        </div>
     </nav>
+
+    {{-- Espaciador --}}
+    <div id="inicio" class="h-[70px] md:h-[90px]"></div>
 
     <script>
         const menuBtn = document.getElementById('mobile-menu-btn');
         const navLinks = document.getElementById('nav-links');
         const body = document.body;
+        const l1 = document.getElementById('line1');
+        const l2 = document.getElementById('line2');
+        const l3 = document.getElementById('line3');
+
+        let scrollPosition = 0;
 
         function toggleMenu() {
-            navLinks.classList.toggle('-right-full');
-            navLinks.classList.toggle('right-0');
-            body.style.overflow = navLinks.classList.contains('right-0') ? 'hidden' : 'auto';
+            const isOpen = navLinks.classList.contains('active');
+
+            if (!isOpen) {
+                // ABRIR
+                scrollPosition = window.pageYOffset;
+                body.style.top = `-${scrollPosition}px`;
+                body.classList.add('menu-open');
+                navLinks.classList.add('active');
+
+                l1.style.transform = "rotate(45deg) translate(8px, 8px)";
+                l2.style.opacity = "0";
+                l3.style.transform = "rotate(-45deg) translate(7px, -7px)";
+            } else {
+                // CERRAR
+                body.classList.remove('menu-open');
+                body.style.top = '';
+                window.scrollTo(0, scrollPosition);
+                navLinks.classList.remove('active');
+
+                l1.style.transform = "none";
+                l2.style.opacity = "1";
+                l3.style.transform = "none";
+            }
         }
 
         menuBtn.addEventListener('click', toggleMenu);
 
-        document.querySelectorAll('.nav-link-item').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth < 1024) toggleMenu();
+        // LÓGICA DE CLIC EN LINKS CORREGIDA
+        document.querySelectorAll('#nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+
+                // Solo si es un enlace interno (#seccion)
+                if (href.startsWith('#')) {
+                    e.preventDefault(); // Detenemos el salto brusco
+
+                    const targetId = href.substring(1);
+                    const targetElement = document.getElementById(targetId);
+
+                    if (window.innerWidth < 1280) {
+                        // 1. Cerramos el menú y liberamos el body primero
+                        toggleMenu();
+                    }
+
+                    // 2. Pequeño delay para dejar que el body se "descongele" 
+                    // y el navegador procese la posición real antes de mover el scroll
+                    setTimeout(() => {
+                        if (targetElement) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - (window.innerWidth < 768 ? 70 : 90),
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 150);
+                }
             });
         });
 
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 50) {
-                nav.classList.replace('py-4', 'py-2');
-                nav.classList.replace('bg-black/95', 'bg-black');
-            } else {
-                nav.classList.replace('py-2', 'py-4');
-                nav.classList.replace('bg-black', 'bg-black/95');
+        // Bloqueador de eventos táctiles para que el fondo no se mueva NADA
+        navLinks.addEventListener('touchmove', (e) => {
+            if (body.classList.contains('menu-open')) {
+                e.preventDefault();
             }
+        }, {
+            passive: false
         });
     </script>
 
 
-    {{-- HERO: CINEMATIC ENGINE // HUD FIXED COLLISION // 13" TO 27" --}}
-    {{-- HERO: CINEMATIC ENGINE // MOBILE-TOP ADJUSTED // FULL CONTENT // 13" TO 27" --}}
-    <section id="hero-cine-master" class="relative min-h-screen w-full flex flex-col items-center bg-[#000] overflow-hidden border-b-8 border-black pt-24 md:pt-40 2xl:pt-48 pb-16">
+    <section id="hero-cine-master" class="relative w-full flex items-center justify-center bg-black py-20 md:py-32 2xl:py-44 overflow-hidden">
 
-        {{-- 1. FONDO --}}
-        <div class="absolute inset-0 z-0">
+        {{-- FONDO BLINDADO: Siempre 100% --}}
+        <div class="absolute inset-0 z-0 pointer-events-none">
             <img src="{{ asset('resources/imagenes/hero.jpg') }}"
-                class="w-full h-full object-cover opacity-40 grayscale contrast-125 brightness-50 animate-[slowzoom_20s_linear_infinite]" alt="Cine Set">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)] opacity-30"></div>
+                class="w-full h-full object-cover opacity-40 grayscale contrast-125 brightness-50 scale-105 animate-[slowzoom_25s_linear_infinite]"
+                alt="Cine Set">
+            {{-- Gradiente dinámico para fundir con el resto de la web --}}
+            <div class="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-60"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)] opacity-50"></div>
         </div>
 
-        {{-- 2. CONTENIDO CENTRAL --}}
-        <div class="relative z-20 w-full max-w-7xl 2xl:max-w-[1600px] mx-auto px-6 flex flex-col items-center justify-start h-full">
+        {{-- CONTENIDO DINÁMICO --}}
+        <div class="relative z-20 w-full max-w-[1600px] mx-auto px-6 flex flex-col items-center">
 
-            {{-- HUD SUPERIOR: REC (Ajustado mb-6 para compactar más) --}}
-            <div class="mb-6 md:mb-12 2xl:mb-16 flex items-center gap-4 bg-black/60 backdrop-blur-sm px-4 py-1.5 border border-white/10 rounded-full">
-                <span class="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_10px_red]"></span>
-                <span class="font-mono text-[10px] 2xl:text-xs text-white tracking-[4px] font-bold uppercase whitespace-nowrap">REC_2026</span>
+            {{-- HUD REC --}}
+            <div class="mb-8 md:mb-12 flex items-center gap-3 bg-black/60 backdrop-blur-md px-4 py-2 border border-white/10 rounded-full shadow-2xl">
+                <span class="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_15px_red]"></span>
+                <span class="font-mono text-[10px] 2xl:text-xs text-white tracking-[4px] font-black uppercase">REC_2026</span>
             </div>
 
-            {{-- TÍTULO: LOGO RESPONSIVO --}}
-            <div class="mb-8 md:mb-16 2xl:mb-24 text-center w-full flex justify-center items-center">
-                {{-- Logo Móvil Compacto --}}
+            {{-- LOGO PRINCIPAL: ESCALADO PERFECTO --}}
+            <div class="mb-12 md:mb-16 2xl:mb-24 flex justify-center items-center w-full">
+                {{-- Móvil: No más de 220px para no empujar todo --}}
                 <img src="{{ asset('resources/imagenes/logo_incentivos_m.svg') }}"
-                    alt="Incentivos 2026"
-                    class="block md:hidden h-auto w-auto max-w-[120px] select-none pointer-events-none drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-
-                {{-- Logo Desktop Progresivo --}}
+                    class="block md:hidden w-full max-w-[220px] h-auto drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" alt="Logo">
+                {{-- Desktop: Escalado por Viewport para no cortar --}}
                 <img src="{{ asset('resources/imagenes/logo_incentivos.svg') }}"
-                    alt="Incentivos 2026"
-                    class="hidden md:block h-auto w-auto max-w-[420px] lg:max-w-[520px] 2xl:max-w-[750px] max-h-[25vh] 2xl:max-h-[35vh] object-contain select-none pointer-events-none drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]">
+                    class="hidden md:block w-full max-w-[400px] lg:max-w-[550px] 2xl:max-w-[850px] h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)]" alt="Logo">
             </div>
 
-            {{-- BLOQUE DE DATOS: LAS 3 TARJETAS (Completas en móvil) --}}
-            <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 2xl:gap-10 mb-10 lg:mb-16 2xl:mb-24">
+            {{-- BLOQUE DE DATOS: COLAPSABLE --}}
+            <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 2xl:gap-12 mb-16 md:mb-24">
 
-                {{-- Tarjeta 1: Cupos --}}
-                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-4 md:p-8 flex flex-col justify-center transition-transform hover:scale-[1.02]">
-                    <h4 class="font-bebas text-3xl md:text-5xl lg:text-7xl 2xl:text-8xl text-white mb-1 leading-none uppercase">
-                        03 <span class="text-lg md:text-2xl 2xl:text-3xl text-white/40">Seleccionados</span>
+                {{-- Tarjeta 1 --}}
+                <div class="bg-white/5 backdrop-blur-xl border-l-4 border-white p-6 2xl:p-10 flex flex-col justify-center transition-all hover:bg-white/10 hover:-translate-y-1">
+                    <h4 class="font-bebas text-5xl lg:text-6xl 2xl:text-8xl text-white leading-none uppercase">
+                        03 <span class="text-xl lg:text-2xl text-white/40 block mt-1">Seleccionados</span>
                     </h4>
-                    <p class="text-white/60 text-[9px] md:text-[10px] 2xl:text-xs font-bold uppercase tracking-[1px] md:tracking-[2px] leading-tight">
+                    <p class="text-white/60 text-[10px] lg:text-xs font-bold uppercase tracking-[2px] mt-2">
                         Por <span class="bg-white text-black px-1 italic">jurados</span> externos.
                     </p>
                 </div>
 
-                {{-- Tarjeta 2: Asignación (Destacada) --}}
-                <div class="bg-brand-orange/10 backdrop-blur-md border-l-4 border-brand-orange p-4 md:p-8 relative overflow-hidden shadow-[0_0_30px_rgba(255,100,0,0.1)] transition-transform hover:scale-[1.02]">
-                    <h4 class="font-bebas text-3xl md:text-5xl lg:text-7xl 2xl:text-8xl text-white mb-1 leading-none uppercase">
+                {{-- Tarjeta 2: LA ESTRELLA --}}
+                <div class="bg-brand-orange/10 backdrop-blur-xl border-l-4 border-brand-orange p-6 2xl:p-10 relative overflow-hidden transition-all hover:bg-brand-orange/20 hover:-translate-y-1 shadow-[0_20px_40px_rgba(255,102,0,0.15)]">
+                    <h4 class="font-bebas text-5xl lg:text-6xl 2xl:text-8xl text-white leading-none uppercase">
                         $45<span class="text-brand-orange">Millones</span>
                     </h4>
-                    <p class="text-white/80 text-[9px] md:text-[10px] 2xl:text-xs font-bold uppercase tracking-[1px] md:tracking-[2px] leading-tight">
+                    <p class="text-white/80 text-[10px] lg:text-xs font-bold uppercase tracking-[2px] mt-2">
                         Para cada proyecto <span class="bg-brand-orange text-black px-1 italic">seleccionado</span>.
                     </p>
-                    <div class="absolute top-2 right-2 w-1.5 h-1.5 bg-brand-orange rounded-full animate-pulse shadow-[0_0_8px_#ff6600]"></div>
+                    <div class="absolute top-3 right-3 w-2 h-2 bg-brand-orange rounded-full animate-pulse shadow-[0_0_10px_#ff6600]"></div>
                 </div>
 
-                {{-- Tarjeta 3: Bolsa --}}
-                <div class="bg-white/5 backdrop-blur-md border-l-4 border-white p-4 md:p-8 flex flex-col justify-center transition-transform hover:scale-[1.02]">
-                    <h4 class="font-bebas text-3xl md:text-5xl lg:text-7xl 2xl:text-8xl text-white mb-1 leading-none uppercase">
-                        $135<span class="text-lg md:text-2xl 2xl:text-3xl text-white/40"> Millones</span>
+                {{-- Tarjeta 3 --}}
+                <div class="bg-white/5 backdrop-blur-xl border-l-4 border-white p-6 2xl:p-10 flex flex-col justify-center transition-all hover:bg-white/10 hover:-translate-y-1">
+                    <h4 class="font-bebas text-5xl lg:text-6xl 2xl:text-8xl text-white leading-none uppercase">
+                        $135<span class="text-xl lg:text-2xl text-white/40 mt-1">Millones</span>
                     </h4>
-                    <p class="text-white/60 text-[9px] md:text-[10px] 2xl:text-xs font-bold uppercase tracking-[1px] md:tracking-[2px] leading-tight">
-                        <span class="bg-white text-black px-1 italic">Recurso total</span> destinado a los incentivos audiovisuales.
+                    <p class="text-white/60 text-[10px] lg:text-xs font-bold uppercase tracking-[2px] mt-2">
+                        <span class="bg-white text-black px-1 italic">Recurso total</span> para incentivos.
                     </p>
                 </div>
             </div>
 
-            {{-- NOTA ACLARATORIA --}}
-            <div class="w-full max-w-4xl 2xl:max-w-6xl mx-auto border-t border-white/20 pt-6 md:pt-10 mb-10">
-                <p class="text-[0.85rem] md:text-lg lg:text-xl 2xl:text-2xl text-center text-white/80 italic font-medium leading-relaxed px-2 md:px-4">
-                    <span class="font-mono text-[9px] 2xl:text-[11px] block not-italic tracking-[4px] text-brand-orange mb-1 md:mb-2 uppercase font-black">Nota Aclaratoria:</span>
-                    "El incentivo constituye un <span class="text-brand-orange font-bold uppercase">apoyo económico exclusivo</span> para la ejecución del proyecto seleccionado y no genera vínculo laboral, contractual o asociativo."
-                </p>
+            {{-- NOTA ACLARATORIA: SIEMPRE VISIBLE --}}
+            <div class="w-full max-w-5xl mx-auto">
+                <div class="flex flex-col items-center pt-8 border-t border-white/10">
+                    <span class="font-mono text-[9px] 2xl:text-xs tracking-[5px] text-brand-orange mb-4 uppercase font-black opacity-80">Nota Aclaratoria:</span>
+                    <p class="text-[0.9rem] md:text-lg lg:text-xl 2xl:text-3xl text-center text-white/80 italic font-medium leading-relaxed">
+                        "El incentivo constituye un <span class="text-brand-orange font-bold uppercase not-italic">apoyo económico exclusivo</span> para la ejecución del proyecto seleccionado y no genera vínculo laboral, contractual o asociativo."
+                    </p>
+                </div>
             </div>
-
-
         </div>
 
-        {{-- TEXTURAS --}}
-        <div class="absolute inset-0 pointer-events-none z-30 opacity-[0.04] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] animate-[filmgrain_10s_linear_infinite]"></div>
+        {{-- GRANO DE CINE --}}
+        <div class="absolute inset-0 pointer-events-none z-30 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
     </section>
-    {{-- 2. BLOQUE DE PODER: ESPECIFICACIONES TÉCNICAS (CONDICIONES) --}}
-    <section id="requisitos" class="relative z-[10] bg-brand-orange pt-24 pb-24 px-6 border-y-[15px] border-black overflow-hidden">
 
-        {{-- MARCA DE AGUA: ESTILO CLAQUETA --}}
+    <section id="requisitos" class="relative z-40 bg-brand-orange pt-24 pb-24 px-6 border-y-[15px] border-black overflow-hidden">
+        {{-- MARCA DE AGUA --}}
         <div class="absolute inset-0 opacity-[0.07] pointer-events-none select-none flex items-center justify-center overflow-hidden">
-            <span class="font-bebas text-[25vw] leading-none text-black tracking-[ -0.05em] uppercase whitespace-nowrap">
+            <span class="font-bebas text-[25vw] leading-none text-black tracking-[-0.05em] uppercase whitespace-nowrap">
                 INCENTIVOS
             </span>
         </div>
 
-        {{-- ELEMENTOS DE SET (SVG DE APOYO) --}}
+        {{-- ELEMENTOS DE SET --}}
         <div class="hidden xl:block absolute left-[-50px] top-1/2 -translate-y-1/2 opacity-20 transform -rotate-12 transition-transform hover:rotate-0 duration-700">
             <img src="{{ asset('resources/imagenes/claqueta.svg') }}" class="w-[30rem]" alt="Claqueta">
         </div>
@@ -421,24 +510,19 @@
 
         <div class="relative z-10 max-w-6xl mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
-                {{-- COLUMNA IZQUIERDA: TEXTOS --}}
+                {{-- COLUMNA IZQUIERDA --}}
                 <div class="text-center lg:text-left">
-                    {{-- TÍTULO PRINCIPAL: IMPACTO TOTAL --}}
-                    <h2 class="font-bebas text-[5rem] md:text-[8rem] lg:text-[7rem] xl:text-[8rem] text-black leading-[0.8] tracking-tighter uppercase mb-8">
+                    <h2 class="font-bebas text-[4.5rem] md:text-[8rem] lg:text-[7rem] xl:text-[8rem] text-black leading-[0.8] tracking-tighter uppercase mb-8">
                         CONDICIONES DE <br>
                         <span class="relative">
                             PARTICIPACIÓN
-                            {{-- Subrayado tipo marcador --}}
                             <div class="absolute -bottom-2 left-0 w-full h-4 bg-black/10 -z-10"></div>
                         </span>
                     </h2>
 
-                    {{-- DESCRIPCIÓN TÉCNICA --}}
                     <div class="max-w-2xl mx-auto lg:mx-0 border-t-4 border-black pt-8">
                         <p class="text-black font-black uppercase text-xl md:text-2xl tracking-tighter leading-tight">
-                            Conoce los lineamientos y requisitos generales para
-                            la postulación de tu proyecto.
+                            Conoce los lineamientos y requisitos generales para la postulación de tu proyecto.
                         </p>
                         <p class="font-mono text-[10px] text-black/60 tracking-[4px] mt-4 uppercase font-bold">
                             Actualizado: Marzo 2026 // Bogotá, Col
@@ -446,34 +530,23 @@
                     </div>
                 </div>
 
-                {{-- COLUMNA DERECHA: BOTÓN Y METADATOS --}}
+                {{-- COLUMNA DERECHA --}}
                 <div class="flex flex-col items-center justify-center">
-
-                    {{-- BOTÓN DE DESCARGA: ESTILO INDUSTRIAL --}}
                     <div class="w-full max-w-lg mx-auto relative group">
-                        {{-- Sombra de profundidad --}}
                         <div class="absolute inset-0 bg-black translate-x-4 translate-y-4 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></div>
-
-                        <a href="{{ asset('storage/formatos/condiciones-de-participacion.pdf') }}"
-                            target="_blank"
+                        <a href="{{ asset('storage/formatos/condiciones-de-participacion.pdf') }}" target="_blank"
                             class="relative flex items-center justify-center gap-6 bg-white text-black px-8 py-10 no-underline border-[5px] border-black transition-all duration-300">
-
-                            {{-- Icono animado --}}
                             <div class="bg-black p-4 rounded-full">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
                             </div>
-
                             <div class="text-left">
                                 <span class="block font-bebas text-[2.5rem] leading-none tracking-[2px]">DESCARGAR PDF</span>
                             </div>
                         </a>
                     </div>
-
-
                 </div>
-
             </div>
         </div>
     </section>
@@ -491,7 +564,18 @@
     </style>
     <style>
         #hero-cine-master {
-            height: 100vh;
+            /* En lugar de height, usamos min-height */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Aseguramos que el fondo ocupe siempre el total real de la sección */
+        #hero-cine-master .absolute.inset-0 {
+            height: 100%;
+            width: 100%;
         }
 
         @keyframes slowzoom {
@@ -558,7 +642,7 @@
                         <span class="w-3 h-3 bg-red-600 rounded-full animate-pulse"></span>
                         <span class="font-mono text-xs text-red-600 tracking-[4px] uppercase font-bold">Recording_Live</span>
                     </div>
-                    <h2 class="font-bebas text-[4.5rem] md:text-[7rem] text-white leading-[0.8] uppercase tracking-tighter">
+                    <h2 class="font-bebas text-[5.5rem] md:text-[9rem] lg:text-[11rem] text-white leading-[0.8] uppercase tracking-tighter">
                         PARÁMETROS <br>
                         <span class="text-brand-orange italic">GENERALES</span>
                     </h2>
@@ -569,50 +653,87 @@
                 </div>
             </div>
 
-            {{-- Grid de Datos Rápidos: Edición Master Cut --}}
-            {{-- Grid de Datos Rápidos: Edición Master Cut (Versión en Español) --}}
-            <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-24 font-montserrat">
+            {{-- Grid de Datos Rápidos: Edición Master Cut Final --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-24 font-montserrat">
 
-                {{-- 1. GÉNERO --}}
-                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
-                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">GENERO</span>
-                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">PRODUCCIÓN DE <br><span class="text-brand-orange text-3xl sm:text-5xl">CORTOMETRAJES DE FICCIÓN</span></h3>
+                {{-- 1. GÉNERO: Impacto Lateral --}}
+                <div class="lg:col-span-4 bg-[#0a0a0a] border-l-4 border-brand-orange p-8 md:p-12 flex flex-col justify-center relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-20 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                        </svg>
+                    </div>
+                    <span class="font-mono text-xs text-brand-orange tracking-[6px] uppercase mb-6 flex items-center gap-4">
+                        <span class="w-8 h-[1px] bg-brand-orange"></span> GENERO
+                    </span>
+                    <h3 class="font-bebas text-5xl md:text-7xl text-white leading-[0.85] uppercase">
+                        PRODUCCIÓN DE <br>
+                        <span class="text-brand-orange italic">CORTOMETRAJES DE FICCIÓN</span>
+                    </h3>
                 </div>
-                {{-- 2. TEMÁTICA --}}
-                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 relative overflow-hidden group min-h-[220px] flex flex-col justify-center">
-                    <div class="absolute top-0 right-0 p-4">
-                        <div class="flex gap-1">
-                            <div class="w-1 h-4 bg-brand-orange animate-pulse"></div>
-                            <div class="w-1 h-4 bg-brand-orange/40"></div>
-                            <div class="w-1 h-4 bg-brand-orange/10"></div>
+
+                {{-- 2. TEMÁTICA: Minimalismo Extremo --}}
+                <div class="lg:col-span-2 bg-brand-orange p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
+                    <span class="font-mono text-xs text-black font-bold tracking-[6px] uppercase mb-4 block">Temática</span>
+                    <p class="font-bebas text-8xl md:text-9xl text-black tracking-tighter leading-none">Libre</p>
+                    {{-- Líneas decorativas de corte --}}
+                    <div class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-black/20"></div>
+                </div>
+
+                {{-- 3. IDIOMA --}}
+                <div class="lg:col-span-2 bg-[#111] border border-white/5 p-8 flex flex-col justify-between group hover:bg-[#151515] transition-colors">
+                    <span class="font-mono text-xs text-brand-orange tracking-[4px] uppercase mb-8 block">Idioma</span>
+                    <div>
+                        <h3 class="font-bebas text-4xl text-white leading-none uppercase">
+                            El proyecto debe ser <br>
+                            <span class="text-brand-orange text-2xl md:text-3xl">presentado en español</span>
+                        </h3>
+                    </div>
+                </div>
+
+                {{-- 4. AUDIENCIA --}}
+                <div class="lg:col-span-2 bg-[#111] border border-white/5 p-8 flex flex-col justify-between group hover:bg-[#151515] transition-colors">
+                    <span class="font-mono text-xs text-brand-orange tracking-[4px] uppercase mb-8 block">Audiencia</span>
+                    <div>
+                        <h3 class="font-bebas text-4xl text-white leading-none uppercase">
+                            Apto para <br>
+                            <span class="text-brand-orange text-2xl md:text-3xl">todo público</span>
+                        </h3>
+                    </div>
+                </div>
+
+                {{-- 5. TIEMPO --}}
+                <div class="lg:col-span-2 bg-[#111] border border-white/5 p-8 flex flex-col justify-between group hover:bg-[#151515] transition-colors">
+                    <span class="font-mono text-xs text-brand-orange tracking-[4px] uppercase mb-8 block">Tiempo</span>
+                    <div>
+                        <h3 class="font-bebas text-4xl text-white leading-none uppercase">
+                            Entre 7 a 15 minutos <br>
+                            <span class="text-brand-orange text-2xl md:text-3xl">(máximo)</span>
+                        </h3>
+                    </div>
+                </div>
+
+                {{-- 6. ELENCO: Bloque de Cierre Industrial --}}
+                <div class="lg:col-span-6 border-2 border-white/10 p-1 bg-white/5">
+                    <div class="bg-[#0a0a0a] p-8 md:p-12 flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden">
+                        {{-- Efecto de escaneo de fondo --}}
+                        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_4px] pointer-events-none"></div>
+
+                        <div class="relative z-10 text-center md:text-left">
+                            <span class="font-mono text-xs text-brand-orange tracking-[8px] uppercase mb-4 block">Elenco</span>
+                            <h3 class="font-bebas text-5xl md:text-8xl text-white leading-none">
+                                Socios <span class="text-brand-orange">mayores de edad</span>
+                            </h3>
+                        </div>
+
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-brand-orange flex items-center justify-center mb-2 bg-brand-orange/10">
+                                <span class="font-bebas text-4xl md:text-5xl text-white">+18</span>
+                            </div>
+                            <span class="font-mono text-[10px] text-white/40 tracking-[2px] uppercase">Verificación requerida</span>
                         </div>
                     </div>
-                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">Temática</span>
-
-                    <p class="font-bebas text-7xl text-white tracking-tighter">Libre</p>
                 </div>
-                {{-- 3. IDIOMA --}}
-                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
-                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">Idioma</span>
-                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">El proyecto debe ser <br><span class="text-brand-orange text-3xl sm:text-5xl">presentado en español</SPAN></h3>
-                </div>
-                {{-- 4. AUDIENCIA --}}
-                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
-                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">Audiencia</span>
-                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">Apto para <br><span class="text-brand-orange text-3xl sm:text-5xl">todo público</span></h3>
-                </div>
-                {{-- 5. TIEMPO --}}
-                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
-                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">Tiempo</span>
-                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">Entre 7 a 15 minutos <br><span class="text-brand-orange text-3xl sm:text-5xl">(máximo)<br></h3>
-                </div>
-                {{-- 2. ELENCO --}}
-                <div class="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/10 p-8 flex flex-col justify-center relative overflow-hidden">
-                    <span class="font-mono text-[24px] text-brand-orange tracking-[4px] uppercase mb-4 block">Elenco</span>
-                    <h3 class="font-bebas text-4xl sm:text-5xl text-white leading-tight">Socios <br><span class="text-brand-orange text-3xl sm:text-5xl">mayores de edad</span></h3>
-                </div>
-
-
 
             </div>
             {{-- Contenido Principal con Estética de Guion --}}
@@ -682,11 +803,9 @@
             {{-- Elemento decorativo: Código de tiempo --}}
 
             <div>
-                <span class="text-brand-orange font-mono text-xs font-black tracking-[5px] uppercase block mb-2 animate-pulse">
-                    // CRONOGRAMA_DE_PRODUCCIÓN
-                </span>
-                <h2 class="font-bebas text-[5rem] md:text-[8rem] text-white leading-[0.8] uppercase tracking-tighter">
-                    CALENDARIO <br class="md:hidden"> <span class="text-brand-orange">INCENTIVOS AUDIOVISUALES</span> 2026
+                <h2 class="font-bebas text-[5.5rem] md:text-[9rem] lg:text-[11rem] text-white leading-[0.8] uppercase tracking-tighter">
+                    CALENDARIO <br class="md:hidden">
+                    <span class="text-brand-orange">INCENTIVOS</span> 2026
                 </h2>
             </div>
         </div>
@@ -833,10 +952,7 @@
         <div class="mb-20 border-b border-white/10 pb-16">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 <div class="lg:col-span-8 text-center md:text-left">
-                    <span class="text-brand-orange font-bold uppercase tracking-[8px] text-sm md:text-base mb-6 block opacity-90">
-                        Etapas de participación
-                    </span>
-                    <h2 class="font-bebas text-[6rem] md:text-[10rem] lg:text-[12rem] leading-[0.85] mb-8">
+                    <h2 class="font-bebas text-[5.5rem] md:text-[9rem] lg:text-[11rem] leading-[0.8] mb-8 uppercase tracking-tighter">
                         <span class="text-white">¡PREPÁRATE</span><span class="text-brand-orange">!</span>
                     </h2>
                     <div class="lg:col-span-7">
@@ -856,122 +972,241 @@
         {{-- LISTADO DE ETAPAS --}}
         <div class="space-y-20">
 
-            {{-- ETAPA 1: ACTIVA (CHECKLIST) --}}
-            <div class="relative">
-                <div class="flex items-center gap-4 mb-10">
-                    <span class="bg-brand-orange text-black font-bebas text-2xl px-4 py-1 tracking-tighter">ACTIVA</span>
-                    <h3 class="font-bebas text-5xl md:text-7xl text-white uppercase tracking-tight">ETAPA I – INSCRIPCIÓN Y VERIFICACIÓN INICIAL</h3>
-                </div>
+            <div class="space-y-24 md:space-y-32">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {{-- Item 01 --}}
-                    <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all">
-                        <div class="flex justify-between items-start mb-6">
-                            <span class="font-bebas text-5xl text-white group-hover:text-brand-orange transition-colors">01</span>
-                            <div class="w-8 h-8 rounded-full border-2 border-brand-orange/30 flex items-center justify-center group-hover:bg-brand-orange transition-all">
-                                <svg class="w-4 h-4 text-brand-orange group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                </svg>
+                {{-- ETAPA 1 --}}
+                <section class="relative border-l-0 md:border-l-2 border-brand-orange/30 pl-0 md:pl-8 ml-0 md:ml-4 mr-0 md:mr-2">
+
+                    {{-- Indicador de Etapa flotante (Visible solo en Desktop para ganar espacio en Móvil) --}}
+                    <div class="hidden md:block absolute -left-[13px] top-0 w-6 h-6 bg-brand-orange rounded-full shadow-[0_0_15px_rgba(255,114,0,0.5)]"></div>
+
+                    <div class="mb-8 md:mb-12 px-4 md:px-0">
+                        <span class="bg-brand-orange text-black font-bebas text-2xl md:text-3xl px-6 py-2 tracking-tighter uppercase">Etapa I</span>
+                        <h3 class="font-bebas text-4xl md:text-7xl text-white uppercase tracking-tight mt-4 leading-[0.9] md:leading-none">INSCRIPCIÓN Y VERIFICACIÓN INICIAL</h3>
+                    </div>
+
+                    {{-- CONTENEDOR DE LISTA DE ANEXOS --}}
+                    <div class="max-w-6xl mx-auto space-y-2 md:space-y-4">
+
+                        {{-- ITEM 01 --}}
+                        <div class="group flex flex-col md:flex-row items-start md:items-center justify-between bg-[#0a0a0a] border-l-4 border-brand-orange p-5 md:p-8 hover:bg-white/[0.03] transition-all gap-5 md:gap-6">
+                            <div class="flex items-start md:items-center gap-4 md:gap-8 w-full">
+                                <span class="font-bebas text-3xl md:text-4xl text-white/20 tracking-tighter leading-none">01</span>
+                                <div class="flex-grow">
+                                    <span class="font-mono text-[9px] md:text-[10px] text-brand-orange uppercase tracking-[3px] mb-1 block">Anexo 01</span>
+                                    <h4 class="font-bebas text-2xl md:text-3xl text-white uppercase leading-tight md:leading-none">Manifestación del Director</h4>
+                                </div>
+                            </div>
+                            <a href="{{ asset('storage/formatos/etapa_01/anexo-01-manifestacion-del-director.pdf') }}" target="_blank"
+                                class="w-full md:w-auto text-center px-10 py-4 bg-brand-orange text-white font-mono text-[10px] font-bold tracking-[3px] uppercase hover:bg-white hover:text-black transition-all">
+                                Descargar Formato
+                            </a>
+                        </div>
+
+                        {{-- ITEM 02 --}}
+                        <div class="group flex flex-col md:flex-row items-start md:items-center justify-between bg-[#0a0a0a] border-l-4 border-brand-orange p-5 md:p-8 hover:bg-white/[0.03] transition-all gap-5 md:gap-6">
+                            <div class="flex items-start md:items-center gap-4 md:gap-8 w-full">
+                                <span class="font-bebas text-3xl md:text-4xl text-white/20 tracking-tighter leading-none">02</span>
+                                <div class="flex-grow">
+                                    <span class="font-mono text-[9px] md:text-[10px] text-brand-orange uppercase tracking-[3px] mb-1 block">Anexo 02</span>
+                                    <h4 class="font-bebas text-2xl md:text-3xl text-white uppercase leading-tight md:leading-none">Experiencia Director General</h4>
+                                </div>
+                            </div>
+                            <a href="{{ asset('storage/formatos/etapa_01/anexo-02-experiencia-director-general.pdf') }}" target="_blank"
+                                class="w-full md:w-auto text-center px-10 py-4 bg-brand-orange text-white font-mono text-[10px] font-bold tracking-[3px] uppercase hover:bg-white hover:text-black transition-all">
+                                Descargar Formato
+                            </a>
+                        </div>
+
+                        {{-- ITEM 03 ESPECIAL (GESTIÓN DEL PROPONENTE) --}}
+                        <div class="flex flex-col md:flex-row items-start md:items-center bg-brand-orange/10 border-l-4 border-white p-5 md:p-8 gap-4 md:gap-8">
+                            <div class="flex items-start md:items-center gap-4 md:gap-8 w-full">
+                                <div class="hidden md:block">
+                                    <svg class="w-10 h-10 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div class="flex-grow">
+                                    <span class="font-mono text-[10px] text-brand-orange font-bold uppercase tracking-[3px] mb-2 block">Gestión del proponente</span>
+                                    <h4 class="font-bebas text-2xl md:text-3xl text-white uppercase leading-tight md:leading-none mb-3">Certificados y Soportes</h4>
+                                    <p class="text-white/60 text-[11px] font-bold uppercase tracking-widest max-w-2xl leading-relaxed">
+                                        Ve preparando los dos (2) certificados de experiencia del director. Cada uno deberá presentarse en un archivo PDF con sus respectivos soportes y evidencias.
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                        <h4 class="font-bebas text-3xl text-white mb-6 uppercase">Manifestación <br> del Director</h4>
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-01-manifestacion-del-director.pdf') }}" target="_blank" class="block w-full text-center py-3 bg-white/5 text-white font-mono text-[10px] tracking-[3px] uppercase hover:bg-brand-orange hover:text-black transition-colors">Descargar Formato</a>
-                    </div>
 
-                    {{-- Item 02 --}}
-                    <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all">
-                        <div class="flex justify-between items-start mb-6">
-                            <span class="font-bebas text-5xl text-white group-hover:text-brand-orange transition-colors">02</span>
-                            <div class="w-8 h-8 rounded-full border-2 border-brand-orange/30 flex items-center justify-center group-hover:bg-brand-orange transition-all">
-                                <svg class="w-4 h-4 text-brand-orange group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                </svg>
+                        {{-- ITEM 04 (Originalmente Anexo 03) --}}
+                        <div class="group flex flex-col md:flex-row items-start md:items-center justify-between bg-[#0a0a0a] border-l-4 border-brand-orange p-5 md:p-8 hover:bg-white/[0.03] transition-all gap-5 md:gap-6">
+                            <div class="flex items-start md:items-center gap-4 md:gap-8 w-full">
+                                <span class="font-bebas text-3xl md:text-4xl text-white/20 tracking-tighter leading-none">03</span>
+                                <div class="flex-grow">
+                                    <span class="font-mono text-[9px] md:text-[10px] text-brand-orange uppercase tracking-[3px] mb-1 block">Anexo 03</span>
+                                    <h4 class="font-bebas text-2xl md:text-3xl text-white uppercase leading-tight md:leading-none">Autorización Uso de Guion</h4>
+                                </div>
                             </div>
+                            <a href="{{ asset('storage/formatos/etapa_01/anexo-03-autorizacion-uso-de-guion.pdf') }}" target="_blank"
+                                class="w-full md:w-auto text-center px-10 py-4 bg-brand-orange text-white font-mono text-[10px] font-bold tracking-[3px] uppercase hover:bg-white hover:text-black transition-all">
+                                Descargar Formato
+                            </a>
                         </div>
-                        <h4 class="font-bebas text-3xl text-white mb-6 uppercase">Experiencia <br> Director General</h4>
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-02-experiencia-director-general.pdf') }}" target="_blank" class="block w-full text-center py-3 bg-white/5 text-white font-mono text-[10px] tracking-[3px] uppercase hover:bg-brand-orange hover:text-black transition-colors">Descargar Formato</a>
-                    </div>
 
-                    {{-- Item 03 (Especial: Tus Archivos) --}}
-                    <div class="bg-brand-orange p-8 flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-start mb-6 text-black">
-                                <span class="font-bebas text-5xl  text-white">03</span>
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-                                </svg>
+                        {{-- ITEM 05 (Originalmente Anexo 04) --}}
+                        <div class="group flex flex-col md:flex-row items-start md:items-center justify-between bg-[#0a0a0a] border-l-4 border-brand-orange p-5 md:p-8 hover:bg-white/[0.03] transition-all gap-5 md:gap-6">
+                            <div class="flex items-start md:items-center gap-4 md:gap-8 w-full">
+                                <span class="font-bebas text-3xl md:text-4xl text-white/20 tracking-tighter leading-none">04</span>
+                                <div class="flex-grow">
+                                    <span class="font-mono text-[9px] md:text-[10px] text-brand-orange uppercase tracking-[3px] mb-1 block">Anexo 04</span>
+                                    <h4 class="font-bebas text-2xl md:text-3xl text-white uppercase leading-tight md:leading-none">Consideraciones y declaraciones</h4>
+                                </div>
                             </div>
-                            <h4 class="font-bebas text-3xl text-black mb-2 uppercase">Certificados <br> y Evidencias</h4>
-                            <p class="text-black/80 text-xs font-bold uppercase tracking-wide">Consigue dos (2) certificaciones de experiencia como director general
-                                expedidas por la productora con sus respectivos soportes.</p>
+                            <a href="{{ asset('storage/formatos/etapa_01/anexo-04-consideraciones-y-declaraciones.pdf') }}" target="_blank"
+                                class="w-full md:w-auto text-center px-10 py-4 bg-brand-orange text-white font-mono text-[10px] font-bold tracking-[3px] uppercase hover:bg-white hover:text-black transition-all">
+                                Descargar Formato
+                            </a>
                         </div>
                     </div>
-
-                    {{-- Item 04 --}}
-                    <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all">
-                        <div class="flex justify-between items-start mb-6">
-                            <span class="font-bebas text-5xl text-white group-hover:text-brand-orange transition-colors">04</span>
-                            <div class="w-8 h-8 rounded-full border-2 border-white/10 flex items-center justify-center group-hover:border-brand-orange transition-all">
-                                <span class="text-[9px] text-gray-500 font-bold">OPC</span>
-                            </div>
-                        </div>
-                        <h4 class="font-bebas text-3xl text-white mb-6 uppercase">Autorización <br> Uso de Guion</h4>
-                        <a href="{{ asset('storage/formatos/etapa_01/anexo-03-autorizacion-uso-de-guion.pdf') }}" target="_blank" class="block w-full text-center py-3 bg-white/5 text-white font-mono text-[10px] tracking-[3px] uppercase hover:bg-brand-orange hover:text-black transition-colors">Descargar Formato</a>
-                    </div>
-
-                    {{-- Item 05 (Ancho Doble) --}}
-                    <div class="group bg-[#0a0a0a] border border-white/10 p-8 hover:border-brand-orange/50 transition-all md:col-span-2">
-                        <div class="flex justify-between items-start mb-6">
-                            <span class="font-bebas text-5xl text-white group-hover:text-brand-orange transition-colors">05</span>
-                            <span class="text-brand-orange font-mono text-[10px] tracking-[4px] uppercase font-bold">Obligatorio</span>
-                        </div>
-                        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                            <h4 class="font-bebas text-4xl text-white uppercase leading-none">Consideraciones y declaraciones</h4>
-                            <a href="{{ asset('storage/formatos/etapa_01/anexo-04-consideraciones-y-declaraciones.pdf') }}" target="_blank" class="w-full md:w-auto px-8 py-4 bg-white text-black font-bebas text-xl tracking-widest hover:bg-brand-orange transition-colors uppercase">Descargar Formato</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            {{-- ETAPAS INHABILITADAS (2, 3 Y 4) --}}
-            <div class="space-y-6 opacity-30 pointer-events-none select-none grayscale filter blur-[1px]">
+                </section>
 
                 {{-- ETAPA 2 --}}
-                <div class="bg-white/5 border border-white/10 p-10 flex flex-col md:flex-row justify-between items-center group">
-                    <div>
-                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Etapa_02 // Bloqueada</span>
-                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA II – PRESENTACIÓN DEL GUION Y DOCUMENTOS ADICIONALES</h3>
+                <section class="relative border-l-0 md:border-l-2 border-white/10 pl-0 md:pl-8 ml-0 md:ml-4">
+                    <div class="hidden md:block absolute -left-[13px] top-0 w-6 h-6 bg-[#1a1a1a] border-2 border-white/20 rounded-full"></div>
+
+                    <div class="mb-8 md:mb-12 px-4 md:px-0">
+                        <span class="bg-white/10 text-white font-bebas text-2xl md:text-3xl px-6 py-2 tracking-tighter uppercase">Etapa II</span>
+                        <h3 class="font-bebas text-4xl md:text-7xl text-white uppercase tracking-tight mt-4 opacity-80 leading-[0.9]">
+                            PRESENTACIÓN DEL GUION Y <br class="hidden md:block"> DOCUMENTOS ADICIONALES
+                        </h3>
                     </div>
-                    <div class="text-right">
-                        <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
-                        <span class="block text-gray-400 font-bebas text-4xl">13 / MAY / 2026</span>
+
+                    <div class="max-w-6xl mx-auto space-y-2 md:space-y-4">
+                        {{-- ANEXO 05 --}}
+                        <div class="group flex flex-col md:flex-row items-start md:items-center justify-between bg-[#0a0a0a] border-l-4 border-brand-orange p-5 md:p-8 hover:bg-white/[0.03] transition-all gap-5 md:gap-6">
+                            <div class="flex items-start gap-4 md:gap-8 flex-grow">
+                                <span class="font-bebas text-3xl md:text-4xl text-white/20 tracking-tighter leading-none">05</span>
+                                <div>
+                                    <span class="font-mono text-[9px] md:text-[10px] text-brand-orange uppercase tracking-[3px] mb-1 block">Anexo 05</span>
+                                    <h4 class="font-bebas text-2xl md:text-3xl text-white uppercase leading-tight md:leading-none mb-3">Carta Intención Elenco</h4>
+                                    <p class="text-white/50 text-[10px] font-mono uppercase leading-tight max-w-xl">
+                                        * Ve reuniendo tu elenco (socios de la Sociedad) y solicita que diligencien el presente anexo. Si el proponente también actúa, deberá igualmente diligenciarlo.
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="{{ asset('storage/formatos/etapa_02/anexo-05-carta-de-intencion-del-elenco.pdf') }}" target="_blank"
+                                class="w-full md:w-auto px-10 py-4 bg-brand-orange text-white font-mono text-[10px] font-bold tracking-[3px] uppercase hover:bg-white hover:text-black transition-all text-center">
+                                Descargar Formato
+                            </a>
+                        </div>
+
+                        {{-- REQUERIMIENTO (SIN DESCARGA) --}}
+                        <div class="flex flex-col md:flex-row items-start md:items-center bg-brand-orange/10 border-l-4 border-white p-5 md:p-8 gap-4 md:gap-8">
+                            <div class="flex items-start md:items-center gap-4 md:gap-8 w-full">
+                                <div class="hidden md:block">
+                                    <svg class="w-10 h-10 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <div class="flex-grow">
+                                    <span class="font-mono text-[10px] text-brand-orange font-bold uppercase tracking-[3px] mb-2 block">GESTIÓN DEL PROPONENTE</span>
+                                    <h4 class="font-bebas text-2xl md:text-3xl text-white uppercase leading-tight md:leading-none mb-3">GUION FINAL Y RADICADO DE LA DIRECCIÓN NACIONAL DE DERECHOS DE AUTOR (DNDA)</h4>
+                                    <p class="text-white/60 text-[11px] font-bold uppercase tracking-widest max-w-2xl leading-relaxed">
+                                        Ve alistando el guion final y el comprobante de radicado correspondiente de la DNDA.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- ANEXO 06 --}}
+                        <div class="group flex flex-col md:flex-row items-start md:items-center justify-between bg-[#0a0a0a] border-l-4 border-brand-orange p-5 md:p-8 hover:bg-white/[0.03] transition-all gap-5 md:gap-6">
+                            <div class="flex items-start md:items-center gap-4 md:gap-8 w-full">
+                                <span class="font-bebas text-3xl md:text-4xl text-white/20 tracking-tighter leading-none">06</span>
+                                <div class="flex-grow">
+                                    <span class="font-mono text-[9px] md:text-[10px] text-brand-orange uppercase tracking-[3px] mb-1 block">Anexo 06</span>
+                                    <h4 class="font-bebas text-2xl md:text-3xl text-white uppercase leading-tight md:leading-none">Propuesta Creativa</h4>
+                                </div>
+                            </div>
+                            <a href="{{ asset('storage/formatos/etapa_02/ANEXO 6. PROPUESTA CREATIVA.docx') }}" target="_blank"
+                                class="w-full md:w-auto px-10 py-4 bg-brand-orange text-white font-mono text-[10px] font-bold tracking-[3px] uppercase hover:bg-white hover:text-black transition-all text-center">
+                                Descargar Formato
+                            </a>
+                        </div>
+
+                        {{-- ANEXO 07 --}}
+                        <div class="group flex flex-col md:flex-row items-start md:items-center justify-between bg-[#0a0a0a] border-l-4 border-brand-orange p-5 md:p-8 hover:bg-white/[0.03] transition-all gap-5 md:gap-6">
+                            <div class="flex items-start md:items-center gap-4 md:gap-8 w-full">
+                                <span class="font-bebas text-3xl md:text-4xl text-white/20 tracking-tighter leading-none">07</span>
+                                <div class="flex-grow">
+                                    <span class="font-mono text-[9px] md:text-[10px] text-brand-orange uppercase tracking-[3px] mb-1 block">Anexo 07</span>
+                                    <h4 class="font-bebas text-2xl md:text-3xl text-white uppercase leading-tight md:leading-none">Presupuesto</h4>
+                                </div>
+                            </div>
+                            <a href="{{ asset('storage/formatos/etapa_02/ANEXO 7. PRESUPUESTO.xlsx') }}" target="_blank"
+                                class="w-full md:w-auto px-10 py-4 bg-brand-orange text-white font-mono text-[10px] font-bold tracking-[3px] uppercase hover:bg-white hover:text-black transition-all text-center">
+                                Descargar Formato
+                            </a>
+                        </div>
+
+                        {{-- ANEXO 08 --}}
+                        <div class="group flex flex-col md:flex-row items-start md:items-center justify-between bg-[#0a0a0a] border-l-4 border-brand-orange p-5 md:p-8 hover:bg-white/[0.03] transition-all gap-5 md:gap-6">
+                            <div class="flex items-start md:items-center gap-4 md:gap-8 w-full">
+                                <span class="font-bebas text-3xl md:text-4xl text-white/20 tracking-tighter leading-none">08</span>
+                                <div class="flex-grow">
+                                    <span class="font-mono text-[9px] md:text-[10px] text-brand-orange uppercase tracking-[3px] mb-1 block">Anexo 08</span>
+                                    <h4 class="font-bebas text-2xl md:text-3xl text-white uppercase leading-tight md:leading-none">Cronograma</h4>
+                                </div>
+                            </div>
+                            <a href="{{ asset('storage/formatos/etapa_02/ANEXO 8. CRONOGRAMA.xlsx') }}" target="_blank"
+                                class="w-full md:w-auto px-10 py-4 bg-brand-orange text-white font-mono text-[10px] font-bold tracking-[3px] uppercase hover:bg-white hover:text-black transition-all text-center">
+                                Descargar Formato
+                            </a>
+                        </div>
                     </div>
-                </div>
+                </section>
+            </div>
+
+            {{-- CONTENEDOR DE ETAPAS BLOQUEADAS --}}
+            <div class="space-y-12 opacity-40 grayscale pointer-events-none select-none">
 
                 {{-- ETAPA 3 --}}
-                <div class="bg-white/5 border border-white/10 p-10 flex flex-col md:flex-row justify-between items-center">
-                    <div>
-                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Etapa_03 // Bloqueada</span>
-                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA III – EVALUACIÓN Y REVISIÓN DE PROPUESTAS</h3>
+                {{-- En móvil eliminamos bordes y márgenes laterales --}}
+                <section class="relative border-l-0 md:border-l-2 border-white/10 pl-0 md:pl-8 ml-0 md:ml-4">
+                    {{-- Punto de la línea: oculto en móvil --}}
+                    <div class="hidden md:block absolute -left-[11px] top-0 w-5 h-5 bg-[#1a1a1a] border border-white/20 rounded-full"></div>
+
+                    <div class="bg-white/5 border border-white/10 p-6 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center group transition-all gap-6">
+                        <div class="w-full">
+                            <span class="text-gray-500 font-mono text-[10px] md:text-xs tracking-[3px] md:tracking-[4px] uppercase mb-2 block">Etapa_03 // Bloqueada</span>
+                            <h3 class="font-bebas text-4xl md:text-6xl text-gray-400 uppercase leading-tight md:leading-none">
+                                ETAPA III – EVALUACIÓN Y REVISIÓN DE LOS PROYECTOS
+                            </h3>
+                        </div>
+
+                        <div class="text-left md:text-right w-full md:w-auto">
+                            <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
+                            <span class="block text-gray-400 font-bebas text-3xl md:text-4xl">06 / JUN / 2026</span>
+                        </div>
                     </div>
-                    <div class="text-right">
-                        <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
-                        <span class="block text-gray-400 font-bebas text-4xl">06 / JUN / 2026</span>
-                    </div>
-                </div>
+                </section>
 
                 {{-- ETAPA 4 --}}
-                <div class="bg-white/5 border border-white/10 p-10 flex flex-col md:flex-row justify-between items-center">
-                    <div>
-                        <span class="text-gray-500 font-mono text-xs tracking-[4px] uppercase mb-2 block">Etaoa_04 // Bloqueada</span>
-                        <h3 class="font-bebas text-5xl md:text-6xl text-gray-400 uppercase">ETAPA IV – SELECCIONADOS</h3>
+                <section class="relative border-l-0 md:border-l-2 border-white/5 pl-0 md:pl-8 ml-0 md:ml-4">
+                    {{-- Punto de la línea: oculto en móvil --}}
+                    <div class="hidden md:block absolute -left-[11px] top-0 w-5 h-5 bg-[#1a1a1a] border border-white/10 rounded-full"></div>
+
+                    <div class="bg-white/5 border border-white/10 p-6 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center group transition-all gap-6">
+                        <div class="w-full">
+                            <span class="text-gray-500 font-mono text-[10px] md:text-xs tracking-[3px] md:tracking-[4px] uppercase mb-2 block">Etapa_04 // Bloqueada</span>
+                            <h3 class="font-bebas text-4xl md:text-6xl text-gray-400 uppercase leading-tight md:leading-none">
+                                ETAPA IV – SELECCIONADOS
+                            </h3>
+                        </div>
+
+                        <div class="text-left md:text-right w-full md:w-auto">
+                            <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
+                            <span class="block text-gray-400 font-bebas text-3xl md:text-4xl">30 / JUN / 2026</span>
+                        </div>
                     </div>
-                    <div class="text-right">
-                        <span class="block text-gray-600 font-mono text-[10px] uppercase tracking-widest">Disponible el:</span>
-                        <span class="block text-gray-400 font-bebas text-4xl">25 / JUN / 2026</span>
-                    </div>
-                </div>
+                </section>
 
             </div>
         </div>
@@ -981,12 +1216,134 @@
         </p>
     </section>
 
+    {{-- SECCIÓN PRINCIPAL: CAUSALES DE EXCLUSIÓN --}}
+    <section id="exclusiones" class="mb-[120px] scroll-mt-[100px] max-w-7xl mx-auto px-4">
+        {{-- Encabezado de Impacto: CAUSALES DE EXCLUSIÓN --}}
+        <div class="mb-20 border-b border-white/10 pb-16 px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-10 text-center md:text-left">
+                    {{-- Título Gigante --}}
+                    <h2 class="font-bebas text-[5.5rem] md:text-[9rem] lg:text-[11rem] leading-[0.8] mb-8 uppercase tracking-tighter">
+                        <span class="text-white">CAUSALES DE</span> <br class="hidden md:block">
+                        <span class="text-red-600 italic">EXCLUSIÓN</span>
+                    </h2>
+
+                    {{-- Bajada de texto con el estilo de la sección anterior --}}
+                    <div class="lg:col-span-8">
+                        <p class="text-gray-300 text-2xl md:text-3xl uppercase tracking-tight font-light leading-[1.4]">
+                            Serán <span class="text-white font-medium border-b-4 border-red-600/40 pb-1 inline-block mt-2">excluidos de la convocatoria</span>
+                            <br class="hidden md:block"> los proyectos que incurran en cualquiera
+                            <br class="hidden md:block"> de las siguientes situaciones:
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Grid Optimizado: 2 Columnas en PC, 1 en Móvil --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+            {{-- BLOQUE 01: EL PROPONENTE --}}
+            <div class="group bg-white/[0.03] border border-white/10 p-8 md:p-12 hover:bg-white/[0.05] transition-all">
+                <div class="flex items-end justify-between mb-8 border-b border-red-600/30 pb-4">
+                    <h4 class="font-bebas text-4xl md:text-5xl text-white uppercase tracking-wider">El proponente</h4>
+                </div>
+                <ul class="space-y-6 font-mono text-sm md:text-base text-gray-400 uppercase leading-relaxed">
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> No cumple con los requisitos mínimos de participación.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> Participa en más de una propuesta dentro de la presente convocatoria.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> Oculta información relevante o presenta información falsa.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> No diligencia o firma la documentación  obligatoria.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> No atiende las solicitudes de subsanación dentro del plazo establecido.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> Interfiera o intente interferir en el proceso.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> Realiza prácticas abusivas, acoso o amenazas.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> Utiliza el nombre de ACTORES con fines indebidos.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> Destine el incentivo a fines distintos a los aprobados.</li>
+                </ul>
+            </div>
+
+            {{-- BLOQUE 02: LA DOCUMENTACIÓN --}}
+            <div class="group bg-red-600 p-8 md:p-12 shadow-[30px_30px_0px_rgba(220,38,38,0.1)]">
+                <div class="flex items-end justify-between mb-8 border-b border-black/20 pb-4 text-black">
+                    <h4 class="font-bebas text-4xl md:text-5xl uppercase tracking-wider">Documentación</h4>
+
+                </div>
+                <ul class="space-y-4 font-bold text-xs md:text-sm text-black uppercase leading-tight">
+                    <li class="flex gap-4 items-start"><span>✕</span> Se presente por medios distintos a los oficiales.</li>
+                    <li class="flex gap-4 items-start"><span>✕</span> Se envíe desde un correo no registrado ante la sociedad.</li>
+                    <li class="flex gap-4 items-start"><span>✕</span> Se entregue fuera de la fecha y hora límite.</li>
+                    <li class="flex gap-4 items-start"><span>✕</span> Estén en blanco.</li>
+                    <li class="flex gap-4 items-start"><span>✕</span> Se carguen con contraseñas.</li>
+                    <li class="flex gap-4 items-start"><span>✕</span> No se adjunten dentro del plazo.</li>
+                    <li class="flex gap-4 items-start"><span>✕</span> Presenten inconsistencias o contradicciones.</li>
+                    <li class="flex gap-4 items-start"><span>✕</span> No permitan corroborar la veracidad de la información.</li>
+                    <li class="flex gap-4 items-start bg-black text-red-600 p-2"><span>✕</span> Rompan el anonimato (logos, nombres, marcas de agua, metadatos identificables).</li>
+                    <li class="flex gap-4 items-start"><span>✕</span> Se alteren formatos oficiales.</li>
+                </ul>
+            </div>
+
+            {{-- BLOQUE 03: EL DIRECTOR --}}
+            <div class="group bg-white/[0.03] border border-white/10 p-8 md:p-12 hover:bg-white/[0.05] transition-all">
+                <div class="flex items-end justify-between mb-8 border-b border-red-600/30 pb-4">
+                    <h4 class="font-bebas text-4xl md:text-5xl text-white uppercase tracking-wider">El Director</h4>
+                </div>
+                <ul class="space-y-6 font-mono text-sm md:text-base text-gray-400 uppercase">
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> No cumpla requisitos mínimos de participación.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> Sea reemplazado sin autorización previa y escrita de Actores S.C.G.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> No adjunte las experiencias requeridas.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> Abandone la propuesta sin justificación.</li>
+                </ul>
+            </div>
+
+            {{-- BLOQUE 04: EL ELENCO --}}
+            <div class="group bg-white/[0.03] border border-white/10 p-8 md:p-12 hover:bg-white/[0.05] transition-all">
+                <div class="flex items-end justify-between mb-8 border-b border-red-600/30 pb-4">
+                    <h4 class="font-bebas text-4xl md:text-5xl text-white uppercase tracking-wider">El elenco</h4>
+                </div>
+                <ul class="space-y-6 font-mono text-sm md:text-base text-gray-400 uppercase">
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> No cumpla requisitos mínimos de participación.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> Algún integrante participe en más de una propuesta en la misma convocatoria.</li>
+                    <li class="flex gap-4 font-bold text-white italic"><span class="text-red-600 font-bold text-xl animate-pulse">✕</span> Algún integrante sea menor de edad.</li>
+                    <li class="flex gap-4"><span class="text-red-600 font-bold text-xl">✕</span> Se modifique el elenco principal sin aviso y sin carta de intención.</li>
+                </ul>
+            </div>
+
+        </div>
+
+        {{-- Bloque Nota Aclaratoria: Estética de Claqueta --}}
+        <div class="mt-20 relative bg-white/5 p-12 border-y-2 border-red-600 group max-w-5xl mx-auto">
+
+            {{-- SVG Claqueta decorativo en Rojo --}}
+            <svg class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 text-red-600 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z" />
+            </svg>
+
+            <div class="text-center">
+                <p class="text-[1.1rem] md:text-2xl text-white italic font-medium leading-relaxed max-w-4xl mx-auto">
+                    <span class="text-red-600 font-bebas tracking-widest not-italic text-2xl block mb-2">Nota aclaratoria:</span>
+                    Estas son algunas de las situaciones. Para conocerlas todas, consulta el
+
+                    documento oficial de la convocatoria
+                    </a>, literal 11 “Causales de exclusión” (pág. 16).
+                </p>
+
+                <span class="block text-[14px] underline font-mono mt-6 uppercase tracking-[4px] opacity-60 group-hover:opacity-100 transition-opacity">
+                    <a href="{{ asset('storage/formatos/condiciones-de-participacion.pdf') }}"
+                        target="_blank"
+                        class="text-white underline decoration-red-600/50 hover:decoration-red-600 transition-all"> Da Clic sobre el enlace para abrir PDF completo </a>
+                </span>
+            </div>
+        </div>
+
+    </section>
+
     {{-- Pasos e Inscripción Final - Versión Plataforma Digital con Logo de Fondo --}}
     <section id="pasos" class="mb-[120px] scroll-mt-[100px]">
         {{-- Encabezado --}}
         <div class="relative block mb-12">
-            <h2 class="font-bebas text-[4rem] md:text-[5rem] text-brand-orange mb-2 border-b-4 border-brand-orange inline-block pb-1">¿CÓMO POSTULARSE?</h2>
-            <p class="text-gray-500 font-bold uppercase tracking-[4px] text-sm md:text-base">Revisa las condiciones de participación.</p>
+            <h2 class="font-bebas text-[5.5rem] md:text-[9rem] lg:text-[11rem] leading-[0.8] mb-8 uppercase tracking-tighter">
+                <span class="text-white">¿CÓMO</span> <br class="hidden md:block">
+                <span class="text-brand-orange underline">POSTULARSE?</span>
+            </h2>
         </div>
 
         {{-- Grid de Pasos Digitales --}}
@@ -1068,6 +1425,7 @@
 
         </div>
 
+
         {{-- Bloque Final Naranja (Inscripción) --}}
         <div class="relative bg-brand-orange p-12 md:p-24 overflow-hidden shadow-[0_30px_100px_rgba(255,102,0,0.25)] border-y border-white/20">
 
@@ -1105,52 +1463,190 @@
                     POSTúLATE EN EL PORTAL <br class="hidden md:block">
                     <span class="underline decoration-4 underline-offset-8">DE INSCRIPCIÓN VIRTUAL PARA SOCIOS</span>
                 </p>
-
                 @php
-                // Lógica de fecha: Apertura 9 de Marzo de 2026, 00:00
-                $fechaApertura = \Carbon\Carbon::create(2026, 3, 4, 0, 0, 0);
+                // Configuración de fecha: 16 de Marzo de 2026, 00:00
+                $fechaApertura = \Carbon\Carbon::create(2026, 3, 13, 0, 0, 0);
                 $estaAbierto = \Carbon\Carbon::now()->greaterThanOrEqualTo($fechaApertura);
+                $fechaJs = $fechaApertura->format('Y-m-d H:i:s');
                 @endphp
 
-                <div class="relative inline-block group w-full max-w-fit mx-auto">
-                    @if($estaAbierto)
-                    {{-- BOTÓN ACTIVO (POSTULARME AHORA) --}}
-                    <div class="absolute inset-0 bg-black translate-x-2 translate-y-2 md:translate-x-3 md:translate-y-3 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></div>
+                <div class="relative w-full flex justify-center py-10">
+                    <div class="relative group w-full sm:w-auto">
 
-                    <a href="{{ route('validar-socio') }}"
-                        class="relative flex items-center justify-center gap-4 md:gap-10 bg-white text-black px-6 sm:px-12 md:px-20 py-5 md:py-8 no-underline font-bebas text-[1.8rem] sm:text-[2.2rem] md:text-[3.5rem] tracking-[3px] md:tracking-[6px] border-4 border-black transition-all">
+                        @if($estaAbierto)
+                        {{-- BOTÓN ESTADO: ACTIVO (LANZAMIENTO) --}}
+                        <div class="relative inline-block group w-full sm:w-auto">
+                            {{-- Sombra de fondo (Efecto 3D) --}}
+                            <div class="absolute inset-0 bg-brand-orange translate-x-1 translate-y-1 md:translate-x-2 md:translate-y-2 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"></div>
 
-                        <span class="whitespace-nowrap">POSTULARME AHORA</span>
+                            {{-- Botón Principal --}}
+                            <a href="{{ route('validar-socio') }}"
+                                class="relative flex items-center justify-center gap-4 md:gap-8 bg-white text-black px-6 sm:px-10 md:px-16 py-5 md:py-8 border-2 md:border-4 border-black transition-all active:translate-x-1 active:translate-y-1 no-underline">
 
-                        <svg xmlns="http://www.w3.org/2000/center/svg"
-                            class="w-8 h-8 md:w-12 md:h-12 shrink-0 transition-transform group-hover:rotate-45"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                    </a>
-                    @else
-                    {{-- BOTÓN BLOQUEADO (EXPECTATIVA) --}}
-                    <div class="absolute inset-0 bg-white/10 translate-x-1 translate-y-1 md:translate-x-2 md:translate-y-2 border border-white/20"></div>
+                                {{-- Texto: Ajustado para mantener una línea en móvil --}}
+                                <span class="whitespace-nowrap font-bebas text-[1.4rem] sm:text-[2.2rem] md:text-[3.5rem] tracking-[2px] md:tracking-[6px] leading-none">
+                                    POSTULARME AHORA
+                                </span>
 
-                    <div class="relative flex flex-col items-center justify-center bg-zinc-900 text-zinc-500 px-6 sm:px-12 md:px-20 py-5 md:py-8 border-4 border-zinc-700 cursor-not-allowed overflow-hidden">
-
-                        {{-- Texto de Expectativa --}}
-                        <div class="flex items-center gap-4 md:gap-8 opacity-60">
-                            <span class="whitespace-nowrap font-bebas text-[1.8rem] sm:text-[2.2rem] md:text-[3.5rem] tracking-[3px] md:tracking-[6px]">
-                                POSTULARME AHORA
-                            </span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 md:w-12 md:h-12 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
+                                {{-- Icono: Flecha con animación de Tailwind --}}
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-8 h-8 md:w-12 md:h-12 shrink-0 transition-transform group-hover:translate-x-2 animate-pulse"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </a>
                         </div>
+                        @else
+                        {{-- BOTÓN ESTADO: BLOQUEADO (CONTEO REGRESIVO TÉCNICO) --}}
+                        <div class="relative flex flex-col items-center bg-[#0a0a0a] border-[1px] border-white/10 p-1 md:p-2 rounded-sm shadow-2xl w-full sm:w-auto">
 
-                        {{-- Badge decorativo --}}
-                        <div class="absolute top-0 left-0 bg-brand-orange text-black font-montserrat font-bold text-[10px] md:text-xs px-3 py-1 uppercase tracking-widest">
-                            Próximamente
+                            {{-- Marco Interno Estilo Industrial --}}
+                            <div class="border-[1px] border-white/20 px-6 sm:px-12 md:px-20 py-10 md:py-16 bg-gradient-to-b from-[#111] to-[#050505] flex flex-col items-center relative overflow-hidden">
+
+                                {{-- Decoración de esquinas --}}
+                                <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-brand-orange"></div>
+                                <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-brand-orange"></div>
+                                <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-brand-orange"></div>
+                                <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-brand-orange"></div>
+
+                                {{-- Texto Superior --}}
+                                <div class="flex items-center gap-3 mb-10">
+                                    <span class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
+                                    <span class="font-mono text-[10px] md:text-xs text-white/40 tracking-[3px] md:tracking-[8px] uppercase text-center">Esperando Apertura de Plataforma</span>
+                                </div>
+
+                                {{-- CONTADOR PRINCIPAL --}}
+                                <div id="countdown" class="flex items-baseline gap-3 md:gap-8 font-bebas text-white mb-10">
+                                    <div class="text-center">
+                                        <span id="days" class="text-4xl md:text-8xl [font-variant-numeric:tabular-nums]">00</span>
+                                        <p class="font-mono text-[8px] md:text-[9px] text-brand-orange tracking-widest mt-2 uppercase opacity-70">Días</p>
+                                    </div>
+                                    <span class="text-2xl md:text-6xl text-white/20">:</span>
+                                    <div class="text-center">
+                                        <span id="hours" class="text-4xl md:text-8xl [font-variant-numeric:tabular-nums]">00</span>
+                                        <p class="font-mono text-[8px] md:text-[9px] text-brand-orange tracking-widest mt-2 uppercase opacity-70">Hrs</p>
+                                    </div>
+                                    <span class="text-2xl md:text-6xl text-white/20">:</span>
+                                    <div class="text-center">
+                                        <span id="minutes" class="text-4xl md:text-8xl [font-variant-numeric:tabular-nums]">00</span>
+                                        <p class="font-mono text-[8px] md:text-[9px] text-brand-orange tracking-widest mt-2 uppercase opacity-70">Min</p>
+                                    </div>
+                                    <span class="text-2xl md:text-6xl text-white/20">:</span>
+                                    <div class="text-center min-w-[50px] md:min-w-[110px]">
+                                        <span id="seconds" class="text-4xl md:text-8xl [font-variant-numeric:tabular-nums] text-brand-orange [text-shadow:0_0_15px_rgba(255,114,0,0.3)]">00</span>
+                                        <p class="font-mono text-[8px] md:text-[9px] text-brand-orange tracking-widest mt-2 uppercase font-bold">Seg</p>
+                                    </div>
+                                </div>
+
+                                {{-- Texto del botón bloqueado --}}
+                                <div class="border-t border-white/10 pt-8 w-full text-center">
+                                    <h3 class="font-bebas text-2xl md:text-4xl text-white/20 tracking-[4px] md:tracking-[12px] uppercase whitespace-nowrap">
+                                        POSTULARME AHORA
+                                    </h3>
+                                    <p class="text-brand-orange/50 font-mono text-[9px] md:text-[11px] mt-4 tracking-[1px] md:tracking-[4px] uppercase">
+                                        Habilitado el 16 de Marzo a las 00:00:00
+                                    </p>
+                                </div>
+
+                            </div>
                         </div>
+                        @endif
                     </div>
-                    @endif
                 </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const targetDate = new Date("{{ $fechaJs }}").getTime();
+
+                        function updateCountdown() {
+                            const now = new Date().getTime();
+                            const distance = targetDate - now;
+
+                            if (distance < 0) {
+                                window.location.reload();
+                                return;
+                            }
+
+                            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                            const dEl = document.getElementById('days');
+                            const hEl = document.getElementById('hours');
+                            const mEl = document.getElementById('minutes');
+                            const sEl = document.getElementById('seconds');
+
+                            if (dEl) dEl.innerText = days.toString().padStart(2, '0');
+                            if (hEl) hEl.innerText = hours.toString().padStart(2, '0');
+                            if (mEl) mEl.innerText = minutes.toString().padStart(2, '0');
+                            if (sEl) sEl.innerText = seconds.toString().padStart(2, '0');
+                        }
+
+                        if (document.getElementById('countdown')) {
+                            setInterval(updateCountdown, 1000);
+                            updateCountdown();
+                        }
+                    });
+                </script>
+                <style>
+                    @keyframes bounce-x {
+
+                        0%,
+                        100% {
+                            transform: translateX(0);
+                        }
+
+                        50% {
+                            transform: translateX(15px);
+                        }
+                    }
+
+                    .animate-bounce-x {
+                        animation: bounce-x 1s infinite;
+                    }
+
+                    /* Para que los números no salten al cambiar (fuente monoespaciada para el reloj) */
+                    .tabular-nums {
+                        font-variant-numeric: tabular-nums;
+                    }
+                </style>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const targetDate = new Date("{{ $fechaJs }}").getTime();
+
+                        function updateCountdown() {
+                            const now = new Date().getTime();
+                            const distance = targetDate - now;
+
+                            if (distance < 0) {
+                                window.location.reload();
+                                return;
+                            }
+
+                            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                            const d = document.getElementById('days');
+                            const h = document.getElementById('hours');
+                            const m = document.getElementById('minutes');
+                            const s = document.getElementById('seconds');
+
+                            if (d) d.innerText = days.toString().padStart(2, '0');
+                            if (h) h.innerText = hours.toString().padStart(2, '0');
+                            if (m) m.innerText = minutes.toString().padStart(2, '0');
+                            if (s) s.innerText = seconds.toString().padStart(2, '0');
+                        }
+
+                        if (document.getElementById('countdown')) {
+                            setInterval(updateCountdown, 1000);
+                            updateCountdown();
+                        }
+                    });
+                </script>
 
                 {{-- Footer de Marca y Evento --}}
                 <div class="mt-20 pt-10 border-t-2 border-black/20 flex flex-wrap justify-center gap-x-12 gap-y-6">
@@ -1168,10 +1664,7 @@
 
                     <div class="h-10 w-[2px] bg-black/10 hidden md:block"></div>
 
-                    <div class="flex flex-col items-center">
-                        <span class="text-[10px] text-black/60 font-black uppercase tracking-[2px] mb-1 italic">Fase Actual</span>
-                        <span class="text-lg text-black font-bebas tracking-widest">RECEPCIÓN DIGITAL</span>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -1192,14 +1685,14 @@
             <div class="mb-24 border-b border-white/10 pb-16">
                 <div class="flex flex-col md:flex-row justify-between items-end gap-8">
                     <div>
-                        <span class="font-mono text-xs text-brand-orange tracking-[10px] uppercase block mb-4">Executive_Production</span>
+                        <span class="font-mono text-xs text-brand-orange tracking-[10px] uppercase block mb-4">Una iniciativa de</span>
                         <h3 class="font-bebas text-[5rem] md:text-[8rem] lg:text-[10rem] text-white leading-[0.8] tracking-tighter">
                             ACTORES <span class="text-brand-orange">S.C.G.</span>
                         </h3>
                     </div>
                     <div class="text-right hidden md:block">
-                        <p class="font-bebas text-4xl text-white tracking-widest italic opacity-20">EST. 1987</p>
-                        <p class="font-mono text-[10px] tracking-[4px] uppercase mt-2">Bogotá // Colombia</p>
+                        <p class="font-bebas text-4xl text-white tracking-widest italic opacity-20">Incentivos Audiovisuales</p>
+                        <p class="font-mono text-[10px] tracking-[4px] uppercase mt-2">TU HISTORIA IMPORTA</p>
                     </div>
                 </div>
             </div>
@@ -1209,19 +1702,19 @@
 
                 {{-- Columna: La Misión (Brief) --}}
                 <div class="md:col-span-5">
-                    <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase block mb-6">// MISSION_STATEMENT</span>
-                    <p class="font-bebas text-3xl md:text-4xl text-gray-300 leading-tight tracking-tight uppercase">
-                        Protegiendo y gestionando los derechos patrimoniales de los <span class="text-white italic">actores y actrices</span> de la industria colombiana.
+                    <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase block mb-6">// Misión</span>
+                    <p class="font-bebas text-3xl md:text-5xl text-gray-300 leading-tight tracking-tight uppercase">
+                        Impulsamos la <span class="text-white italic">excelencia audiovisual</span> mediante incentivos económicos para proyectos de alta calidad, liderados por los socios de <span class="text-brand-orange">ACTORES S.C.G.</span>
                     </p>
 
                     {{-- Redes como "Channels" --}}
                     <div class="mt-12 flex items-center gap-8">
                         <a href="https://www.instagram.com/actoresscg/" target="_blank" class="group">
-                            <span class="font-mono text-[10px] block opacity-30 group-hover:opacity-100 transition-opacity">FOLLOW_01</span>
+                            <span class="font-mono text-[10px] block opacity-30 group-hover:opacity-100 transition-opacity">REDES SOCIALES</span>
                             <span class="font-bebas text-2xl text-white group-hover:text-brand-orange">INSTAGRAM</span>
                         </a>
                         <a href="https://www.facebook.com/ActoresSCG" target="_blank" class="group">
-                            <span class="font-mono text-[10px] block opacity-30 group-hover:opacity-100 transition-opacity">FOLLOW_02</span>
+                            <span class="font-mono text-[10px] block opacity-30 group-hover:opacity-100 transition-opacity">REDES SOCIALES</span>
                             <span class="font-bebas text-2xl text-white group-hover:text-brand-orange">FACEBOOK</span>
                         </a>
                     </div>
@@ -1229,7 +1722,7 @@
 
                 {{-- Columna: Enlaces (The Crew) --}}
                 <div class="md:col-span-3">
-                    <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase block mb-6">// INDEX</span>
+                    <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase block mb-6">// ÍNDICE</span>
                     <ul class="space-y-4 list-none p-0">
                         @php
                         $navItems = [
@@ -1274,7 +1767,7 @@
 
                 {{-- Columna: Contacto (Location Specs) --}}
                 <div class="md:col-span-4">
-                    <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase block mb-6">// LOCATION_SCOUTING</span>
+                    <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase block mb-6">// CONTACTO</span>
                     <div class="space-y-8">
                         <div class="group">
                             <p class="font-mono text-[10px] opacity-30 uppercase mb-1">Office_Headquarters</p>

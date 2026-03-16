@@ -1,5 +1,62 @@
 <div class="min-h-screen bg-[#020202] text-white font-montserrat antialiased pb-20">
+    {{-- TOOLBAR: RESPONSIVO (Lateral en Desktop, Barra Inferior en Móvil) --}}
+    <div class="fixed z-[100] 
+    {{-- Comportamiento Móvil: Abajo, horizontal --}}
+    bottom-0 left-0 w-full bg-black/80 backdrop-blur-lg border-t border-white/10 px-6 py-4 flex flex-row justify-around items-center
+    {{-- Comportamiento Desktop: Lateral derecho, vertical --}}
+    md:right-8 md:top-1/2 md:-translate-y-1/2 md:bottom-auto md:left-auto md:w-auto md:bg-transparent md:backdrop-blur-none md:border-none md:flex-col md:gap-8">
 
+        {{-- Decoración: Solo visible en Desktop --}}
+        <div class="hidden md:flex flex-col items-center gap-3 mb-2">
+            <span class="font-mono text-[10px] text-brand-orange tracking-[5px] uppercase rotate-180 [writing-mode:vertical-lr] font-black animate-pulse">
+                System_Online
+            </span>
+            <div class="w-[3px] h-16 bg-gradient-to-t from-brand-orange via-brand-orange/50 to-transparent rounded-full"></div>
+        </div>
+
+        {{-- BOTÓN: WHATSAPP --}}
+        <div class="group relative flex flex-col md:flex-col items-center gap-1 md:gap-0">
+            <a href="https://wa.me/573156896774?text=Hola,%20me%20gustaría%20más%20información%20sobre%20los%20incentivos%20audiovisuales"
+                target="_blank"
+                class="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-[#25D366] text-white rounded-xl md:rounded-2xl hover:scale-110 md:hover:rotate-3 transition-all duration-500 shadow-lg border-b-4 border-black/20">
+
+                {{-- Tooltip (Solo Desktop) --}}
+                <span class="hidden md:block absolute right-20 bg-black border-2 border-[#25D366] text-white font-bold font-mono text-xs px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                    [ WHATSAPP DIRECTO ]
+                </span>
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="md:w-8 md:h-8">
+                    <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+                    <path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+                </svg>
+            </a>
+            <span class="font-mono text-[8px] md:text-[9px] text-[#25D366] font-bold uppercase md:mt-2 tracking-[1px] md:tracking-[2px]">WhatsApp</span>
+        </div>
+
+        {{-- BOTÓN: CORREO ELECTRÓNICO --}}
+        <div class="group relative flex flex-col md:flex-col items-center gap-1 md:gap-0">
+            <a href="mailto:incentivos@actores.org.co"
+                class="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-[#3b82f6] text-white rounded-xl md:rounded-2xl hover:scale-110 md:hover:-rotate-3 transition-all duration-500 shadow-lg border-b-4 border-black/20">
+
+                {{-- Tooltip (Solo Desktop) --}}
+                <span class="hidden md:block absolute right-20 bg-black border-2 border-[#3b82f6] text-white font-bold font-mono text-xs px-4 py-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                    [ ENVIAR E-MAIL ]
+                </span>
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="md:w-8 md:h-8">
+                    <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10" />
+                    <path d="M3 7l9 6l9 -6" />
+                </svg>
+            </a>
+            <span class="font-mono text-[8px] md:text-[9px] text-[#3b82f6] font-bold uppercase md:mt-2 tracking-[1px] md:tracking-[2px]">E-mail</span>
+        </div>
+
+        {{-- Decoración: Solo Desktop --}}
+        <div class="hidden md:flex mt-2 flex-col items-center gap-2">
+            <div class="w-2 h-2 bg-brand-orange rounded-full animate-ping"></div>
+            <div class="w-[1px] h-10 bg-gradient-to-b from-brand-orange to-transparent"></div>
+        </div>
+    </div>
     <nav class="sticky top-0 left-0 w-full z-[1000] flex justify-between items-center px-6 py-4 md:px-16 bg-black/95 border-b-2 border-white/5 backdrop-blur-xl transition-all duration-500 transform-gpu">
 
         {{-- MARCAS DE ENCUADRE DECORATIVAS --}}
@@ -98,16 +155,57 @@
     <main class="max-w-[1500px] mx-auto px-8 pt-16">
 
         {{-- CABECERA --}}
-        <div class="mb-20 max-w-4xl">
-            <span class="text-brand-orange font-mono text-md tracking-[8px] uppercase mb-4 block">PROYECTOS</span>
-            <h1 class="font-bebas text-7xl md:text-9xl leading-[0.8] mb-8 uppercase">INSCRITOS</h1>
+        <div class="mb-24 w-full"> {{-- Eliminamos max-w-4xl para que el buscador pueda expandirse si el padre lo permite --}}
+            <div class="max-w-4xl mb-12">
+                <span class="text-brand-orange font-mono text-sm md:text-md tracking-[10px] uppercase mb-4 block animate-pulse">
+                    DIRECTORIO DE PROYECTOS
+                </span>
+                <h1 class="font-bebas text-7xl md:text-9xl leading-[0.8] mb-0 uppercase tracking-tighter">
+                    INSCRITOS
+                </h1>
+            </div>
 
-            <div class="relative group">
-                <input type="text" wire:model.live="search"
-                    placeholder="BUSCAR POR NOMBRE O RADICADO..."
-                    class="w-full bg-[#0a0a0a] border border-white/10 p-6 text-xl md:text-3xl font-bebas tracking-widest outline-none focus:border-brand-orange transition-all placeholder:text-white/5 uppercase shadow-2xl">
-                <div class="absolute right-6 top-1/2 -translate-y-1/2 text-brand-orange opacity-20 group-focus-within:opacity-100 transition-opacity">
-                    <i class="fas fa-search text-2xl"></i>
+            {{-- BUSCADOR MEJORADO --}}
+            <div class="relative w-full group">
+                {{-- Etiqueta flotante superior (estilo técnico) --}}
+                <div class="absolute -top-3 left-6 z-10 bg-[#020202] px-3">
+                    <span class="font-mono text-[10px] text-brand-orange tracking-[4px] uppercase">Filtrar base de datos</span>
+                </div>
+
+                {{-- Input principal --}}
+                <div class="relative overflow-hidden">
+                    <input type="text"
+                        wire:model.live="search"
+                        placeholder="ESCRIBE EL NOMBRE DEL PROYECTO O NÚMERO DE RADICADO..."
+                        class="w-full bg-white/[0.03] border-2 border-white/10 p-8 md:p-10 pl-8 pr-20 text-2xl md:text-5xl font-bebas tracking-[2px] outline-none transition-all duration-500 
+                placeholder:text-white/10 text-white uppercase
+                focus:bg-white/[0.07] focus:border-brand-orange focus:ring-0
+                group-hover:border-white/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+
+                    {{-- Decoración: Línea de carga inferior estética --}}
+                    <div class="absolute bottom-0 left-0 h-[2px] bg-brand-orange w-0 group-focus-within:w-full transition-all duration-700"></div>
+
+                    {{-- Icono de búsqueda dinámico --}}
+                    <div class="absolute right-8 top-1/2 -translate-y-1/2 flex items-center gap-4">
+                        {{-- Spinner de carga de Livewire (se activa cuando buscas) --}}
+                        <div wire:loading wire:target="search" class="animate-spin text-brand-orange">
+                            <i class="fas fa-circle-notch text-2xl"></i>
+                        </div>
+
+                        <div class="h-12 w-[1px] bg-white/10 group-focus-within:bg-brand-orange/40 transition-colors"></div>
+
+                        <i class="fas fa-search text-3xl md:text-4xl text-white/20 group-focus-within:text-brand-orange transition-all duration-500 transform group-focus-within:scale-110"></i>
+                    </div>
+                </div>
+
+                {{-- Texto de ayuda rápido debajo del input --}}
+                <div class="mt-4 flex justify-between items-center px-2">
+                    <p class="font-mono text-[9px] text-white/30 uppercase tracking-[2px]">
+                        Resultados en tiempo real <span class="text-brand-orange">_</span>
+                    </p>
+                    <p class="font-mono text-[9px] text-white/10 uppercase tracking-[2px] hidden md:block">
+                        Presiona ESC para limpiar
+                    </p>
                 </div>
             </div>
         </div>
@@ -202,20 +300,33 @@
                     title: '¡REGISTRO EXITOSO!',
                     text: payload.dataset.message,
                     icon: 'success',
+                    iconColor: '#ff6600', // El naranja de tu marca
                     background: '#ffffff',
-                    // Configuramos dos botones
                     showCancelButton: true,
                     confirmButtonText: 'VER MI POSTULACIÓN',
                     cancelButtonText: 'CERRAR',
                     confirmButtonColor: '#ff6600',
-                    cancelButtonColor: '#0f172a', // slate-900
+                    cancelButtonColor: '#0f172a',
+
+                    // Agregamos el footer para la Etapa 2
+                    footer: `
+                    <div class="text-center pt-4 border-t border-slate-100">
+                        <p class="font-inter text-slate-500 text-sm">
+                            ¿Siguiente paso? 
+                            <a href="/#anexos" class="text-brand-orange font-bold hover:underline ml-1">
+                                Ve preparando la documentación de la ETAPA 2 AQUÍ →
+                            </a>
+                        </p>
+                    </div>
+                `,
 
                     customClass: {
                         popup: 'rounded-[2rem] border-4 border-slate-900 shadow-2xl',
                         title: 'font-bebas text-4xl tracking-tight text-slate-900',
                         htmlContainer: 'font-inter text-slate-600 font-medium',
                         confirmButton: 'rounded-xl px-8 py-3 font-bebas text-lg tracking-widest hover:scale-105 transition-transform order-2',
-                        cancelButton: 'rounded-xl px-8 py-3 font-bebas text-lg tracking-widest hover:scale-105 transition-transform order-1'
+                        cancelButton: 'rounded-xl px-8 py-3 font-bebas text-lg tracking-widest hover:scale-105 transition-transform order-1',
+                        footer: 'bg-slate-50 rounded-b-[1.8rem] py-4' // Estilo extra para el fondo del footer
                     },
                     showClass: {
                         popup: 'animate__animated animate__fadeInUp animate__faster'
@@ -223,15 +334,13 @@
                     hideClass: {
                         popup: 'animate__animated animate__fadeOutDown animate__faster'
                     },
-                    buttonsStyling: true, // Usamos los estilos de SWAL pero con nuestras clases
+                    buttonsStyling: true,
                 }).then((result) => {
-                    // Si el usuario hace clic en "VER MI POSTULACIÓN"
                     if (result.isConfirmed) {
                         window.location.href = "{{ route('inscritos.publico') }}";
                     }
                 });
 
-                // Limpia la URL para evitar que el modal salga al recargar
                 history.replaceState(null, null, window.location.href);
             }
         });

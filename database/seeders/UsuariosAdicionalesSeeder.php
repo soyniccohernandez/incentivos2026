@@ -25,7 +25,7 @@ class UsuariosAdicionalesSeeder extends Seeder
             ['1016094569', 'Persy Yulian Cruz Lopez', 'Masculino', 'P. Derecho', '1997-05-09', '28', 'Calle11#88a-61 nueva Castilla Kennedy', '3023054108', 'Pcruz@actores.org.co', 'activo'],
             ['1014659341', 'Vivian Julieth Galvan Rodríguez', 'Femenino', 'Adherido', '2005-03-29', '20', 'Cra90a #4-40 Primavera - Kennedy', '3173884786', 'jgalvan@actores.org.co', 'activo'],
             ['1015395925', 'Johana Caterine Gómez Narvaez', 'Femenino', 'Adherido', '1986-09-04', '39', 'Calle 70 69 i - 25', '3133640104', 'jgomez@actores.org.co', 'activo'],
-            ['1023019881', 'Erick Nicolás Hernández Díaz', 'Masculino', 'P. Derecho', '1997-03-16', '28', 'Dig 77 BIS sur No. 14P – 75 Barrio Miravalle', '3229356936', 'nhernandez@actores.org.co', 'activo'],
+            ['1023019881', 'Erick Nicolás Hernández Díaz', 'Masculino', 'Administrador', '1997-03-16', '28', 'Dig 77 BIS sur No. 14P – 75 Barrio Miravalle', '3229356936', 'nhernandez@actores.org.co', 'activo'],
             ['1007540351', 'Laura Margarita León Contreras', 'Femenino', 'P. Derecho', '2000-09-28', '25', 'Carrera 21 #145-50 - El cedrito, Usaquen', '3224461850', 'Maleon@actores.org.co', 'activo'],
             ['52357816', 'Elva Lucero Mariño Parra', 'Femenino', 'Adherido', '1972-11-10', '53', 'Calle 128b# 93 a 43 Casa 41', '3166905085', 'eluparra@hotmail.com', 'activo'],
             ['1000687271', 'Marisol Mayorga Romero', 'Femenino', 'Adherido', '1999-04-17', '26', 'Cl 40a #13-24', '3204610316', 'mmayorga@actores.org.co', 'activo'],
